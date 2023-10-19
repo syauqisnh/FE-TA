@@ -3,12 +3,23 @@ import { ref, onMounted } from 'vue';
 import CountryService from '@/service/CountryService';
 import NodeService from '@/service/NodeService';
 
+
 const tableData = ref([]);
 const selectedRkow = ref(null);
 
 const inputValue = ref('');
 const countryService = new CountryService();
 const nodeService = new NodeService();
+
+const selectedLimit = ref(''); // default value
+const limits = ref([
+    { value: "lima-data", label: "5 Data Perhalaman" },
+    { value: "sepuluh-data", label: "10 Data Perhalaman" },
+    { value: "dualima-data", label: "25 Data Perhalaman" },
+    { value: "limapuluh-data", label: "50 Data Perhalaman" },
+    { value: "seratus-data", label: "100 Data Perhalaman" }
+]);
+
 
 const addNewItem = () => {
     const newItem = { name: inputValue.value };
@@ -34,8 +45,32 @@ onMounted(() => {
         // Use data as needed
     });
 });
+const isModalOpen = ref(false);
+
+// Function to open the modal
+const openModal = () => {
+    isModalOpen.value = true;
+};
+
+// Function to close the modal
+const closeModal = () => {
+    isModalOpen.value = false;
+};
 </script>
 <template>
+    <div v-if="isModalOpen" class="modal">
+        <div class="modal-content">
+            <!-- Close button -->
+            <span class="close" @click="closeModal">&times;</span>
+            <h4>Edit Nama Anda:</h4>
+            <div class="col-12 mb-2">
+                <InputText v-model="inputValue" placeholder="Name" class="input-text"></InputText>
+            </div>
+            <div class="col-12 mb-2">
+                <Button label="Update" class="button-add" @click="addNewUpdate"></Button>
+            </div>
+        </div>
+    </div>
     <div class="grid p-fluid">
         <div class="col-12 md:col-6">
             <div class="pembungkus1">
@@ -93,17 +128,13 @@ onMounted(() => {
         </div>
         <div class="col-12">
             <div class="card">
-                <div class="dropdown-limit">
-                    <div class="dropdown-limit2">
-                        <select name="limit-data" class="limit-data" id="limit-data">
-                            <option value="" disabled selected hidden>Limit Data</option>
-                            <option value="lima-data">5 Data Perhalaman</option>
-                            <option value="sepuluh-data">10 Data Perhalaman</option>
-                            <option value="dualima-data">25 Data Perhalaman</option>
-                            <option value="limapuluh-data">50 Data Perhalaman</option>
-                            <option value="seratus-data">100 Data Perhalaman</option>
-                        </select>
-                    </div>
+                <div class="drop">
+                    <span class="p-float-label">
+                        <Dropdown class="limit-drop" v-model="selectedLimit" :options="limits" optionLabel="label"
+                            optionValue="value">
+                        </Dropdown>
+                        <label for="dropdown">Limit Data</label>
+                    </span>
                 </div>
                 <div class="data-table">
                     <h5>Data Table Level</h5>
@@ -120,7 +151,7 @@ onMounted(() => {
                             <!-- Wrapper untuk ikon-ikon -->
                             <div class="action-icons">
                                 <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon"
-                                    @click="editItem(slotProps.rowData)"></Button>
+                                    @click="openModal"></Button>
                                 <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon"
                                     @click="deleteItem(slotProps.rowData)"></Button>
                             </div>
@@ -291,10 +322,13 @@ onMounted(() => {
     margin-right: 10px;
     margin-bottom: 15px;
 }
+
 .dropdown-limit {
-  display: inline-block;
-  margin-right: 20px; /* Sesuaikan jarak sesuai kebutuhan */
+    display: inline-block;
+    margin-right: 20px;
+    /* Sesuaikan jarak sesuai kebutuhan */
 }
+
 .limit-data {
     background-color: #fff;
     border: 1px solid gray;
@@ -307,12 +341,82 @@ onMounted(() => {
     margin-bottom: 10px;
 }
 
-.limit-data option {
-    margin: 10px;
-    font-size: 14px; 
+.custom-dropdown {
+    width: 200px;
+    position: relative;
+    font-family: Arial, sans-serif;
 }
-.limit-data:hover {
-  border-color: #007BFF; /* Warna border saat hover */
+
+.custom-dropdown select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    appearance: none;
+    /* Removes the default styling */
+    -webkit-appearance: none;
+    /* Removes the default styling for Chrome and Safari */
+    -moz-appearance: none;
+    /* Removes the default styling for Firefox */
+    background-color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Arrow styling */
+.custom-dropdown::before {
+    content: '▼';
+    /* Unicode arrow symbol */
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    /* Makes the arrow unclickable */
+}
+
+.drop {
+    margin-bottom: 20px;
+}
+
+.limit-drop {
+    width: 20%;
+}
+
+.modal {
+    display: flex; // gunakan flexbox
+    align-items: center; // menyelaraskan konten vertikal di tengah
+    justify-content: center; // menyelaraskan konten horizontal di tengah
+    position: fixed; // posisi tetap untuk menutupi seluruh viewport
+    z-index: 1;
+    top: 0;
+    left: 0; // pastikan modal menutupi seluruh viewport
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); // tambahkan overlay transparan untuk meningkatkan tampilan
+    overflow: auto;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; // Anda dapat mengubah ini sesuai kebutuhan
+    max-width: 500px; // tambahkan max-width agar modal tidak terlalu lebar di layar besar
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }
 </style>
 
