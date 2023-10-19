@@ -46,6 +46,7 @@ onMounted(() => {
     });
 });
 const isModalOpen = ref(false);
+const isModalOpenDel = ref(false);
 
 // Function to open the modal
 const openModal = () => {
@@ -56,6 +57,15 @@ const openModal = () => {
 const closeModal = () => {
     isModalOpen.value = false;
 };
+
+const openModalDel = () => {
+    isModalOpenDel.value = true;
+};
+
+// Function to close the modal
+const closeModalDel = () => {
+    isModalOpenDel.value = false;
+};
 </script>
 <template>
     <div v-if="isModalOpen" class="modal">
@@ -63,11 +73,29 @@ const closeModal = () => {
             <!-- Close button -->
             <span class="close" @click="closeModal">&times;</span>
             <h4>Edit Nama Anda:</h4>
-            <div class="col-12 mb-2">
-                <InputText v-model="inputValue" placeholder="Name" class="input-text"></InputText>
+            <div class="pembungkus-edit">
+                <div class="edit">
+                    <InputText v-model="inputUpdate" placeholder="Name" class="input-text"></InputText>
+                </div>
+                <div class="edit-button">
+                    <Button label="Update" class="button-add" @click="addNewUpdate"></Button>
+                </div>
             </div>
-            <div class="col-12 mb-2">
-                <Button label="Update" class="button-add" @click="addNewUpdate"></Button>
+        </div>
+    </div>
+    <div v-if="isModalOpenDel" class="modal">
+        <div class="modal-content">
+            <!-- Close button -->
+            <span class="close" @click="closeModalDel">&times;</span>
+            <h4>Delete Data</h4>
+            <p>Apakah anda yakin akan menghapus data?</p>
+            <div class="pembungkus-delete">
+                <div class="delete-yes">
+                    <Button label="Yes" class="button-add" @click="addNewUpdate"></Button>
+                </div>
+                <div class="delete-no">
+                    <Button label="No" class="button-add" @click="addNewUpdate"></Button>
+                </div>
             </div>
         </div>
     </div>
@@ -153,7 +181,7 @@ const closeModal = () => {
                                 <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon"
                                     @click="openModal"></Button>
                                 <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon"
-                                    @click="deleteItem(slotProps.rowData)"></Button>
+                                    @click="openModalDel"></Button>
                             </div>
                         </template>
                     </Column>
@@ -403,6 +431,7 @@ const closeModal = () => {
     border: 1px solid #888;
     width: 80%; // Anda dapat mengubah ini sesuai kebutuhan
     max-width: 500px; // tambahkan max-width agar modal tidak terlalu lebar di layar besar
+    border-radius: 20px;
 }
 
 .close {
@@ -417,6 +446,27 @@ const closeModal = () => {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+.edit .input-text {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.edit-button button {
+    width: 100%;
+}
+.pembungkus-delete {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.delete-yes .button-add{
+    width: 125px;
+}
+.delete-no .button-add{
+    width: 125px;
 }
 </style>
 
