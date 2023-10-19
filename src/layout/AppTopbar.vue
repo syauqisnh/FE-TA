@@ -18,7 +18,7 @@ onBeforeUnmount(() => {
 });
 
 const logoUrl = computed(() => {
-    return `${contextPath}layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`;
+    return `${contextPath}layout/images/Logo Bekantan.jpg`;
 });
 
 const onTopBarMenuButton = () => {
@@ -64,7 +64,8 @@ const isOutsideClicked = (event) => {
     <div class="layout-topbar">
         <router-link to="/" class="layout-topbar-logo">
             <img :src="logoUrl" alt="logo" />
-            <span>SAKAI</span>
+            <h1>BEKANTANJANTAN<span><span class="dashboard">Dashboard</span> Admin</span>
+            </h1>
         </router-link>
 
         <button class="p-link layout-menu-button layout-topbar-button" @click="onMenuToggle()">
@@ -92,4 +93,32 @@ const isOutsideClicked = (event) => {
     </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.layout-topbar {
+    display: flex;
+    align-items: center;
+    height: 90px;
+}
+
+.layout-topbar-logo img {
+    height: 65px !important;
+}
+
+
+.layout-topbar-logo h1 {
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    color: rgb(107, 107, 107);
+}
+
+.layout-topbar-logo h1 span {
+    font-size: 12px;
+}
+
+.dashboard {
+    color: orange;
+}
+</style>

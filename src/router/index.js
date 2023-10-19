@@ -11,7 +11,8 @@ const router = createRouter({
                 {
                     path: '/',
                     name: 'dashboard',
-                    component: () => import('@/views/Dashboard.vue')
+                    component: () => import('@/views/Dashboard.vue'),
+                    meta: { title: 'Dashboard' }
                 },
                 {
                     path: '/uikit/formlayout',
@@ -19,9 +20,9 @@ const router = createRouter({
                     component: () => import('@/views/uikit/FormLayout.vue')
                 },
                 {
-                    path: '/uikit/input',
-                    name: 'input',
-                    component: () => import('@/views/uikit/Input.vue')
+                    path: '/uikit/Data-level',
+                    name: 'Data-level',
+                    component: () => import('@/views/uikit/Data-level.vue')
                 },
                 {
                     path: '/uikit/floatlabel',
