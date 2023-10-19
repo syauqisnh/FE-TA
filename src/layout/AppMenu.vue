@@ -11,10 +11,11 @@ const model = ref([
     {
         label: 'Data Master',
         items: [
-            { label: 'Data Level', icon: 'pi pi-fw pi-check-square', to: '/uikit/Data-level' },
-            // { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', to: '/uikit/formlayout' },
-            { label: 'Data Module', icon: 'pi pi-fw pi-bookmark', to: '/uikit/floatlabel' },
-            { label: 'Data Permission', icon: 'pi pi-fw pi-exclamation-circle', to: '/uikit/invalidstate' },
+            { label: 'Data Level', icon: 'pi pi-fw pi-server', to: '/uikit/Data-level' },
+            { label: 'Data Module', icon: 'pi pi-fw pi-server', to: '/uikit/formlayout' },
+            { label: 'Data Permission', icon: 'pi pi-fw pi-server', to: '/uikit/Data-permission' },
+            // { label: 'Data Module', icon: 'pi pi-fw pi-bookmark', to: '/uikit/floatlabel' },
+            // { label: 'Data Permission', icon: 'pi pi-fw pi-server', to: '/uikit/invalidstate' },
             // { label: 'Button', icon: 'pi pi-fw pi-mobile', to: '/uikit/button', class: 'rotated-icon' },
             // { label: 'Table', icon: 'pi pi-fw pi-table', to: '/uikit/table' },
             // { label: 'List', icon: 'pi pi-fw pi-list', to: '/uikit/list' },

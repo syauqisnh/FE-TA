@@ -104,7 +104,7 @@ const closeModalDel = () => {
             <div class="pembungkus1">
                 <div class="card">
                     <div>
-                        <h5>Create Data Module</h5>
+                        <h5>Create Data Permission</h5>
                         <div class="grid formgrid">
                             <div class="col-12 mb-2">
                                 <InputText v-model="inputValue" placeholder="Name" class="input-text"></InputText>
@@ -165,7 +165,7 @@ const closeModalDel = () => {
                     </span>
                 </div>
                 <div class="data-table">
-                    <h5>Data Table Module</h5>
+                    <h5>Data Table Permission</h5>
                     <div class="search-container">
                         <InputText v-model="inputSearch" placeholder="Search..." class="keyword"></InputText>
                         <Button icon="pi pi-search" class="search-button"></Button>

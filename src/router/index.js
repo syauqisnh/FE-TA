@@ -25,6 +25,11 @@ const router = createRouter({
                     component: () => import('@/views/uikit/Data-level.vue')
                 },
                 {
+                    path: '/uikit/Data-permission',
+                    name: 'Data-permission',
+                    component: () => import('@/views/uikit/Data-permission.vue')
+                },
+                {
                     path: '/uikit/floatlabel',
                     name: 'floatlabel',
                     component: () => import('@/views/uikit/FloatLabel.vue')
