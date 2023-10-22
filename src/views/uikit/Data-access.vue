@@ -1,23 +1,13 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import InputText from 'primevue/inputtext';
-import Button from 'primevue/button';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Dropdown from 'primevue/dropdown';
-
-
 import CountryService from '@/service/CountryService';
 import NodeService from '@/service/NodeService';
 
 
 const tableData = ref([]);
-const inputValue = ref('');
-const inputUpdate = ref('');
-const inputSearch = ref('');
+const selectedRkow = ref(null);
 
-// const inputValue = ref('');
+const inputValue = ref('');
 const countryService = new CountryService();
 const nodeService = new NodeService();
 
@@ -30,58 +20,33 @@ const limits = ref([
     { value: "seratus-data", label: "100 Data Perhalaman" }
 ]);
 
-const perPage = ref(5);
-const totalRecords = ref(0);
-const currentPage = ref(1); // Tambahkan currentPage dan initialize dengan 1
 
-onMounted(async () => {
-    await fetchData(); // Panggil fungsi fetchData saat komponen dimount
+const addNewItem = () => {
+    const newItem = { name: inputValue.value };
+    tableData.value = [...tableData.value, newItem];
+
+    // Clear the form after adding the item
+    inputValue.value = '';
+};
+
+onMounted(() => {
+    // Populate the initial data
+    tableData.value = [
+        { name: 'John Doe' },
+        { name: 'Jane Doe' },
+        // Add more initial data as needed
+    ];
+
+    countryService.getCountries().then((data) => {
+        // Use data as needed
+    });
+
+    nodeService.getTreeNodes().then((data) => {
+        // Use data as needed
+    });
 });
-
-// Fungsi untuk mengambil data dari server
-const fetchData = async () => {
-    try {
-        const perPageValue = parseInt(perPage.value, 10);
-        if (isNaN(perPageValue) || perPageValue <= 0) {
-            console.error('Nilai perPage tidak valid.');
-            return;
-        }
-
-        const response = await axios.get(`http://localhost:9900/api/v1/level/get_all?limit=${perPageValue}&page=${currentPage.value}`);
-        tableData.value = response.data.data || [];
-        totalRecords.value = response.data.pages.total || 0;  // Update totalRecords
-    } catch (error) {
-        console.error('Error saat mengambil data:', error);
-    }
-};
-
-
-
-// Fungsi untuk menangani perubahan halaman
-const onPageChange = async (event) => {
-    currentPage.value = event.page + 1;
-    await fetchData();
-};
-
-const addNewItem = async () => {
-    try {
-        const newItem = { level_name: inputValue.value };
-        const response = await axios.post('http://localhost:9900/api/v1/level', newItem);
-
-        // Gunakan data dari respons untuk mengupdate tabel
-        tableData.value = [...tableData.value, response.data];
-
-        // Bersihkan formulir setelah menambahkan item
-        inputValue.value = '';
-    } catch (error) {
-        console.error('Error saat menambahkan item baru:', error);
-        // Tangani error sesuai kebutuhan (misalnya, tampilkan pesan ke pengguna)
-    }
-};
-
 const isModalOpen = ref(false);
 const isModalOpenDel = ref(false);
-const level_uuid = ref(null);
 
 // Function to open the modal
 const openModal = () => {
@@ -93,26 +58,12 @@ const closeModal = () => {
     isModalOpen.value = false;
 };
 
-const deleteData = async () => {
-    try {
-        console.log('Deleting data...', level_uuid.value);
-        if (level_uuid.value) {
-            const response = await axios.delete(`http://localhost:9900/api/v1/level/${level_uuid.value}`);
-            console.log('Data deleted successfully:', response.data);
-            closeModalDel();
-        }
-    } catch (error) {
-        console.error('Failed to delete data:', error);
-    }
-};
-
-const openModalDel = (uuid) => {
-    level_uuid.value = uuid;
+const openModalDel = () => {
     isModalOpenDel.value = true;
 };
 
+// Function to close the modal
 const closeModalDel = () => {
-    level_uuid.value = null;  // Reset level_uuid setelah menutup modal delete
     isModalOpenDel.value = false;
 };
 </script>
@@ -121,10 +72,12 @@ const closeModalDel = () => {
         <div class="modal-content">
             <!-- Close button -->
             <span class="close" @click="closeModal">&times;</span>
-            <h4>Edit Nama Anda:</h4>
+            <h4>Edit Data</h4>
             <div class="pembungkus-edit">
                 <div class="edit">
-                    <InputText v-model="inputUpdate" placeholder="Name" class="input-text"></InputText>
+                    <InputText v-model="inputUpdate" placeholder="Level" class="input-text"></InputText>
+                    <InputText v-model="inputUpdate" placeholder="Module" class="input-text"></InputText>
+                    <InputText v-model="inputUpdate" placeholder="Permissions" class="input-text"></InputText>
                 </div>
                 <div class="edit-button">
                     <Button label="Update" class="button-add" @click="addNewUpdate"></Button>
@@ -140,10 +93,10 @@ const closeModalDel = () => {
             <p>Apakah anda yakin akan menghapus data?</p>
             <div class="pembungkus-delete">
                 <div class="delete-yes">
-                    <Button label="Yes" class="button-add" @click="deleteData"></Button>
+                    <Button label="Yes" class="button-add" @click="addNewUpdate"></Button>
                 </div>
                 <div class="delete-no">
-                    <Button label="No" class="button-add" @click="closeModalDel"></Button>
+                    <Button label="No" class="button-add" @click="addNewUpdate"></Button>
                 </div>
             </div>
         </div>
@@ -153,7 +106,7 @@ const closeModalDel = () => {
             <div class="pembungkus1">
                 <div class="card">
                     <div>
-                        <h5>Create Data Level</h5>
+                        <h5>Create Data Access</h5>
                         <div class="grid formgrid">
                             <div class="col-12 mb-2">
                                 <InputText v-model="inputValue" placeholder="Name" class="input-text"></InputText>
@@ -214,17 +167,20 @@ const closeModalDel = () => {
                     </span>
                 </div>
                 <div class="data-table">
-                    <h5>Data Table Level</h5>
+                    <h5>Data Table Access</h5>
                     <div class="search-container">
                         <InputText v-model="inputSearch" placeholder="Search..." class="keyword"></InputText>
                         <Button icon="pi pi-search" class="search-button"></Button>
                     </div>
                 </div>
-                <DataTable :value="tableData" :paginator="true" :rows="perPage" :totalRecords="totalRecords"
-                    @onPage="onPageChange" class="tabel">
-                    <Column field="level_name" header="Name" class="name-column"></Column>
+                <DataTable :value="tableData" :paginator="true" :rows="10" class="tabel">
+                    <Column field="name" header="Level" class="name-column"></Column>
+                    <Column field="module_name" header="Module" class="name-column"></Column>
+                    <Column field="permissions_name" header="Permissions" class="name-column"></Column>
+                    <!-- Hapus atribut header untuk menghilangkan label "Actions" -->
                     <Column class="actions">
                         <template #body="slotProps">
+                            <!-- Wrapper untuk ikon-ikon -->
                             <div class="action-icons">
                                 <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon"
                                     @click="openModal"></Button>
@@ -506,31 +462,25 @@ const closeModalDel = () => {
     background-color: rgb(1, 162, 1);
     width: 100%;
 }
-
 .edit-button button:hover {
     background-color: rgb(2, 212, 2);
 }
-
 .pembungkus-delete {
     display: flex;
     align-items: center;
     justify-content: space-around;
 }
-
-.delete-yes .button-add {
+.delete-yes .button-add{
     width: 125px;
     background-color: red;
 }
-
 .delete-yes .button-add:hover {
     background-color: rgb(255, 101, 101);
 }
-
-.delete-no .button-add {
+.delete-no .button-add{
     width: 125px;
     background-color: rgb(1, 162, 1);
 }
-
 .delete-no .button-add:hover {
     background-color: rgb(2, 212, 2);
 }

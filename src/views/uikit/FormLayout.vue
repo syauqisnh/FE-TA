@@ -238,9 +238,9 @@ const closeModalDel = () => {
     right: 5px;
     top: 50%;
     transform: translateY(-50%);
-    background: orange;
+    background-color: transparent;
     border: none;
-    color: white;
+    color: grey;
 }
 
 .search-button:hover {
@@ -455,7 +455,11 @@ const closeModalDel = () => {
 }
 
 .edit-button button {
+    background-color: rgb(1, 162, 1);
     width: 100%;
+}
+.edit-button button:hover {
+    background-color: rgb(2, 212, 2);
 }
 .pembungkus-delete {
     display: flex;
@@ -464,9 +468,17 @@ const closeModalDel = () => {
 }
 .delete-yes .button-add{
     width: 125px;
+    background-color: red;
+}
+.delete-yes .button-add:hover {
+    background-color: rgb(255, 101, 101);
 }
 .delete-no .button-add{
     width: 125px;
+    background-color: rgb(1, 162, 1);
+}
+.delete-no .button-add:hover {
+    background-color: rgb(2, 212, 2);
 }
 </style>
 
