@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
@@ -16,6 +16,10 @@ const tableData = ref([]);
 const inputValue = ref('');
 const inputUpdate = ref('');
 const inputSearch = ref('');
+const levelNameFilters = ref([]);
+const sortOrder = ref('');  // '' means no sorting, 'desc' means descending, and 'asc' means ascending
+
+
 
 // const inputValue = ref('');
 const countryService = new CountryService();
@@ -23,20 +27,24 @@ const nodeService = new NodeService();
 
 const selectedLimit = ref(''); // default value
 const limits = ref([
-    { value: "lima-data", label: "5 Data Perhalaman" },
-    { value: "sepuluh-data", label: "10 Data Perhalaman" },
-    { value: "dualima-data", label: "25 Data Perhalaman" },
-    { value: "limapuluh-data", label: "50 Data Perhalaman" },
-    { value: "seratus-data", label: "100 Data Perhalaman" }
+    { value: 5, label: "5 Data Perhalaman" },
+    { value: 10, label: "10 Data Perhalaman" },
+    { value: 25, label: "25 Data Perhalaman" },
+    { value: 50, label: "50 Data Perhalaman" },
+    { value: 100, label: "100 Data Perhalaman" }
 ]);
+
 
 const perPage = ref(5);
 const totalRecords = ref(0);
 const currentPage = ref(1); // Tambahkan currentPage dan initialize dengan 1
 
 onMounted(async () => {
-    await fetchData(); // Panggil fungsi fetchData saat komponen dimount
+    await fetchData();
+    watch([levelNameFilters, sortOrder, selectedLimit], fetchData);
 });
+
+
 
 // Fungsi untuk mengambil data dari server
 const fetchData = async () => {
@@ -47,15 +55,29 @@ const fetchData = async () => {
             return;
         }
 
-        const response = await axios.get(`http://localhost:9900/api/v1/level/get_all?limit=${perPageValue}&page=${currentPage.value}`);
+        const searchQuery = inputSearch.value ? `&keyword=${encodeURIComponent(inputSearch.value)}` : '';
+        const filterQuery = levelNameFilters.value.length > 0 ? `&filter[level_name]=${encodeURIComponent(levelNameFilters.value.join(','))}` : '';
+        const sortQuery = sortOrder.value ? `&order[level_id]=${sortOrder.value}` : ''; // Modifikasi di sini
+        const response = await axios.get(`http://localhost:9900/api/v1/level/get_all?limit=${perPageValue}&page=${currentPage.value}${searchQuery}${filterQuery}${sortQuery}`);
+
         tableData.value = response.data.data || [];
-        totalRecords.value = response.data.pages.total || 0;  // Update totalRecords
+        totalRecords.value = response.data.pages.total || 0;
     } catch (error) {
         console.error('Error saat mengambil data:', error);
     }
 };
 
+const updateSortOrder = (order) => {
+    sortOrder.value = order;
+    fetchData();
+};
 
+
+const searchData = async () => {
+    // Reset currentPage to 1 when performing a new search
+    currentPage.value = 1;
+    await fetchData();
+};
 
 // Fungsi untuk menangani perubahan halaman
 const onPageChange = async (event) => {
@@ -170,29 +192,32 @@ const closeModalDel = () => {
                             <h4>Filter</h4>
                             <div class="filter-input">
                                 <div>
-                                    <input type="checkbox" name="checkbox-items" id="checkbox-items">
+                                    <input type="checkbox" v-model="levelNameFilters" value="Super administrator">
                                     <span>Super administrator</span>
                                 </div>
                                 <div>
-                                    <input type="checkbox" name="checkbox-items" id="checkbox-items">
+                                    <input type="checkbox" v-model="levelNameFilters" value="Administrator">
                                     <span>Administrator</span>
                                 </div>
                                 <div>
-                                    <input type="checkbox" name="checkbox-items" id="checkbox-items">
+                                    <input type="checkbox" v-model="levelNameFilters" value="Customer">
                                     <span>Customer</span>
                                 </div>
+
                             </div>
                         </div>
                         <div class="dropdown-order">
                             <h4>Urutkan Data:</h4>
                             <div class="order-input">
                                 <div>
-                                    <input type="radio" name="radio-items" id="radio-items">
-                                    <span>Berdasarkan data terakhir<br>ditambahkan (Z-A)</span>
+                                    <input type="radio" name="radio-items" id="radio-items-desc" value="desc"
+                                        v-model="sortOrder">
+                                    <span>Berdasarkan data terakhir ditambahkan (Z-A)</span>
                                 </div>
                                 <div>
-                                    <input type="radio" name="radio-items" id="radio-items">
-                                    <span>Berdasarkan data pertama<br>ditambahkan (A-Z)</span>
+                                    <input type="radio" name="radio-items" id="radio-items-asc" value="asc"
+                                        v-model="sortOrder">
+                                    <span>Berdasarkan data pertama ditambahkan (A-Z)</span>
                                 </div>
                             </div>
                         </div>
@@ -217,7 +242,7 @@ const closeModalDel = () => {
                     <h5>Data Table Level</h5>
                     <div class="search-container">
                         <InputText v-model="inputSearch" placeholder="Search..." class="keyword"></InputText>
-                        <Button icon="pi pi-search" class="search-button"></Button>
+                        <Button icon="pi pi-search" class="search-button" @click="searchData"></Button>
                     </div>
                 </div>
                 <DataTable :value="tableData" :paginator="true" :rows="perPage" :totalRecords="totalRecords"
