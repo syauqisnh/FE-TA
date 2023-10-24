@@ -25,7 +25,7 @@ const sortOrder = ref('');  // '' means no sorting, 'desc' means descending, and
 const countryService = new CountryService();
 const nodeService = new NodeService();
 
-const selectedLimit = ref(''); // default value
+const selectedLimit = ref('5'); // default value
 const limits = ref([
     { value: 5, label: "5 Data Perhalaman" },
     { value: 10, label: "10 Data Perhalaman" },
@@ -35,7 +35,7 @@ const limits = ref([
 ]);
 
 
-const perPage = ref(5);
+const perPage = ref(selectedLimit);
 const totalRecords = ref(0);
 const currentPage = ref(1); // Tambahkan currentPage dan initialize dengan 1
 
