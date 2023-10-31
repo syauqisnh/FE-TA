@@ -7,19 +7,15 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Dropdown from 'primevue/dropdown';
 
-
 import CountryService from '@/service/CountryService';
 import NodeService from '@/service/NodeService';
-
 
 const tableData = ref([]);
 const inputValue = ref('');
 const inputUpdate = ref('');
 const inputSearch = ref('');
 const levelNameFilters = ref([]);
-const sortOrder = ref('');  // '' means no sorting, 'desc' means descending, and 'asc' means ascending
-
-
+const sortOrder = ref(''); // '' means no sorting, 'desc' means descending, and 'asc' means ascending
 
 // const inputValue = ref('');
 const countryService = new CountryService();
@@ -27,11 +23,44 @@ const nodeService = new NodeService();
 
 const selectedLimit = ref('5'); // default value
 const limits = ref([
-    { value: 5, label: "5 Data Perhalaman" },
-    { value: 10, label: "10 Data Perhalaman" },
-    { value: 25, label: "25 Data Perhalaman" },
-    { value: 50, label: "50 Data Perhalaman" },
-    { value: 100, label: "100 Data Perhalaman" }
+    { value: 5, label: '5 Data Perhalaman' },
+    { value: 10, label: '10 Data Perhalaman' },
+    { value: 25, label: '25 Data Perhalaman' },
+    { value: 50, label: '50 Data Perhalaman' },
+    { value: 100, label: '100 Data Perhalaman' }
+]);
+const selectedorder1 = ref(''); // default value
+const order1 = ref([
+    { value: 'asc', label: 'asc' },
+    { value: 'desc', label: 'desc' }
+]);
+const selectedorder2 = ref(''); // default value
+const order2 = ref([
+    { value: 'asc', label: 'asc' },
+    { value: 'desc', label: 'desc' }
+]);
+const selectedorder3 = ref(''); // default value
+const order3 = ref([
+    { value: 'asc', label: 'asc' },
+    { value: 'desc', label: 'desc' }
+]);
+const selectedorder4 = ref(''); // default value
+const order4 = ref([
+    { value: 'asc', label: 'asc' },
+    { value: 'desc', label: 'desc' }
+]);
+const multiselectValue = ref(null);
+const multiselectValues = ref([
+    { name: 'Australia', code: 'AU' },
+    { name: 'Brazil', code: 'BR' },
+    { name: 'China', code: 'CN' },
+    { name: 'Egypt', code: 'EG' },
+    { name: 'France', code: 'FR' },
+    { name: 'Germany', code: 'DE' },
+    { name: 'India', code: 'IN' },
+    { name: 'Japan', code: 'JP' },
+    { name: 'Spain', code: 'ES' },
+    { name: 'United States', code: 'US' }
 ]);
 const selectedpage = ref('1'); // default value
 
@@ -42,19 +71,17 @@ const currentPage = ref(selectedpage); // Tambahkan currentPage dan initialize d
 
 // Computed property to dynamically generate the list of pages
 const dynamicPageList = computed(() => {
-  const totalPages = Math.ceil(totalRecords.value / perPage.value);
-  return Array.from({ length: totalPages }, (_, index) => index + 1).map(value => ({ value, label: value.toString() }));
+    const totalPages = Math.ceil(totalRecords.value / perPage.value);
+    return Array.from({ length: totalPages }, (_, index) => index + 1).map((value) => ({ value, label: value.toString() }));
 });
 watch([totalRecords, perPage], () => {
-  console.log('Total pages:', dynamicPageList.value);
+    console.log('Total pages:', dynamicPageList.value);
 });
 
 onMounted(async () => {
     await fetchData();
     watch([levelNameFilters, sortOrder, selectedLimit], fetchData);
 });
-
-
 
 // Fungsi untuk mengambil data dari server
 const fetchData = async () => {
@@ -82,7 +109,6 @@ const updateSortOrder = (order) => {
     fetchData();
 };
 
-
 const searchData = async () => {
     // Reset currentPage to 1 when performing a new search
     currentPage.value = 1;
@@ -91,10 +117,10 @@ const searchData = async () => {
 
 // Fungsi untuk menangani perubahan halaman
 const onPageChange = (newPage) => {
-  // Handle the page change, for example, fetch data for the new page
-  console.log(`Page changed to ${newPage}`);
-  // fetchData(newPage);
-  selectedpage.value = newPage;
+    // Handle the page change, for example, fetch data for the new page
+    console.log(`Page changed to ${newPage}`);
+    // fetchData(newPage);
+    selectedpage.value = newPage;
 };
 
 const addNewItem = async () => {
@@ -146,7 +172,7 @@ const openModalDel = (uuid) => {
 };
 
 const closeModalDel = () => {
-    level_uuid.value = null;  // Reset level_uuid setelah menutup modal delete
+    level_uuid.value = null; // Reset level_uuid setelah menutup modal delete
     isModalOpenDel.value = false;
 };
 </script>
@@ -182,7 +208,7 @@ const closeModalDel = () => {
             </div>
         </div>
     </div>
-    <div class="grid p-fluid">
+    <!-- <div class="grid p-fluid">
         <div class="col-12 md:col-6">
             <div class="pembungkus1">
                 <div class="card">
@@ -236,42 +262,62 @@ const closeModalDel = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
-        <div class="col-12 md:col-6">
-        </div>
-        <div class="col-12">
-            <div class="card">
-                <div class="drop">
-                    <span class="p-float-label">
-                        <Dropdown class="limit-drop" v-model="selectedLimit" :options="limits" optionLabel="label"
-                            optionValue="value">
-                        </Dropdown>
-                        <label for="dropdown">Limit Data</label>
-                    </span>
-                </div>
-                <div class="data-table">
-                    <h5>Data Table Level</h5>
-                    <div class="search-container">
-                        <InputText v-model="inputSearch" placeholder="Search..." class="keyword"></InputText>
-                        <Button icon="pi pi-search" class="search-button" @click="searchData"></Button>
-                    </div>
-                </div>
-                <DataTable :value="tableData" :paginator="true" :rows="perPage" :totalRecords="totalRecords"
-                    @onPage="onPageChange" class="tabel">
-                    <Column field="level_name" header="Name" class="name-column"></Column>
-                    <Column class="actions">
-                        <template #body="slotProps">
-                            <div class="action-icons">
-                                <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon"
-                                    @click="openModal"></Button>
-                                <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon"
-                                    @click="openModalDel"></Button>
+    <div class="col-12 md:col-6"></div>
+    <div class="col-12">
+        <div class="card">
+            <Toolbar>
+                <template v-slot:start>
+                    <Dropdown class="limit-drop" v-model="selectedLimit" :options="limits" optionLabel="label" optionValue="value"> </Dropdown>
+                    <label for="dropdown">Limit Data</label>
+                    <Dropdown class="limit-drop" v-model="selectedorder1" :options="order1" optionLabel="label" optionValue="value"> </Dropdown>
+                    <label for="dropdown">urutan data berdasarkan waktu</label>
+                    <Dropdown class="limit-drop" v-model="selectedorder2" :options="order2" optionLabel="label" optionValue="value"> </Dropdown>
+                    <label for="dropdown">urutan data berdasarkan testimonial</label>
+                    <Dropdown class="limit-drop" v-model="selectedorder3" :options="order3" optionLabel="label" optionValue="value"> </Dropdown>
+                    <label for="dropdown">urutan data berdasarkan customer</label>
+                    <Dropdown class="limit-drop" v-model="selectedorder4" :options="order4" optionLabel="label" optionValue="value"> </Dropdown>
+                    <label for="dropdown">urutan data berdasarkan bussiness</label>
+                    <MultiSelect v-model="multiselectValue" :options="multiselectValues" optionLabel="name" placeholder="Select Countries" :filter="true">
+                        <label for="dropdown">filter data</label>
+                        <template #value="slotProps">
+                            <div class="inline-flex align-items-center py-1 px-2 bg-primary text-primary border-round mr-2" v-for="option of slotProps.value" :key="option.code">
+                                <div>{{ option.name }}</div>
+                            </div>
+                            <template v-if="!slotProps.value || slotProps.value.length === 0">
+                                <div class="p-1">filter</div>
+                            </template>
+                        </template>
+                        <template #option="slotProps">
+                            <div class="flex align-items-center">
+                                <div>{{ slotProps.option.name }}</div>
                             </div>
                         </template>
-                    </Column>
-                </DataTable>
+                    </MultiSelect>
+                </template>
+            </Toolbar>
+
+            <div class="data-table">
+                <h5>Data Table Level</h5>
+                <div class="search-container">
+                    <InputText v-model="inputSearch" placeholder="Search..." class="keyword"></InputText>
+                    <Button icon="pi pi-search" class="search-button" @click="searchData"></Button>
+                </div>
             </div>
+            <DataTable :value="tableData" :paginator="true" :rows="10" :totalRecords="totalRecords" @onPage="onPageChange" class="tabel">
+                <Column field="tbl_testimonial" header="testimonial" class="name-column" ></Column>
+                <Column field="tbl_customer" header="customer" class="name-column" ></Column>
+                <Column field="tbl_bussiness" header="bussiness" class="name-column" ></Column>
+                <Column class="actions">
+                    <template #body="slotProps">
+                        <div class="action-icons">
+                            <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="openModal"></Button>
+                            <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="openModalDel"></Button>
+                        </div>
+                    </template>
+                </Column>
+            </DataTable>
         </div>
     </div>
 </template>
@@ -354,7 +400,7 @@ const closeModalDel = () => {
 
 .p-edit-icon {
     margin-right: 5px;
-    background-color: #007BFF;
+    background-color: #007bff;
 
     &:hover {
         background-color: #0056b3;
@@ -363,7 +409,7 @@ const closeModalDel = () => {
 
 .p-delete-icon {
     margin-left: 5px;
-    background-color: #FF3A3A;
+    background-color: #ff3a3a;
 
     &:hover {
         background-color: #b32f2f;
@@ -397,7 +443,7 @@ const closeModalDel = () => {
 }
 
 .dropdown select:hover {
-    border-color: #007BFF;
+    border-color: #007bff;
 }
 
 .pembungkus1 {
@@ -407,7 +453,7 @@ const closeModalDel = () => {
 
 .dropdown select:focus {
     outline: none;
-    border-color: #007BFF;
+    border-color: #007bff;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
@@ -572,4 +618,3 @@ const closeModalDel = () => {
     background-color: rgb(2, 212, 2);
 }
 </style>
-
