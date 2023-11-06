@@ -62,7 +62,7 @@ const checked = ref(false);
                     style="padding: 1rem" v-model="cpassword" />
             </div>
             <div class="masuk-2">
-                <button>Selesai</button>
+                <button @click.prevent="handleLogin">Selesai</button>
             </div>
             <div class="register-2">
                 <p>Sudah punya akun? <a href="#" @click.prevent="handleLogin">Login</a></p>

@@ -70,7 +70,7 @@ const logoUrl = computed(() => {
                     <br> fitur yang ada di web company profile. Mulai dari pemantauan data pengguna, pengaturan<br> 
                     konten, hingga integrasi dengan platform lain, semua dapat diakses dengan mudah.</p>
                 <div class="get">
-                    <button>Get Started</button>
+                    <button @click="goToLogin">Get Started</button>
                 </div>
             </div>
             <div class="gambar-1">

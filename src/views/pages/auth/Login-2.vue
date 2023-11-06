@@ -9,10 +9,12 @@ import '../css/login.css';
 // Siapkan router
 const router = useRouter();
 
-// Tentukan metode handleRegister Anda
 const handleRegister = () => {
-    // Gunakan router.push untuk navigasi ke rute register
     router.push('/auth/register');
+};
+
+const handleDashboard = () => {
+    router.push('/');
 };
 
 const logoUrl = computed(() => {
@@ -61,7 +63,7 @@ const checked = ref(false);
                 </div>
             </div>
             <div class="masuk-1">
-                <button @click="handleLogin">Masuk</button>
+                <button @click="handleDashboard">Masuk</button>
             </div>
             <div class="register-1">
                 <p>Belum punya akun? <a href="#" @click.prevent="handleRegister">Daftar</a></p>
