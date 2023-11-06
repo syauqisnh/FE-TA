@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import axios from 'axios';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
@@ -17,8 +17,7 @@ const inputValue = ref('');
 const inputUpdate = ref('');
 const inputSearch = ref('');
 const levelNameFilters = ref([]);
-const sortOrder = ref('');  // '' means no sorting, 'desc' means descending, and 'asc' means ascending
-
+const sortOrder = ref(''); 
 
 
 // const inputValue = ref('');
@@ -33,11 +32,22 @@ const limits = ref([
     { value: 50, label: "50 Data Perhalaman" },
     { value: 100, label: "100 Data Perhalaman" }
 ]);
+const selectedpage = ref('1'); // default value
 
 
 const perPage = ref(selectedLimit);
 const totalRecords = ref(0);
-const currentPage = ref(1); // Tambahkan currentPage dan initialize dengan 1
+
+const currentPage = ref(selectedpage); // Tambahkan currentPage dan initialize dengan 1
+
+// Computed property to dynamically generate the list of pages
+const dynamicPageList = computed(() => {
+  const totalPages = Math.ceil(totalRecords.value / perPage.value);
+  return Array.from({ length: totalPages }, (_, index) => index + 1).map(value => ({ value, label: value.toString() }));
+});
+watch([totalRecords, perPage], () => {
+  console.log('Total pages:', dynamicPageList.value);
+});
 
 onMounted(async () => {
     await fetchData();
@@ -80,9 +90,11 @@ const searchData = async () => {
 };
 
 // Fungsi untuk menangani perubahan halaman
-const onPageChange = async (event) => {
-    currentPage.value = event.page + 1;
-    await fetchData();
+const onPageChange = (newPage) => {
+  // Handle the page change, for example, fetch data for the new page
+  console.log(`Page changed to ${newPage}`);
+  // fetchData(newPage);
+  selectedpage.value = newPage;
 };
 
 const addNewItem = async () => {
@@ -103,7 +115,7 @@ const addNewItem = async () => {
 
 const isModalOpen = ref(false);
 const isModalOpenDel = ref(false);
-const level_uuid = ref(null);
+const level_uuid = ref('level_uuid.value');
 
 // Function to open the modal
 const openModal = () => {
@@ -162,7 +174,7 @@ const closeModalDel = () => {
             <p>Apakah anda yakin akan menghapus data?</p>
             <div class="pembungkus-delete">
                 <div class="delete-yes">
-                    <Button label="Yes" class="button-add" @click="deleteData"></Button>
+                    <Button label="Yes" class="button-add" @click="deleteData(level_uuid.value)"></Button>
                 </div>
                 <div class="delete-no">
                     <Button label="No" class="button-add" @click="closeModalDel"></Button>

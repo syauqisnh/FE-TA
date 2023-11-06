@@ -1,22 +1,33 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
+import axios from 'axios';
+import InputText from 'primevue/inputtext';
+import Button from 'primevue/button';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Dropdown from 'primevue/dropdown';
+
 import CountryService from '@/service/CountryService';
 import NodeService from '@/service/NodeService';
 
 const tableData = ref([]);
-const selectedRkow = ref(null);
-
 const inputValue = ref('');
+const inputUpdate = ref('');
+const inputSearch = ref('');
+const levelNameFilters = ref([]);
+const sortOrder = ref(''); // '' means no sorting, 'desc' means descending, and 'asc' means ascending
+
+// const inputValue = ref('');
 const countryService = new CountryService();
 const nodeService = new NodeService();
 
-const selectedLimit = ref(''); // default value
+const selectedLimit = ref('5'); // default value
 const limits = ref([
-    { value: 'lima-data', label: '5' },
-    { value: 'sepuluh-data', label: '10' },
-    { value: 'dualima-data', label: '25' },
-    { value: 'limapuluh-data', label: '50' },
-    { value: 'seratus-data', label: '100' }
+    { value: 5, label: '5 Data Perhalaman' },
+    { value: 10, label: '10 Data Perhalaman' },
+    { value: 25, label: '25 Data Perhalaman' },
+    { value: 50, label: '50 Data Perhalaman' },
+    { value: 100, label: '100 Data Perhalaman' }
 ]);
 const selectedorder1 = ref(''); // default value
 const order1 = ref([
@@ -51,32 +62,86 @@ const multiselectValues = ref([
     { name: 'Spain', code: 'ES' },
     { name: 'United States', code: 'US' }
 ]);
-const addNewItem = () => {
-    const newItem = { name: inputValue.value };
-    tableData.value = [...tableData.value, newItem];
+const selectedpage = ref('1'); // default value
 
-    // Clear the form after adding the item
-    inputValue.value = '';
+const perPage = ref(selectedLimit);
+const totalRecords = ref(0);
+
+const currentPage = ref(selectedpage); // Tambahkan currentPage dan initialize dengan 1
+
+// Computed property to dynamically generate the list of pages
+const dynamicPageList = computed(() => {
+    const totalPages = Math.ceil(totalRecords.value / perPage.value);
+    return Array.from({ length: totalPages }, (_, index) => index + 1).map((value) => ({ value, label: value.toString() }));
+});
+watch([totalRecords, perPage], () => {
+    console.log('Total pages:', dynamicPageList.value);
+});
+
+onMounted(async () => {
+    await fetchData();
+    watch([levelNameFilters, sortOrder, selectedLimit], fetchData);
+});
+
+// Fungsi untuk mengambil data dari server
+const fetchData = async () => {
+    try {
+        const perPageValue = parseInt(perPage.value, 10);
+        if (isNaN(perPageValue) || perPageValue <= 0) {
+            console.error('Nilai perPage tidak valid.');
+            return;
+        }
+
+        const searchQuery = inputSearch.value ? `&keyword=${encodeURIComponent(inputSearch.value)}` : '';
+        const filterQuery = levelNameFilters.value.length > 0 ? `&filter[level_name]=${encodeURIComponent(levelNameFilters.value.join(','))}` : '';
+        const sortQuery = sortOrder.value ? `&order[level_id]=${sortOrder.value}` : ''; // Modifikasi di sini
+        const response = await axios.get(`http://localhost:9900/api/v1/level/get_all?limit=${perPageValue}&page=${currentPage.value}${searchQuery}${filterQuery}${sortQuery}`);
+
+        tableData.value = response.data.data || [];
+        totalRecords.value = response.data.pages.total || 0;
+    } catch (error) {
+        console.error('Error saat mengambil data:', error);
+    }
 };
 
-onMounted(() => {
-    // Populate the initial data
-    tableData.value = [
-        { name: 'John Doe' },
-        { name: 'Jane Doe' }
-        // Add more initial data as needed
-    ];
+const updateSortOrder = (order) => {
+    sortOrder.value = order;
+    fetchData();
+};
 
-    countryService.getCountries().then((data) => {
-        // Use data as needed
-    });
+const searchData = async () => {
+    // Reset currentPage to 1 when performing a new search
+    currentPage.value = 1;
+    await fetchData();
+};
 
-    nodeService.getTreeNodes().then((data) => {
-        // Use data as needed
-    });
-});
+// Fungsi untuk menangani perubahan halaman
+const onPageChange = (newPage) => {
+    // Handle the page change, for example, fetch data for the new page
+    console.log(`Page changed to ${newPage}`);
+    // fetchData(newPage);
+    selectedpage.value = newPage;
+};
+
+const addNewItem = async () => {
+    try {
+        const newItem = { level_name: inputValue.value };
+        const response = await axios.post('http://localhost:9900/api/v1/level', newItem);
+
+        // Gunakan data dari respons untuk mengupdate tabel
+        tableData.value = [...tableData.value, response.data];
+
+        // Bersihkan formulir setelah menambahkan item
+        inputValue.value = '';
+    } catch (error) {
+        console.error('Error saat menambahkan item baru:', error);
+        // Tangani error sesuai kebutuhan (misalnya, tampilkan pesan ke pengguna)
+    }
+};
+
 const isModalOpen = ref(false);
 const isModalOpenDel = ref(false);
+const level_uuid = ref('level_uuid.value');
 
 // Function to open the modal
 const openModal = () => {
@@ -88,12 +153,26 @@ const closeModal = () => {
     isModalOpen.value = false;
 };
 
-const openModalDel = () => {
+const deleteData = async () => {
+    try {
+        console.log('Deleting data...', level_uuid.value);
+        if (level_uuid.value) {
+            const response = await axios.delete(`http://localhost:9900/api/v1/level/${level_uuid.value}`);
+            console.log('Data deleted successfully:', response.data);
+            closeModalDel();
+        }
+    } catch (error) {
+        console.error('Failed to delete data:', error);
+    }
+};
+
+const openModalDel = (uuid) => {
+    level_uuid.value = uuid;
     isModalOpenDel.value = true;
 };
 
-// Function to close the modal
 const closeModalDel = () => {
+    level_uuid.value = null; // Reset level_uuid setelah menutup modal delete
     isModalOpenDel.value = false;
 };
 </script>
@@ -102,12 +181,10 @@ const closeModalDel = () => {
         <div class="modal-content">
             <!-- Close button -->
             <span class="close" @click="closeModal">&times;</span>
-            <h4>Edit Data</h4>
+            <h4>Edit Nama Anda:</h4>
             <div class="pembungkus-edit">
                 <div class="edit">
-                    <InputText v-model="inputUpdate" placeholder="Level" class="input-text"></InputText>
-                    <InputText v-model="inputUpdate" placeholder="Module" class="input-text"></InputText>
-                    <InputText v-model="inputUpdate" placeholder="Permissions" class="input-text"></InputText>
+                    <InputText v-model="inputUpdate" placeholder="Name" class="input-text"></InputText>
                 </div>
                 <div class="edit-button">
                     <Button label="Update" class="button-add" @click="addNewUpdate"></Button>
@@ -123,10 +200,10 @@ const closeModalDel = () => {
             <p>Apakah anda yakin akan menghapus data?</p>
             <div class="pembungkus-delete">
                 <div class="delete-yes">
-                    <Button label="Yes" class="button-add" @click="addNewUpdate"></Button>
+                    <Button label="Yes" class="button-add" @click="deleteData(level_uuid.value)"></Button>
                 </div>
                 <div class="delete-no">
-                    <Button label="No" class="button-add" @click="addNewUpdate"></Button>
+                    <Button label="No" class="button-add" @click="closeModalDel"></Button>
                 </div>
             </div>
         </div>
@@ -136,7 +213,7 @@ const closeModalDel = () => {
             <div class="pembungkus1">
                 <div class="card">
                     <div>
-                        <h5>Create Data Access</h5>
+                        <h5>Create Data Level</h5>
                         <div class="grid formgrid">
                             <div class="col-12 mb-2">
                                 <InputText v-model="inputValue" placeholder="Name" class="input-text"></InputText>
@@ -146,42 +223,45 @@ const closeModalDel = () => {
                             </div>
                         </div>
                     </div>
-                </div> -->
-    <!-- <div class="card">
+                </div>
+                <div class="card">
                     <div class="dropdown">
                         <div class="filter-section">
                             <h4>Filter</h4>
                             <div class="filter-input">
                                 <div>
-                                    <input type="checkbox" name="checkbox-items" id="checkbox-items" />
+                                    <input type="checkbox" v-model="levelNameFilters" value="Super administrator">
                                     <span>Super administrator</span>
                                 </div>
                                 <div>
-                                    <input type="checkbox" name="checkbox-items" id="checkbox-items" />
+                                    <input type="checkbox" v-model="levelNameFilters" value="Administrator">
                                     <span>Administrator</span>
                                 </div>
                                 <div>
-                                    <input type="checkbox" name="checkbox-items" id="checkbox-items" />
+                                    <input type="checkbox" v-model="levelNameFilters" value="Customer">
                                     <span>Customer</span>
                                 </div>
+
                             </div>
                         </div>
                         <div class="dropdown-order">
                             <h4>Urutkan Data:</h4>
                             <div class="order-input">
                                 <div>
-                                    <input type="radio" name="radio-items" id="radio-items" />
-                                    <span>Berdasarkan data terakhir<br />ditambahkan (Z-A)</span>
+                                    <input type="radio" name="radio-items" id="radio-items-desc" value="desc"
+                                        v-model="sortOrder">
+                                    <span>Berdasarkan data terakhir ditambahkan (Z-A)</span>
                                 </div>
                                 <div>
-                                    <input type="radio" name="radio-items" id="radio-items" />
-                                    <span>Berdasarkan data pertama<br />ditambahkan (A-Z)</span>
+                                    <input type="radio" name="radio-items" id="radio-items-asc" value="asc"
+                                        v-model="sortOrder">
+                                    <span>Berdasarkan data pertama ditambahkan (A-Z)</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div> -->
-    <!-- </div>
+                </div>
+            </div>
         </div> -->
 
     <div class="col-12 md:col-6"></div>
@@ -194,11 +274,11 @@ const closeModalDel = () => {
                     <Dropdown class="limit-drop" v-model="selectedorder1" :options="order1" optionLabel="label" optionValue="value"> </Dropdown>
                     <label for="dropdown">urutan data berdasarkan waktu</label>
                     <Dropdown class="limit-drop" v-model="selectedorder2" :options="order2" optionLabel="label" optionValue="value"> </Dropdown>
-                    <label for="dropdown">urutan data berdasarkan level</label>
+                    <label for="dropdown">urutan data berdasarkan testimonial</label>
                     <Dropdown class="limit-drop" v-model="selectedorder3" :options="order3" optionLabel="label" optionValue="value"> </Dropdown>
-                    <label for="dropdown">urutan data berdasarkan module</label>
+                    <label for="dropdown">urutan data berdasarkan customer</label>
                     <Dropdown class="limit-drop" v-model="selectedorder4" :options="order4" optionLabel="label" optionValue="value"> </Dropdown>
-                    <label for="dropdown">urutan data berdasarkan permission</label>
+                    <label for="dropdown">urutan data berdasarkan bussiness</label>
                     <MultiSelect v-model="multiselectValue" :options="multiselectValues" optionLabel="name" placeholder="Select Countries" :filter="true">
                         <label for="dropdown">filter data</label>
                         <template #value="slotProps">
@@ -217,21 +297,20 @@ const closeModalDel = () => {
                     </MultiSelect>
                 </template>
             </Toolbar>
+
             <div class="data-table">
-                <h5>Data Table Access</h5>
+                <h5>Data Table Level</h5>
                 <div class="search-container">
                     <InputText v-model="inputSearch" placeholder="Search..." class="keyword"></InputText>
-                    <Button icon="pi pi-search" class="search-button"></Button>
+                    <Button icon="pi pi-search" class="search-button" @click="searchData"></Button>
                 </div>
             </div>
-            <DataTable :value="tableData" :paginator="true" :rows="10" class="tabel">
-                <Column field="name" header="Level" class="name-column"></Column>
-                <Column field="module_name" header="Module" class="name-column"></Column>
-                <Column field="permissions_name" header="Permissions" class="name-column"></Column>
-                <!-- Hapus atribut header untuk menghilangkan label "Actions" -->
+            <DataTable :value="tableData" :paginator="true" :rows="10" :totalRecords="totalRecords" @onPage="onPageChange" class="tabel">
+                <Column field="tbl_testimonial" header="testimonial" class="name-column" ></Column>
+                <Column field="tbl_customer" header="customer" class="name-column" ></Column>
+                <Column field="tbl_bussiness" header="bussiness" class="name-column" ></Column>
                 <Column class="actions">
                     <template #body="slotProps">
-                        <!-- Wrapper untuk ikon-ikon -->
                         <div class="action-icons">
                             <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="openModal"></Button>
                             <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="openModalDel"></Button>
@@ -510,29 +589,32 @@ const closeModalDel = () => {
     background-color: rgb(1, 162, 1);
     width: 100%;
 }
+
 .edit-button button:hover {
     background-color: rgb(2, 212, 2);
 }
+
 .pembungkus-delete {
     display: flex;
     align-items: center;
     justify-content: space-around;
 }
+
 .delete-yes .button-add {
     width: 125px;
     background-color: red;
 }
+
 .delete-yes .button-add:hover {
     background-color: rgb(255, 101, 101);
 }
+
 .delete-no .button-add {
     width: 125px;
     background-color: rgb(1, 162, 1);
 }
+
 .delete-no .button-add:hover {
     background-color: rgb(2, 212, 2);
-}
-.filter-table {
-    display: inline-flexbox;
 }
 </style>
