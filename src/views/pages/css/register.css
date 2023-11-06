@@ -1,0 +1,94 @@
+.container-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Bagi container menjadi dua kolom */
+    align-items: center;
+    height: 100vh;
+}
+
+.gambar-login-2 {
+    background-color: orange;
+    height: 100%;
+    width: 100%;
+}
+
+.konten-2 {
+    margin-top: 50px;
+}
+
+.gambar-login-2 h1 {
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.login-2 {
+    margin: auto;
+    padding: 20px;
+    background-color: white;
+    height: 650px;
+    width: 470px;
+    border-radius: 30px;
+}
+.gambar-bekantan-2 {
+    text-align: center;
+}
+.gambar-bekantan-2 img {
+    height: 70px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.register-2 {
+    font-size: 17px;
+    margin-top: 30px;
+    text-align: center;
+}
+.register-2 a {
+    font-weight: bold;
+    color: orange;
+}
+.judul-login-2 {
+    margin-bottom: 25px;
+}
+.judul-login-2 h2 {
+    font-weight: 400;
+}
+.email-input-2 {
+    height: 50px;
+    width: 100%;
+    border-radius: 5px;
+}
+.password-input-2 {
+    height: 50px;
+    width: 100%;
+    border-radius: 5px;
+}
+.cekpw-2 {
+    margin-bottom: 25px;
+}
+.masuk-2 {
+    margin-bottom: 20px;
+}
+.masuk-2 button {
+    width: 100%;
+    height: 50px;
+    background-color: orange;
+    border: none;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+}
+.masuk-2 button:hover {
+    background-color: rgb(255, 188, 65);
+    transition: 0.5s;
+}
+.pembungkus-2 {
+    display: flex;
+    justify-content: space-between;
+}
+.cekpw-2 input {
+    transform: scale(1.5);  
+    margin-right: 10px;
+}

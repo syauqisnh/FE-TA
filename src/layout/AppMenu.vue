@@ -57,6 +57,11 @@ const model = ref([
                 to: '/landing'
             },
             {
+                label: 'Landing-2',
+                icon: 'pi pi-fw pi-globe',
+                to: '/Landing-2'
+            },
+            {
                 label: 'Auth',
                 icon: 'pi pi-fw pi-user',
                 items: [
@@ -64,6 +69,16 @@ const model = ref([
                         label: 'Login',
                         icon: 'pi pi-fw pi-sign-in',
                         to: '/auth/login'
+                    },
+                    {
+                        label: 'Login-2',
+                        icon: 'pi pi-fw pi-sign-in',
+                        to: '/auth/login-2'
+                    },
+                    {
+                        label: 'register',
+                        icon: 'pi pi-fw pi-sign-in',
+                        to: '/auth/register'
                     },
                     {
                         label: 'Error',

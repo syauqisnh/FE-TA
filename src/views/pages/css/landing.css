@@ -1,0 +1,89 @@
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background-color: white;
+    height: 100px;
+}
+.logo {
+    height: 65px;
+}
+.fitur .list {
+    display: flex;
+}
+.list {
+    list-style: none;
+}
+.list li a {
+    margin-left: 50px;
+    margin-right: 50px;
+    color: rgb(107, 107, 107);
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.list li a:hover {
+    color: orange;
+}
+
+.login-reg {
+    display: flex;
+    align-items: center;
+}
+
+.login button {
+    margin-right: 40px;
+    height: 40px;
+    width: 90px;
+    border: 1px solid orange;
+    color: orange;
+    background-color: transparent;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.register button {
+    margin-right: 40px;
+    height: 40px;
+    width: 90px;
+    border: none;
+    color: white;
+    background-color: orange;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.isi-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 87vh;
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, rgb(238, 239, 175) 0%, rgb(195, 227, 250) 100%);
+}
+
+.get button {
+    height: 50px;
+    width: 120px;
+    background-color: orange;
+    border: none;
+    color: white;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.content-text h1 {
+    font-weight: bold;
+}
+
+.content-text p {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 40px;
+}
+
+.gambar-1 img {
+    height: 300px;
+}
