@@ -156,6 +156,11 @@ const router = createRouter({
                     path: '/documentation',
                     name: 'documentation',
                     component: () => import('@/views/utilities/Documentation.vue')
+                },
+                {
+                    path: '/Edit-profile',
+                    name: 'Edit-profile',
+                    component: () => import('@/views/utilities/Edit-profile.vue')
                 }
             ]
         },

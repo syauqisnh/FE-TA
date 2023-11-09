@@ -1,0 +1,18 @@
+.save button {
+    background-color: rgb(117, 195, 0);
+    color: white;
+    border: none;
+    height: 50px;
+    width: 100%;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 17px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+.save button:hover {
+    background-color: rgb(139, 230, 2);
+}
+.konten label {
+    font-size: 17px;
+}
