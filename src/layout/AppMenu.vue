@@ -9,13 +9,13 @@ const model = ref([
         items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
     },
     {
-        label: 'Data Master',
+        label: '',
         items: [
             { label: 'Data Level', icon: 'pi pi-fw pi-server', to: '/uikit/Data-level' },
             { label: 'Data Module', icon: 'pi pi-fw pi-server', to: '/uikit/formlayout' },
             { label: 'Data Permission', icon: 'pi pi-fw pi-server', to: '/uikit/Data-permission' },
             { label: 'Data Access', icon: 'pi pi-fw pi-server', to: '/uikit/Data-access' },
-            { label: 'Data media', icon: 'pi pi-fw pi-server', to: '/uikit/Data-media' },
+            { label: 'Data Media', icon: 'pi pi-fw pi-server', to: '/uikit/Data-media' },
             // { label: 'Data Module', icon: 'pi pi-fw pi-bookmark', to: '/uikit/floatlabel' },
             // { label: 'Data Permission', icon: 'pi pi-fw pi-server', to: '/uikit/invalidstate' },
             // { label: 'Button', icon: 'pi pi-fw pi-mobile', to: '/uikit/button', class: 'rotated-icon' },

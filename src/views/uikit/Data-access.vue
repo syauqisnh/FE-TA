@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import CountryService from '@/service/CountryService';
 import NodeService from '@/service/NodeService';
 
+
 const tableData = ref([]);
 const selectedRkow = ref(null);
 
@@ -12,45 +13,14 @@ const nodeService = new NodeService();
 
 const selectedLimit = ref(''); // default value
 const limits = ref([
-    { value: 'lima-data', label: '5' },
-    { value: 'sepuluh-data', label: '10' },
-    { value: 'dualima-data', label: '25' },
-    { value: 'limapuluh-data', label: '50' },
-    { value: 'seratus-data', label: '100' }
+    { value: "lima-data", label: "5 Data Perhalaman" },
+    { value: "sepuluh-data", label: "10 Data Perhalaman" },
+    { value: "dualima-data", label: "25 Data Perhalaman" },
+    { value: "limapuluh-data", label: "50 Data Perhalaman" },
+    { value: "seratus-data", label: "100 Data Perhalaman" }
 ]);
-const selectedorder1 = ref(''); // default value
-const order1 = ref([
-    { value: 'asc', label: 'asc' },
-    { value: 'desc', label: 'desc' }
-]);
-const selectedorder2 = ref(''); // default value
-const order2 = ref([
-    { value: 'asc', label: 'asc' },
-    { value: 'desc', label: 'desc' }
-]);
-const selectedorder3 = ref(''); // default value
-const order3 = ref([
-    { value: 'asc', label: 'asc' },
-    { value: 'desc', label: 'desc' }
-]);
-const selectedorder4 = ref(''); // default value
-const order4 = ref([
-    { value: 'asc', label: 'asc' },
-    { value: 'desc', label: 'desc' }
-]);
-const multiselectValue = ref(null);
-const multiselectValues = ref([
-    { name: 'Australia', code: 'AU' },
-    { name: 'Brazil', code: 'BR' },
-    { name: 'China', code: 'CN' },
-    { name: 'Egypt', code: 'EG' },
-    { name: 'France', code: 'FR' },
-    { name: 'Germany', code: 'DE' },
-    { name: 'India', code: 'IN' },
-    { name: 'Japan', code: 'JP' },
-    { name: 'Spain', code: 'ES' },
-    { name: 'United States', code: 'US' }
-]);
+
+
 const addNewItem = () => {
     const newItem = { name: inputValue.value };
     tableData.value = [...tableData.value, newItem];
@@ -63,7 +33,7 @@ onMounted(() => {
     // Populate the initial data
     tableData.value = [
         { name: 'John Doe' },
-        { name: 'Jane Doe' }
+        { name: 'Jane Doe' },
         // Add more initial data as needed
     ];
 
@@ -102,12 +72,10 @@ const closeModalDel = () => {
         <div class="modal-content">
             <!-- Close button -->
             <span class="close" @click="closeModal">&times;</span>
-            <h4>Edit Data</h4>
+            <h4>Edit Nama Anda:</h4>
             <div class="pembungkus-edit">
                 <div class="edit">
-                    <InputText v-model="inputUpdate" placeholder="Level" class="input-text"></InputText>
-                    <InputText v-model="inputUpdate" placeholder="Module" class="input-text"></InputText>
-                    <InputText v-model="inputUpdate" placeholder="Permissions" class="input-text"></InputText>
+                    <InputText v-model="inputUpdate" placeholder="Edit Nama Anda" class="input-text"></InputText>
                 </div>
                 <div class="edit-button">
                     <Button label="Update" class="button-add" @click="addNewUpdate"></Button>
@@ -131,7 +99,7 @@ const closeModalDel = () => {
             </div>
         </div>
     </div>
-    <!-- <div class="grid p-fluid">
+    <div class="grid p-fluid">
         <div class="col-12 md:col-6">
             <div class="pembungkus1">
                 <div class="card">
@@ -146,22 +114,22 @@ const closeModalDel = () => {
                             </div>
                         </div>
                     </div>
-                </div> -->
-    <!-- <div class="card">
+                </div>
+                <div class="card">
                     <div class="dropdown">
                         <div class="filter-section">
                             <h4>Filter</h4>
                             <div class="filter-input">
                                 <div>
-                                    <input type="checkbox" name="checkbox-items" id="checkbox-items" />
+                                    <input type="checkbox" name="checkbox-items" id="checkbox-items">
                                     <span>Super administrator</span>
                                 </div>
                                 <div>
-                                    <input type="checkbox" name="checkbox-items" id="checkbox-items" />
+                                    <input type="checkbox" name="checkbox-items" id="checkbox-items">
                                     <span>Administrator</span>
                                 </div>
                                 <div>
-                                    <input type="checkbox" name="checkbox-items" id="checkbox-items" />
+                                    <input type="checkbox" name="checkbox-items" id="checkbox-items">
                                     <span>Customer</span>
                                 </div>
                             </div>
@@ -170,75 +138,55 @@ const closeModalDel = () => {
                             <h4>Urutkan Data:</h4>
                             <div class="order-input">
                                 <div>
-                                    <input type="radio" name="radio-items" id="radio-items" />
-                                    <span>Berdasarkan data terakhir<br />ditambahkan (Z-A)</span>
+                                    <input type="radio" name="radio-items" id="radio-items">
+                                    <span>Berdasarkan data terakhir<br>ditambahkan (Z-A)</span>
                                 </div>
                                 <div>
-                                    <input type="radio" name="radio-items" id="radio-items" />
-                                    <span>Berdasarkan data pertama<br />ditambahkan (A-Z)</span>
+                                    <input type="radio" name="radio-items" id="radio-items">
+                                    <span>Berdasarkan data pertama<br>ditambahkan (A-Z)</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div> -->
-    <!-- </div>
-        </div> -->
-
-    <div class="col-12 md:col-6"></div>
-    <div class="col-12">
-        <div class="card">
-            <Toolbar>
-                <template v-slot:start>
-                    <Dropdown class="limit-drop" v-model="selectedLimit" :options="limits" optionLabel="label" optionValue="value"> </Dropdown>
-                    <label for="dropdown">Limit Data</label>
-                    <Dropdown class="limit-drop" v-model="selectedorder1" :options="order1" optionLabel="label" optionValue="value"> </Dropdown>
-                    <label for="dropdown">urutan data berdasarkan waktu</label>
-                    <Dropdown class="limit-drop" v-model="selectedorder2" :options="order2" optionLabel="label" optionValue="value"> </Dropdown>
-                    <label for="dropdown">urutan data berdasarkan level</label>
-                    <Dropdown class="limit-drop" v-model="selectedorder3" :options="order3" optionLabel="label" optionValue="value"> </Dropdown>
-                    <label for="dropdown">urutan data berdasarkan module</label>
-                    <Dropdown class="limit-drop" v-model="selectedorder4" :options="order4" optionLabel="label" optionValue="value"> </Dropdown>
-                    <label for="dropdown">urutan data berdasarkan permission</label>
-                    <MultiSelect v-model="multiselectValue" :options="multiselectValues" optionLabel="name" placeholder="Select Countries" :filter="true">
-                        <label for="dropdown">filter data</label>
-                        <template #value="slotProps">
-                            <div class="inline-flex align-items-center py-1 px-2 bg-primary text-primary border-round mr-2" v-for="option of slotProps.value" :key="option.code">
-                                <div>{{ option.name }}</div>
-                            </div>
-                            <template v-if="!slotProps.value || slotProps.value.length === 0">
-                                <div class="p-1">filter</div>
-                            </template>
-                        </template>
-                        <template #option="slotProps">
-                            <div class="flex align-items-center">
-                                <div>{{ slotProps.option.name }}</div>
-                            </div>
-                        </template>
-                    </MultiSelect>
-                </template>
-            </Toolbar>
-            <div class="data-table">
-                <h5>Data Table Access</h5>
-                <div class="search-container">
-                    <InputText v-model="inputSearch" placeholder="Search..." class="keyword"></InputText>
-                    <Button icon="pi pi-search" class="search-button"></Button>
                 </div>
             </div>
-            <DataTable :value="tableData" :paginator="true" :rows="10" class="tabel">
-                <Column field="name" header="Level" class="name-column"></Column>
-                <Column field="module_name" header="Module" class="name-column"></Column>
-                <Column field="permissions_name" header="Permissions" class="name-column"></Column>
-                <!-- Hapus atribut header untuk menghilangkan label "Actions" -->
-                <Column class="actions">
-                    <template #body="slotProps">
-                        <!-- Wrapper untuk ikon-ikon -->
-                        <div class="action-icons">
-                            <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="openModal"></Button>
-                            <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="openModalDel"></Button>
-                        </div>
-                    </template>
-                </Column>
-            </DataTable>
+        </div>
+
+        <div class="col-12 md:col-6">
+        </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="drop">
+                    <span class="p-float-label">
+                        <Dropdown class="limit-drop" v-model="selectedLimit" :options="limits" optionLabel="label"
+                            optionValue="value">
+                        </Dropdown>
+                        <label for="dropdown">Limit Data</label>
+                    </span>
+                </div>
+                <div class="data-table">
+                    <h5>Data Table Access</h5>
+                    <div class="search-container">
+                        <InputText v-model="inputSearch" placeholder="Search..." class="keyword"></InputText>
+                        <Button icon="pi pi-search" class="search-button"></Button>
+                    </div>
+                </div>
+                <DataTable :value="tableData" :paginator="true" :rows="10" class="tabel">
+                    <Column field="name" header="Name" class="name-column"></Column>
+                    <!-- Hapus atribut header untuk menghilangkan label "Actions" -->
+                    <Column class="actions">
+                        <template #body="slotProps">
+                            <!-- Wrapper untuk ikon-ikon -->
+                            <div class="action-icons">
+                                <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon"
+                                    @click="openModal"></Button>
+                                <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon"
+                                    @click="openModalDel"></Button>
+                            </div>
+                        </template>
+                    </Column>
+                </DataTable>
+            </div>
         </div>
     </div>
 </template>
@@ -321,7 +269,7 @@ const closeModalDel = () => {
 
 .p-edit-icon {
     margin-right: 5px;
-    background-color: #007bff;
+    background-color: #007BFF;
 
     &:hover {
         background-color: #0056b3;
@@ -330,7 +278,7 @@ const closeModalDel = () => {
 
 .p-delete-icon {
     margin-left: 5px;
-    background-color: #ff3a3a;
+    background-color: #FF3A3A;
 
     &:hover {
         background-color: #b32f2f;
@@ -364,7 +312,7 @@ const closeModalDel = () => {
 }
 
 .dropdown select:hover {
-    border-color: #007bff;
+    border-color: #007BFF;
 }
 
 .pembungkus1 {
@@ -374,7 +322,7 @@ const closeModalDel = () => {
 
 .dropdown select:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: #007BFF;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
@@ -518,21 +466,19 @@ const closeModalDel = () => {
     align-items: center;
     justify-content: space-around;
 }
-.delete-yes .button-add {
+.delete-yes .button-add{
     width: 125px;
     background-color: red;
 }
 .delete-yes .button-add:hover {
     background-color: rgb(255, 101, 101);
 }
-.delete-no .button-add {
+.delete-no .button-add{
     width: 125px;
     background-color: rgb(1, 162, 1);
 }
 .delete-no .button-add:hover {
     background-color: rgb(2, 212, 2);
 }
-.filter-table {
-    display: inline-flexbox;
-}
 </style>
+
