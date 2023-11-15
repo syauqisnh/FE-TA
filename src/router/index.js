@@ -40,6 +40,11 @@ const router = createRouter({
                     component: () => import('@/views/uikit/Data-media.vue')
                 },
                 {
+                    path: '/uikit/data-customer',
+                    name: 'data_customer',
+                    component: () => import('@/views/uikit/data-customer.vue')
+                },
+                {
                     path: '/uikit/floatlabel',
                     name: 'floatlabel',
                     component: () => import('@/views/uikit/FloatLabel.vue')
