@@ -1,3 +1,4 @@
+<!-- eslint-disable no-unused-vars -->
 <script setup>
 import { ref, onMounted } from 'vue';
 import CountryService from '@/service/CountryService';
@@ -37,11 +38,11 @@ onMounted(() => {
         // Add more initial data as needed
     ];
 
-    countryService.getCountries().then((data) => {
+    countryService.getCountries().then(() => {
         // Use data as needed
     });
 
-    nodeService.getTreeNodes().then((data) => {
+    nodeService.getTreeNodes().then(() => {
         // Use data as needed
     });
 });
@@ -175,7 +176,7 @@ const closeModalDel = () => {
                     <Column field="name" header="Name" class="name-column"></Column>
                     <!-- Hapus atribut header untuk menghilangkan label "Actions" -->
                     <Column class="actions">
-                        <template #body="slotProps">
+                        <template #body="">
                             <!-- Wrapper untuk ikon-ikon -->
                             <div class="action-icons">
                                 <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon"
@@ -480,5 +481,6 @@ const closeModalDel = () => {
 .delete-no .button-add:hover {
     background-color: rgb(2, 212, 2);
 }
+
 </style>
 
