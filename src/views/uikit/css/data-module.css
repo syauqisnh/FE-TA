@@ -1,4 +1,4 @@
-.judul-halaman h1 {
+.judul-halaman-module h1 {
     font-size: 30px;
     font-family: Arial, Helvetica, sans-serif;
     margin-top: 10px;
@@ -44,6 +44,7 @@
     text-decoration: none;
     cursor: pointer;
 }
+
 .modal-input {
     margin-top: 10px;
     margin-bottom: 10px;
@@ -68,6 +69,7 @@
 .modal-button-suceess:hover {
     background-color: #218838;
 }
+
 .modal-button-danger {
     width: 100%;
     padding: 5px, 5px, 5px, 5px;
@@ -91,48 +93,6 @@
     to {
       transform: translateX(0);
     }
-  }
-
-
-.top-tabel {
-    background-color: rgb(233, 233, 233);
-    border-radius: 10px;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    margin-bottom: 30px;
-}
-
-.search-container {
-    display: flex;
-    align-items: center;
-    position: relative;
-    width: 25%;
-}
-
-.data-table {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.search-button {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    border: none;
-    color: white;
-}
-
-.action-icons {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    width: 100%;
-    padding-right: 20%; 
 }
 
 .p-edit-icon {
@@ -153,24 +113,59 @@
     }
 }
 
-.create-data {
+.top-tabel-module {
+    background-color: rgb(233, 233, 233);
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 30px;
+}
+
+.create-data-module {
     height: 40px;
     width: 120px;
     border: none;
     color: white;
     font-weight: bold;
-    background-color: #28a745; /* Ubah warna sesuai kebutuhan */
-    border-radius: 5px; /* Sesuaikan dengan border-radius yang digunakan di elemen lain */
+    background-color: #28a745;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease; /* Efek transisi saat hover */
+    transition: background-color 0.3s ease;
 }
 
-.create-data:hover {
-    background-color: #218838; /* Ubah warna hover sesuai kebutuhan */
+.create-data-module:hover {
+    background-color: #218838;
 }
 
-.bold-text{
-    font-weight: bold;
+.data-table-module {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
 }
 
+.search-container-module {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 25%;
+}
 
+.search-button-module {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    color: white;
+}
+
+.action-icons-module {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    padding-right: 20%; 
+}

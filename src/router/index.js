@@ -25,6 +25,11 @@ const router = createRouter({
                     component: () => import('@/views/uikit/Data-level.vue')
                 },
                 {
+                    path: '/uikit/data-module',
+                    name: 'data-module',
+                    component: () => import('@/views/uikit/data-module.vue')
+                },
+                {
                     path: '/uikit/Data-permission',
                     name: 'Data-permission',
                     component: () => import('@/views/uikit/Data-permission.vue')

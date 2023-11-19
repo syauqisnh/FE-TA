@@ -27,33 +27,29 @@ const isModalOpen = ref(false);
 const isUpdateModalOpen = ref(false);
 const isDeleteModalOpen = ref(false);
 
-// Function to open the modal
 const openModal = () => {
     isModalOpen.value = true;
 };
 
-// Function to close the modal
 const closeModal = () => {
     isModalOpen.value = false;
 
     //set varibel name_level saat modal di close
     level_name.value = '';
 };
-// Function to open the modal
+
 const openModalUpdate = () => {
     isUpdateModalOpen.value = true;
 };
 
-// Function to close the modal
 const closeModalUpdate = () => {
     isUpdateModalOpen.value = false;
 };
-// Function to open the modal
+
 const openModalDelete = () => {
     isDeleteModalOpen.value = true;
 };
 
-// Function to close the modal
 const closeModalDelete = () => {
     isDeleteModalOpen.value = false;
     uuid_level.value = '';
@@ -102,7 +98,7 @@ const fetchData = async () => {
                 filter: {
                     level_name: filterNames.join(',')
                 },
-                keyword: inputSearch.value // Tambahkan parameter keyword
+                keyword: inputSearch.value
             }
         });
         console.log('Respon API:', response.data);
@@ -163,8 +159,10 @@ watch(multiselectValue, fetchData);
 </script>
 
 <template>
+    <div class="judul-halaman">
+        <h1>Data Level</h1>
+    </div>
     <!-- modal add -->
-
     <div v-if="isModalOpen" class="modal">
         <div class="modal-content">
             <!-- Close button -->
@@ -180,7 +178,6 @@ watch(multiselectValue, fetchData);
     </div>
 
     <!-- modal update -->
-
     <div v-if="isUpdateModalOpen" class="modal">
         <div class="modal-content">
             <!-- Close button -->
@@ -196,7 +193,6 @@ watch(multiselectValue, fetchData);
     </div>
 
     <!-- modal delete -->
-
     <div v-if="isDeleteModalOpen" class="modal">
         <div class="modal-content">
             <!-- Close button -->
@@ -251,7 +247,7 @@ watch(multiselectValue, fetchData);
                     <div class="data-table">
                         <h5>Data Table Level</h5>
                         <div class="search-container">
-                            <InputText v-model="inputSearch" placeholder="Search..." class="keyword"></InputText>
+                            <InputText v-model="inputSearch" placeholder="Search..." class="keyword" @keydown.enter="fetchData"></InputText>
                             <Button icon="pi pi-search" class="search-button" @click="fetchData"></Button>
                         </div>
                     </div>

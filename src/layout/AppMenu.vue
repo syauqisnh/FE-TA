@@ -12,7 +12,8 @@ const model = ref([
         label: 'Data Master',
         items: [
             { label: 'Data Level', icon: 'pi pi-fw pi-server', to: '/uikit/Data-level' },
-            { label: 'Data Module', icon: 'pi pi-fw pi-server', to: '/uikit/formlayout' },
+            { label: 'Data Module', icon: 'pi pi-fw pi-server', to: '/uikit/data-module'},
+            // { label: 'Data Module', icon: 'pi pi-fw pi-server', to: '/uikit/formlayout' },
             { label: 'Data Permission', icon: 'pi pi-fw pi-server', to: '/uikit/Data-permission' },
             { label: 'Data Access', icon: 'pi pi-fw pi-server', to: '/uikit/Data-access' },
             { label: 'Data Media', icon: 'pi pi-fw pi-server', to: '/uikit/Data-media' },
