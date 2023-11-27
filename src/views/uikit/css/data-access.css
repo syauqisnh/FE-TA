@@ -1,4 +1,4 @@
-.judul-halaman-module h1 {
+.judul-halaman-access h1 {
     font-size: 30px;
     font-family: Arial, Helvetica, sans-serif;
     margin-top: 10px;
@@ -44,7 +44,6 @@
     text-decoration: none;
     cursor: pointer;
 }
-
 .modal-input {
     margin-top: 10px;
     margin-bottom: 10px;
@@ -69,7 +68,6 @@
 .modal-button-suceess:hover {
     background-color: #218838;
 }
-
 .modal-button-danger {
     width: 100%;
     padding: 5px, 5px, 5px, 5px;
@@ -77,10 +75,10 @@
     border: none;
     color: white;
     font-weight: bold;
-    background-color: #bf2121;
-    border-radius: 5px;
+    background-color: #bf2121; /* Ubah warna sesuai kebutuhan */
+    border-radius: 5px; /* Sesuaikan dengan border-radius yang digunakan di elemen lain */
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease; /* Efek transisi saat hover */
 }
 .modal-button-danger:hover {
     background-color: #951a1a;
@@ -93,6 +91,48 @@
     to {
       transform: translateX(0);
     }
+  }
+
+
+.top-tabel-access {
+    background-color: rgb(233, 233, 233);
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 30px;
+}
+
+.search-container-access {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 25%;
+}
+
+.data-table-access {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.search-button-access {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    color: white;
+}
+
+.action-icons-access {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    padding-right: 20%; 
 }
 
 .p-edit-icon {
@@ -113,63 +153,24 @@
     }
 }
 
-.top-tabel-module {
-    background-color: rgb(233, 233, 233);
-    border-radius: 10px;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    margin-bottom: 30px;
-}
-
-.create-data-module {
+.create-data-access {
     height: 40px;
     width: 120px;
     border: none;
     color: white;
     font-weight: bold;
-    background-color: #28a745;
-    border-radius: 5px;
+    background-color: #28a745; /* Ubah warna sesuai kebutuhan */
+    border-radius: 5px; /* Sesuaikan dengan border-radius yang digunakan di elemen lain */
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease; /* Efek transisi saat hover */
 }
 
-.create-data-module:hover {
-    background-color: #218838;
-}
-
-.data-table-module {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.search-container-module {
-    display: flex;
-    align-items: center;
-    position: relative;
-    width: 25%;
-}
-
-.search-button-module {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    border: none;
-    color: white;
-}
-
-.action-icons-module {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    width: 100%;
-    padding-right: 20%; 
+.create-data-access:hover {
+    background-color: #218838; /* Ubah warna hover sesuai kebutuhan */
 }
 
 .bold-text{
     font-weight: bold;
 }
+
+

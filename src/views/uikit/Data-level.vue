@@ -44,6 +44,7 @@ const openModalUpdate = () => {
 
 const closeModalUpdate = () => {
     isUpdateModalOpen.value = false;
+    level_name.value = ''
 };
 
 const openModalDelete = () => {
@@ -122,12 +123,12 @@ const OpenModalEdit = async (value) => {
     uuid_level.value = value;
     const response = await axios.get(`http://localhost:9900/api/v1/level/${uuid_level.value}`);
     if (response) {
-        edit_level_name.value = response.data.data.level_name;
+        level_name.value = response.data.data.level_name;
         openModalUpdate();
     }
 };
 const UpdateDataData = async () => {
-    const nama_level = edit_level_name.value;
+    const nama_level = level_name.value;
     const response = await axios.put(`http://localhost:9900/api/v1/level/${uuid_level.value}`, {
         level_name: nama_level
     });
@@ -184,7 +185,7 @@ watch(multiselectValue, fetchData);
             <span class="close" @click="closeModalUpdate">&times;</span>
             <h4>Ubah Data</h4>
             <div class="modal-form-group">
-                <InputText v-model="edit_level_name" :value="edit_level_name" class="modal-input"></InputText>
+                <InputText v-model="level_name" :value="level_name" class="modal-input"></InputText>
             </div>
             <div class="modal-form-group">
                 <button class="modal-button-suceess" @click="UpdateDataData">Ubah data</button>

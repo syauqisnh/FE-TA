@@ -30,24 +30,29 @@ const router = createRouter({
                     component: () => import('@/views/uikit/data-module.vue')
                 },
                 {
-                    path: '/uikit/Data-permission',
-                    name: 'Data-permission',
-                    component: () => import('@/views/uikit/Data-permission.vue')
+                    path: '/uikit/data-permission',
+                    name: 'data-permission',
+                    component: () => import('@/views/uikit/data-permission.vue')
                 },
                 {
-                    path: '/uikit/Data-access',
-                    name: 'Data-access',
-                    component: () => import('@/views/uikit/Data-access.vue')
+                    path: '/uikit/data-access',
+                    name: 'data-access',
+                    component: () => import('@/views/uikit/data-access.vue')
                 },
                 {
-                    path: '/uikit/Data-media',
-                    name: 'Data-media',
-                    component: () => import('@/views/uikit/Data-media.vue')
+                    path: '/uikit/data-media',
+                    name: 'data-media',
+                    component: () => import('@/views/uikit/data-media.vue')
                 },
                 {
                     path: '/uikit/data-customer',
                     name: 'data_customer',
                     component: () => import('@/views/uikit/data-customer.vue')
+                },
+                {
+                    path: '/uikit/data-user',
+                    name: 'data_user',
+                    component: () => import('@/views/uikit/data-user.vue')
                 },
                 {
                     path: '/uikit/floatlabel',

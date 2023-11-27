@@ -187,7 +187,7 @@ watch(fetchData);
             <h4>Hapus Data</h4>
             <div class="modal-form-group">
                 <p>
-                    Apakah Anda yakin untuk menghapus nama level <span class="bold-text"> "{{ module_name }}"</span>
+                    Apakah Anda yakin untuk menghapus nama modul <span class="bold-text"> "{{ module_name }}"</span>
                 </p>
             </div>
             <div class="modal-form-group">

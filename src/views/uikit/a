@@ -1,281 +1,223 @@
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
-import Column from 'primevue/column';
+import '../uikit/css/data-customer.css';
 
+const customer_username = ref('');
+const customer_full_name = ref('');
+const customer_nohp = ref('');
+const customer_address = ref('');
+const customer_email = ref('');
+const customer_password = ref('');
+const uuid_customer = ref();
+const checked = ref(false);
+
+let jumlah_row = 5;
+
+
+const inputSearch = ref('');
+const selectedOrder = ref('default');
+const selectedLimit = ref('default');
 
 const tableData = ref([]);
-const inputValue = ref('');
-const inputUpdate = ref('');
-const inputSearch = ref('');
-const levelNameFilters = ref([]);
-const sortOrder = ref('');
-
-const selectedLimit = ref('5'); // default value
-const limits = ref([
-    { value: 5, label: "5 Data Perhalaman" },
-    { value: 10, label: "10 Data Perhalaman" },
-    { value: 25, label: "25 Data Perhalaman" },
-    { value: 50, label: "50 Data Perhalaman" },
-    { value: 100, label: "100 Data Perhalaman" }
-]);
-const selectedpage = ref('1'); // default value
-
-
-const perPage = ref(selectedLimit);
-const totalRecords = ref(0);
-
-const currentPage = ref(selectedpage); // Tambahkan currentPage dan initialize dengan 1
-
-// Computed property to dynamically generate the list of pages
-const dynamicPageList = computed(() => {
-    const totalPages = Math.ceil(totalRecords.value / perPage.value);
-    return Array.from({ length: totalPages }, (_, index) => index + 1).map(value => ({ value, label: value.toString() }));
-});
-watch([totalRecords, perPage], () => {
-    console.log('Total pages:', dynamicPageList.value);
-});
-
-onMounted(async () => {
-    await fetchData();
-    watch([levelNameFilters, sortOrder, selectedLimit], fetchData);
-});
-
-
-
-// Fungsi untuk mengambil data dari server
-const fetchData = async () => {
-    try {
-        const perPageValue = parseInt(perPage.value, 10);
-        if (isNaN(perPageValue) || perPageValue <= 0) {
-            console.error('Nilai perPage tidak valid.');
-            return;
-        }
-
-        const searchQuery = inputSearch.value ? `&keyword=${encodeURIComponent(inputSearch.value)}` : '';
-        const filterQuery = levelNameFilters.value.length > 0 ? `&filter[level_name]=${encodeURIComponent(levelNameFilters.value.join(','))}` : '';
-        const sortQuery = sortOrder.value ? `&order[level_id]=${sortOrder.value}` : ''; // Modifikasi di sini
-        const response = await axios.get(`http://localhost:9900/api/v1/level/get_all?limit=${perPageValue}&page=${currentPage.value}${searchQuery}${filterQuery}${sortQuery}`);
-
-        tableData.value = response.data.data || [];
-        totalRecords.value = response.data.pages.total || 0;
-    } catch (error) {
-        console.error('Error saat mengambil data:', error);
-    }
-};
-
-// const updateSortOrder = (order) => {
-//     sortOrder.value = order;
-//     fetchData();
-// };
-
-
-const searchData = async () => {
-    // Reset currentPage to 1 when performing a new search
-    currentPage.value = 1;
-    await fetchData();
-};
-
-// Fungsi untuk menangani perubahan halaman
-const onPageChange = (newPage) => {
-    // Handle the page change, for example, fetch data for the new page
-    console.log(`Page changed to ${newPage}`);
-    // fetchData(newPage);
-    selectedpage.value = newPage;
-};
-
-const addNewItem = async () => {
-    try {
-        const newItem = { level_name: inputValue.value };
-        const response = await axios.post('http://localhost:9900/api/v1/level', newItem);
-
-        // Gunakan data dari respons untuk mengupdate tabel
-        tableData.value = [...tableData.value, response.data];
-
-        // Bersihkan formulir setelah menambahkan item
-        inputValue.value = '';
-    } catch (error) {
-        console.error('Error saat menambahkan item baru:', error);
-        // Tangani error sesuai kebutuhan (misalnya, tampilkan pesan ke pengguna)
-    }
-};
-
 
 const isModalOpen = ref(false);
-const isModalOpenDel = ref(false);
-const level_uuid = ref('level_uuid.value');
+const isUpdateModalOpen = ref(false);
+const isDeleteModalOpen = ref(false);
 
-// Function to open the modal
 const openModal = () => {
     isModalOpen.value = true;
 };
 
-// Function to close the modal
 const closeModal = () => {
     isModalOpen.value = false;
+
+    //set varibel name_level saat modal di close
+    customer_username.value = '';
+    customer_full_name.value = '';
+    customer_nohp.value = '';
+    customer_address.value = '';
+    customer_email.value = '';
+    customer_password.value = '';
 };
 
-const deleteData = async () => {
-    try {
-        if (!level_uuid.value) {
-            console.error('Tidak ada level_uuid yang diatur untuk dihapus.');
-            return;
-        }
-
-        // eslint-disable-next-line no-unused-vars
-        const response = await axios.delete(`http://localhost:9900/api/v1/level/${level_uuid.value}`);
-
-        // Hapus item dari tabel setelah berhasil dihapus
-        tableData.value = tableData.value.filter(item => item.level_uuid !== level_uuid.value);
-
-        // Reset level_uuid setelah berhasil dihapus
-        level_uuid.value = null;
-
-        // Tutup modal setelah berhasil dihapus
-        closeModalDel();
-    } catch (error) {
-        console.error('Error saat menghapus data:', error);
-    }
+const openModalDelete = () => {
+    isDeleteModalOpen.value = true;
 };
 
-const openModalDel = (levelUuid) => {
-    if (levelUuid) {
-        level_uuid.value = levelUuid;
-        isModalOpenDel.value = true;
+const closeModalDelete = () => {
+    isDeleteModalOpen.value = false;
+    uuid_customer.value = '';
+    customer_username.value = '';
+};
+
+const limit = ref([
+    { value: 'default', label: 'Limit Data' },
+    { value: 5, label: '5 Data perhalaman' },
+    { value: 10, label: '10 Data perhalaman' },
+    { value: 25, label: '25 Data perhalaman' },
+    { value: 50, label: '50 Data perhalaman' },
+    { value: 100, label: '100 Data perhalaman' }
+]);
+const order = ref([
+    { value: 'default', label: 'Urutkan data' },
+    { value: 'asc', label: 'Urutkan dari data awal ditambahkan' },
+    { value: 'desc', label: 'Urutkan dari data terbaru' }
+]);
+
+onMounted(async () => {
+    fetchData();
+});
+
+const Ubahnilai_jumlah_row = async () => {
+    if (selectedLimit.value === 'default') {
+        jumlah_row = 5;
     } else {
-        console.error('Tidak dapat membuka modal dengan levelUuid yang tidak valid.');
+        jumlah_row = parseInt(selectedLimit.value, 10);
     }
 };
 
-const closeModalDel = () => {
-    level_uuid.value = null;
-    isModalOpenDel.value = false;
+const fetchData = async () => {
+    const response = await axios.get('http://localhost:9900/api/v1/customer/get_all', {
+        params: {
+            order: { customer_id: selectedOrder.value },
+            keyword: inputSearch.value
+        }
+    });
+
+    console.log('Respon API:', response.data);
+    tableData.value = response.data.data || [];
 };
 
+const addData = async () => {
+    const username = customer_username.value;
+    const nama_langkap = customer_full_name.value;
+    const nohp = customer_nohp.value;
+    const address = customer_address.value;
+    const email = customer_email.value;
+    const password = customer_password.value;
+    const response = await axios.post('http://localhost:9900/api/v1/customer', {
+        customer_username: username,
+        customer_full_name: nama_langkap,
+        customer_nohp: nohp,
+        customer_address: address,
+        customer_email: email,
+        customer_password: password
+    });
+
+    if (response) {
+        closeModal();
+        window.location.reload();
+    }
+};
+
+const openModalHapus = async (value) => {
+    uuid_customer.value = value;
+    const response = await axios.get(`http://localhost:9900/api/v1/customer/${uuid_customer.value}`);
+    if (response) {
+        customer_username.value = response.data.data.customer_username;
+        openModalDelete();
+    }
+};
+const DeleteDataData = async () => {
+    const response = await axios.delete(`http://localhost:9900/api/v1/level/${uuid_customer.value}`);
+
+    if (response) {
+        closeModalDelete();
+        window.location.reload();
+    }
+};
+
+watch(fetchData);
 </script>
 <template>
+    <div class="judul-halaman-customer">
+        <h1>Data Customer</h1>
+    </div>
     <div v-if="isModalOpen" class="modal">
         <div class="modal-content">
             <!-- Close button -->
             <span class="close" @click="closeModal">&times;</span>
-            <h4>Edit Nama Anda:</h4>
-            <div class="pembungkus-edit">
-                <div class="edit">
-                    <InputText v-model="inputUpdate" placeholder="Name" class="input-text"></InputText>
+            <h4>Tambah Data</h4>
+            <div class="modal-form-group">
+                <InputText v-model="customer_username" placeholder="Username" class="modal-input"></InputText>
+                <InputText v-model="customer_full_name" placeholder="Nama Lengkap" class="modal-input"></InputText>
+                <InputText v-model="customer_nohp" placeholder="Nomor Telepon (OPSIONAL)" class="modal-input"></InputText>
+                <InputText v-model="customer_address" placeholder="Alamat (OPSIONAL)" class="modal-input"></InputText>
+                <InputText v-model="customer_email" placeholder="Email" class="modal-input"></InputText>
+                <InputText id="password" :type="checked ? 'text' : 'password'" placeholder="Password" class="modal-input" v-model="customer_password" />
+                <div class="cekpw-1">
+                    <input type="checkbox" name="cekpw" id="cekpw" v-model="checked" />
+                    <label for="cekpw">Lihat password</label>
                 </div>
-                <div class="edit-button">
-                    <Button label="Update" class="button-add" @click="addNewUpdate"></Button>
-                </div>
+            </div>
+            <div class="modal-form-group">
+                <button class="modal-button-suceess" @click="addData">Submit</button>
             </div>
         </div>
     </div>
-    <div v-if="isModalOpenDel" class="modal">
+    <div v-if="isDeleteModalOpen" class="modal">
         <div class="modal-content">
             <!-- Close button -->
-            <span class="close" @click="closeModalDel">&times;</span>
-            <h4>Delete Data</h4>
-            <p>Apakah anda yakin akan menghapus data?</p>
-            <div class="pembungkus-delete">
-                <div class="delete-yes">
-                    <Button label="Yes" class="button-add" @click="deleteData"></Button>
-                </div>
-                <div class="delete-no">
-                    <Button label="No" class="button-add" @click="closeModalDel"></Button>
-                </div>
+            <span class="close" @click="closeModalDelete">&times;</span>
+            <h4>Hapus Data</h4>
+            <div class="modal-form-group">
+                <p>
+                    Apakah Anda yakin untuk menghapus nama level <span class="bold-text"> "{{ customer_username }}"</span>
+                </p>
+            </div>
+            <div class="modal-form-group">
+                <button class="modal-button-suceess" @click="DeleteDataData">Hapus data</button>
+            </div>
+            <div class="modal-form-group">
+                <button class="modal-button-danger" @click="closeModalDelete">Batal</button>
             </div>
         </div>
     </div>
+
     <div class="grid p-fluid">
-        <div class="col-12 md:col-6">
-            <div class="pembungkus1">
-                <div class="card">
-                    <div>
-                        <h5>Create Data Level</h5>
-                        <div class="grid formgrid">
-                            <div class="col-12 mb-2">
-                                <InputText v-model="inputValue" placeholder="Name" class="input-text"></InputText>
-                            </div>
-                            <div class="col-12 mb-2">
-                                <Button label="Create" class="button-add" @click="addNewItem"></Button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="dropdown">
-                        <div class="filter-section">
-                            <h4>Filter</h4>
-                            <div class="filter-input">
-                                <div>
-                                    <input type="checkbox" v-model="levelNameFilters" value="Super administrator">
-                                    <span>Super administrator</span>
-                                </div>
-                                <div>
-                                    <input type="checkbox" v-model="levelNameFilters" value="Administrator">
-                                    <span>Administrator</span>
-                                </div>
-                                <div>
-                                    <input type="checkbox" v-model="levelNameFilters" value="Customer">
-                                    <span>Customer</span>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="dropdown-order">
-                            <h4>Urutkan Data:</h4>
-                            <div class="order-input">
-                                <div>
-                                    <input type="radio" name="radio-items" id="radio-items-desc" value="desc"
-                                        v-model="sortOrder">
-                                    <span>Berdasarkan data terakhir ditambahkan (Z-A)</span>
-                                </div>
-                                <div>
-                                    <input type="radio" name="radio-items" id="radio-items-asc" value="asc"
-                                        v-model="sortOrder">
-                                    <span>Berdasarkan data pertama ditambahkan (A-Z)</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 md:col-6">
-        </div>
         <div class="col-12">
             <div class="card">
-                <div class="drop">
-                    <span class="p-float-label">
-                        <Dropdown class="limit-drop" v-model="selectedLimit" :options="limits" optionLabel="label"
-                            optionValue="value">
-                        </Dropdown>
-                        <label for="dropdown">Limit Data</label>
-                    </span>
-                </div>
-                <div class="data-table">
-                    <h5>Data Table Level</h5>
-                    <div class="search-container">
-                        <InputText v-model="inputSearch" placeholder="Search..." class="keyword"></InputText>
-                        <Button icon="pi pi-search" class="search-button" @click="searchData"></Button>
+                <div class="container">
+                    <div class="top-tabel-customer">
+                        <button class="create-data-customer" @click="openModal">Tambah Data</button>
+
+                        <span class="p-float-label">
+                            <Dropdown class="limit-drop" :options="limit" optionLabel="label" optionValue="value" v-model="selectedLimit" @change="Ubahnilai_jumlah_row"> </Dropdown>
+                        </span>
+
+                        <span class="p-float-label">
+                            <Dropdown class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData"> </Dropdown>
+                        </span>
                     </div>
+                    <div class="data-table-customer">
+                        <h5>Data Table Customer</h5>
+                        <div class="search-container-customer">
+                            <InputText v-model="inputSearch" placeholder="Search..." class="keyword" @keydown.enter="fetchData"></InputText>
+                            <Button icon="pi pi-search" class="search-button-customer" @click="fetchData"></Button>
+                        </div>
+                    </div>
+                    <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
+                        <Column field="customer_username" header="Username" class="name-column"></Column>
+                        <Column field="customer_full_name" header="Nama Langkap" class="name-column"></Column>
+                        <Column field="customer_nohp" header="Nomor Telepon" class="name-column"></Column>
+                        <Column field="customer_address" header="Alamat" class="name-column"></Column>
+                        <Column field="customer_email" header="Email" class="name-column"></Column>
+                        <Column class="actions">
+                            <template #body="rowData">
+                                <div class="action-icons-customer">
+                                    <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.customer_uuid)"></Button>
+                                    <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.customer_uuid)"></Button>
+                                </div>
+                            </template>
+                        </Column>
+                    </DataTable>
                 </div>
-                <DataTable :value="tableData" :paginator="true" :rows="perPage" :totalRecords="totalRecords"
-                    @onPage="onPageChange" class="tabel">
-                    <Column field="level_name" header="Name" class="name-column"></Column>
-                    <Column class="actions">
-                        <template #body="slotProps">
-                            <div class="action-icons">
-                                <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon"
-                                    @click="openModal"></Button>
-                                <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon"
-                                    @click="() => openModalDel(slotProps.rowData.level_uuid)"></Button>
-                            </div>
-                        </template>
-                    </Column>
-                </DataTable>
             </div>
         </div>
     </div>

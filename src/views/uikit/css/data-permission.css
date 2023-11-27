@@ -1,4 +1,4 @@
-.judul-halaman-module h1 {
+.judul-halaman-permission h1 {
     font-size: 30px;
     font-family: Arial, Helvetica, sans-serif;
     margin-top: 10px;
@@ -113,7 +113,7 @@
     }
 }
 
-.top-tabel-module {
+.top-tabel-permission {
     background-color: rgb(233, 233, 233);
     border-radius: 10px;
     padding: 20px;
@@ -123,7 +123,7 @@
     margin-bottom: 30px;
 }
 
-.create-data-module {
+.create-data-permission {
     height: 40px;
     width: 120px;
     border: none;
@@ -135,25 +135,25 @@
     transition: background-color 0.3s ease;
 }
 
-.create-data-module:hover {
+.create-data-permission:hover {
     background-color: #218838;
 }
 
-.data-table-module {
+.data-table-permission {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 20px;
 }
 
-.search-container-module {
+.search-container-permission {
     display: flex;
     align-items: center;
     position: relative;
     width: 25%;
 }
 
-.search-button-module {
+.search-button-permission {
     position: absolute;
     right: 0;
     top: 50%;
@@ -162,7 +162,7 @@
     color: white;
 }
 
-.action-icons-module {
+.action-icons-permission {
     display: flex;
     justify-content: flex-end;
     align-items: center;

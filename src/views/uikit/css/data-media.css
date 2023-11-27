@@ -1,0 +1,42 @@
+.judul-halaman-media h1 {
+    font-size: 30px;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.top-tabel-media {
+    background-color: rgb(233, 233, 233);
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 30px;
+}
+
+.data-table-media {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.search-container-media {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 25%;
+}
+
+.search-button-media {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    color: white;
+}
+
+
