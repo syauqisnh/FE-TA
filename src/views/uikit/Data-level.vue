@@ -92,8 +92,8 @@ const Ubahnilai_jumlah_row = async () => {
 const fetchData = async () => {
     try {
         const filterNames = multiselectValue.value ? multiselectValue.value.map((item) => item.name) : [];
-
-        const response = await axios.get('http://localhost:9900/api/v1/level/get_all', {
+        
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/${import.meta.env.VITE_API_BASE_VERSION}/level/get_all`, {
             params: {
                 order: { level_id: selectedOrder.value },
                 filter: {
