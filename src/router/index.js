@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import AppLayout from '@/layout/AppLayout.vue';
+import axios from 'axios';
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -53,6 +54,31 @@ const router = createRouter({
                     path: '/uikit/data-user',
                     name: 'data_user',
                     component: () => import('@/views/uikit/data-user.vue')
+                },
+                {
+                    path: '/uikit/data-bussiness',
+                    name: 'data-bussiness',
+                    component: () => import('@/views/uikit/data-bussiness.vue')
+                },
+                {
+                    path: '/uikit/data-price-list',
+                    name: 'data-price-list',
+                    component: () => import('@/views/uikit/data-price-list.vue')
+                },
+                {
+                    path: '/uikit/data-tnc',
+                    name: 'data-tnc',
+                    component: () => import('@/views/uikit/data-tnc.vue')
+                },
+                {
+                    path: '/uikit/data-scopes',
+                    name: 'data-scopes',
+                    component: () => import('@/views/uikit/data-scopes.vue')
+                },
+                {
+                    path: '/uikit/data-teams',
+                    name: 'data-teams',
+                    component: () => import('@/views/uikit/data-teams.vue')
                 },
                 {
                     path: '/uikit/floatlabel',
@@ -219,6 +245,22 @@ const router = createRouter({
             path: '/auth/error',
             name: 'error',
             component: () => import('@/views/pages/auth/Error.vue')
+        },
+        {
+            path: '/logout',
+            name: 'error',
+            component: async () => {
+                alert('Anda telah logout')
+                try {
+                    const response = await axios.delete(`http://localhost:9900/api/v1/logout`);
+                    if (response) {
+                        console.log(response);
+                        window.location.reload();
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            }
         }
     ]
 });

@@ -1,0 +1,86 @@
+.judul-halaman-price h1 {
+    font-size: 30px;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.top-tabel-price {
+    background-color: rgb(233, 233, 233);
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 30px;
+}
+
+.search-container-price {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 25%;
+}
+
+.data-table-price {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.search-button-price {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    color: white;
+}
+
+.action-icons-price {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    padding-right: 20%; 
+}
+
+.p-edit-icon {
+    margin-right: 5px;
+    background-color: #007BFF;
+
+    &:hover {
+        background-color: #0056b3;
+    }
+}
+
+.p-delete-icon {
+    margin-left: 5px;
+    background-color: #FF3A3A;
+
+    &:hover {
+        background-color: #b32f2f;
+    }
+}
+
+.create-data-price {
+    height: 40px;
+    width: 120px;
+    border: none;
+    color: white;
+    font-weight: bold;
+    background-color: #28a745;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.create-data-price:hover {
+    background-color: #218838;
+}
+
+.bold-text{
+    font-weight: bold;
+}

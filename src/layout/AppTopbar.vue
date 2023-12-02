@@ -2,14 +2,33 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
+const user_username = ref('');
+const user_level = ref('');
 
-const { layoutConfig, onMenuToggle, contextPath } = useLayout();
+const { onMenuToggle, contextPath } = useLayout();
 
 const outsideClickListener = ref(null);
 const topbarMenuActive = ref(false);
 const router = useRouter();
 
+const CekDataLogin = async () => {
+    try {
+        const response = await axios.get('http://localhost:9900/api/v1/me');
+
+        user_username.value = response.data.name;
+        user_level.value = response.data.level;
+    } catch (error) {
+        if (error.response && error.response.status === 401) {
+            router.push('/Landing-2'); // Pengguna belum login, arahkan ke landing page
+        } else {
+            console.error('Error: ', error); // Kesalahan lain
+        }
+    }
+};
+
 onMounted(() => {
+    CekDataLogin();
     bindOutsideClickListener();
 });
 
@@ -27,8 +46,8 @@ const onTopBarMenuButton = () => {
 
 const onProfileClick = () => {
     topbarMenuActive.value = false;
-    router.push('/Edit-profile')
-}
+    router.push('/Edit-profile');
+};
 const topbarMenuClasses = computed(() => {
     return {
         'layout-topbar-menu-mobile-active': topbarMenuActive.value
@@ -65,7 +84,8 @@ const isOutsideClicked = (event) => {
     <div class="layout-topbar">
         <router-link to="/" class="layout-topbar-logo">
             <img :src="logoUrl" alt="logo" />
-            <h1>BEKANTANJANTAN<span><span class="dashboard">Dashboard</span> Admin</span>
+            <h1>
+                BEKANTANJANTAN<span><span class="dashboard">All In One</span> Complete IT Solution</span>
             </h1>
         </router-link>
 
@@ -78,9 +98,9 @@ const isOutsideClicked = (event) => {
         </button>
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
-            <button @click="onProfileClick()" class="p-link layout-topbar-button">
-                <i class="pi pi-user"></i>
-                <span>Profile</span>
+            <button @click="onProfileClick()" class="p-link layout-topbar-button px-5">
+                <span class="pi pi-user"></span>
+                <i class="px-2">{{ user_username }}</i>
             </button>
         </div>
     </div>
@@ -96,7 +116,6 @@ const isOutsideClicked = (event) => {
 .layout-topbar-logo img {
     height: 65px !important;
 }
-
 
 .layout-topbar-logo h1 {
     font-size: 20px;

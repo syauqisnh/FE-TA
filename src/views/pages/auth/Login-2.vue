@@ -3,6 +3,12 @@ import { useLayout } from '@/layout/composables/layout';
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import AppConfig from '@/layout/AppConfig.vue';
+import axios from 'axios';
+
+const user_email = ref('');
+const user_password = ref('');
+const { contextPath } = useLayout();
+const checked = ref(false);
 
 import '../css/login.css';
 
@@ -13,8 +19,26 @@ const handleRegister = () => {
     router.push('/auth/register');
 };
 
-const handleDashboard = () => {
-    router.push('/');
+const handleLogin = async () => {
+    try {
+        await axios.post('http://localhost:9900/api/v1/login', {
+            email: user_email.value,
+            password: user_password.value
+        });
+        // Sesuaikan respons dan simpan informasi sesi/token jika diperlukan
+        router.push('/'); // Navigasi ke dashboard jika login sukses
+    } catch (error) {
+        // Tampilkan error jika login gagal
+        console.error(error);
+    }
+    // const email = 'haasstt@gmail.com';
+    // const password = '12345678';
+
+    // if (user_email.value == email) {
+    //     if (user_password.value == password) {
+    //         router.push('/');
+    //     }
+    // }
 };
 
 const logoUrl = computed(() => {
@@ -27,29 +51,27 @@ const logoUrl = computed(() => {
     <main class="container-1">
         <div class="gambar-login-1">
             <div class="konten-1">
-                <h1>ADMIN</h1>
                 <h1>CV.BEKANTANJANTAN</h1>
-                <img src="/demo/images/landing/screen-2.png" alt="">
+                <p>All In One Complete IT Solution</p>
+                <img src="/demo/images/landing/screen-2.png" alt="" />
             </div>
         </div>
         <div class="login-1">
             <div class="gambar-bekantan-1">
-                <img :src="logoUrl" alt="Logo Bekantan" class="logo">
+                <img :src="logoUrl" alt="Logo Bekantan" class="logo" />
             </div>
             <div class="judul-login-1">
                 <h2>Silahkan Login</h2>
             </div>
             <div class="email-1">
-                <InputText id="email" type="text" placeholder="Email address" class="w-full mb-5" style="padding: 1rem"
-                    v-model="email" />
+                <InputText v-model="user_email" id="email" type="text" placeholder="Email address" class="w-full mb-5" style="padding: 1rem"/>
             </div>
             <div class="password-1">
-                <InputText id="password" :type="checked ? 'text' : 'password'" placeholder="Password" class="w-full mb-5"
-                    style="padding: 1rem" v-model="password" />
+                <InputText v-model="user_password" id="password" :type="checked ? 'text' : 'password'" placeholder="Password" class="w-full mb-5" style="padding: 1rem"/>
             </div>
             <div class="pembungkus-1">
                 <div class="cekpw-1">
-                    <input type="checkbox" name="cekpw" id="cekpw" v-model="checked">
+                    <input type="checkbox" name="cekpw" id="cekpw" v-model="checked" />
                     <label for="cekpw">Lihat password</label>
                 </div>
                 <div class="lupapw-1">
@@ -57,7 +79,7 @@ const logoUrl = computed(() => {
                 </div>
             </div>
             <div class="masuk-1">
-                <button @click="handleDashboard">Masuk</button>
+                <button @click="handleLogin">Masuk</button>
             </div>
             <div class="register-1">
                 <p>Belum punya akun? <a href="#" @click.prevent="handleRegister">Daftar</a></p>

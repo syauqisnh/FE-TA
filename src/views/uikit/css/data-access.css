@@ -75,10 +75,10 @@
     border: none;
     color: white;
     font-weight: bold;
-    background-color: #bf2121; /* Ubah warna sesuai kebutuhan */
-    border-radius: 5px; /* Sesuaikan dengan border-radius yang digunakan di elemen lain */
+    background-color: #bf2121;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease; /* Efek transisi saat hover */
+    transition: background-color 0.3s ease; 
 }
 .modal-button-danger:hover {
     background-color: #951a1a;
@@ -159,14 +159,14 @@
     border: none;
     color: white;
     font-weight: bold;
-    background-color: #28a745; /* Ubah warna sesuai kebutuhan */
-    border-radius: 5px; /* Sesuaikan dengan border-radius yang digunakan di elemen lain */
+    background-color: #28a745;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease; /* Efek transisi saat hover */
+    transition: background-color 0.3s ease;
 }
 
 .create-data-access:hover {
-    background-color: #218838; /* Ubah warna hover sesuai kebutuhan */
+    background-color: #218838;
 }
 
 .bold-text{

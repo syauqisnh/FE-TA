@@ -87,7 +87,7 @@ const order = ref([
 ]);
 
 onMounted(async () => {
-    fetchData();
+    await fetchData();
 });
 
 const Ubahnilai_jumlah_row = async () => {
@@ -100,19 +100,53 @@ const Ubahnilai_jumlah_row = async () => {
 
 const fetchData = async () => {
     try {
-        const response = await axios.get('http://localhost:9900/api/v1/customer/get_all', {
-            params: {
-                order: { customer_id: selectedOrder.value },
-                keyword: inputSearch.value
-            }
+        const params = new URLSearchParams();
+
+        // Parameter 'order' dikirim sebagai string dan bukan objek
+        if (selectedOrder.value !== 'default') {
+            params.append(`order[${'customer_id'}]`, selectedOrder.value);
+        }
+
+        // Tambahkan parameter 'limit' jika bukan default
+        if (selectedLimit.value !== 'default') {
+            params.append('limit', selectedLimit.value);
+        }
+
+        // Tambahkan parameter 'keyword' jika ada input
+        if (inputSearch.value.trim()) {
+            params.append('keyword', inputSearch.value.trim());
+        }
+
+        // Buat request ke backend
+        const response = await axios.get(`http://localhost:9900/api/v1/customer/get_all`, {
+            params: params
         });
 
-        console.log('Respon API:', response.data);
-        tableData.value = response.data.data || [];
+        console.log('Respon API:', response);
+
+        if (response.data.success) {
+            tableData.value = response.data.data || [];
+
+            tableData.value.forEach((item) => {
+                if (!item.customer_nohp) {
+                    item.customer_nohp = 'BELUM DI ISI';
+                }
+                if (!item.customer_address) {
+                    item.customer_address = 'BELUM DI ISI';
+                }
+            });
+        } else {
+            console.error('Respon sukses tetapi tidak ada data:', response.data.message);
+            tableData.value = [];
+        }
     } catch (error) {
         console.error('Error mengambil data:', error);
+        if (error.response) {
+            console.error('Error response dari backend:', error.response.data);
+        }
     }
 };
+
 const addDataData = async () => {
     const username = customer_username.value;
     const nama_langkap = customer_full_name.value;
@@ -198,12 +232,10 @@ const DeleteDataData = async () => {
         window.location.reload();
     }
 };
-
-watch(fetchData);
 </script>
 
 <template>
-    <div class="judul-halaman">
+    <div class="judul-halaman-customer">
         <h1>Data Customer</h1>
     </div>
     <!-- modal add -->
@@ -274,8 +306,8 @@ watch(fetchData);
         <div class="col-12">
             <div class="card">
                 <div class="container">
-                    <div class="top-tabel">
-                        <button class="create-data" @click="openModal">Tambah Data</button>
+                    <div class="top-tabel-customer">
+                        <button class="create-data-customer" @click="openModal">Tambah Data</button>
 
                         <span class="p-float-label">
                             <Dropdown class="limit-drop" :options="limit" optionLabel="label" optionValue="value" v-model="selectedLimit" @change="Ubahnilai_jumlah_row"> </Dropdown>
@@ -285,18 +317,30 @@ watch(fetchData);
                             <Dropdown class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData"> </Dropdown>
                         </span>
                     </div>
-                    <div class="data-table">
+                    <div class="data-table-customer">
                         <h5>Data Table Customer</h5>
-                        <div class="search-container">
+                        <div class="search-container-customer">
                             <InputText v-model="inputSearch" placeholder="Search..." class="keyword" @keydown.enter="fetchData"></InputText>
-                            <Button icon="pi pi-search" class="search-button" @click="fetchData"></Button>
+                            <Button icon="pi pi-search" class="search-button-customer" @click="fetchData"></Button>
                         </div>
                     </div>
                     <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
                         <Column field="customer_username" header="Username" class="name-column"></Column>
-                        <Column field="customer_full_name" header="Nama Langkap" class="name-column"></Column>
-                        <Column field="customer_nohp" header="Nomor Telepon" class="name-column"></Column>
-                        <Column field="customer_address" header="Alamat" class="name-column"></Column>
+                        <Column field="customer_full_name" header="Nama Lengkap" class="name-column"></Column>
+                        <Column field="customer_nohp" header="Nomor Telepon" class="name-column">
+                            <template #body="rowData">
+                                <span :class="rowData.data.customer_nohp === 'BELUM DI ISI' ? 'text-red' : 'text-black'">
+                                    {{ rowData.data.customer_nohp }}
+                                </span>
+                            </template>
+                        </Column>
+                        <Column field="customer_address" header="Alamat" class="name-column">
+                            <template #body="rowData">
+                                <span :class="rowData.data.customer_address === 'BELUM DI ISI' ? 'text-red' : 'text-black'">
+                                    {{ rowData.data.customer_address }}
+                                </span>
+                            </template>
+                        </Column>
                         <Column field="customer_email" header="Email" class="name-column"></Column>
                         <Column class="actions">
                             <template #body="rowData">

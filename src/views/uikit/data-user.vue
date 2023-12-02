@@ -8,6 +8,8 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import '../uikit/css/data-user.css';
 
+const errorMessage = ref('');
+
 //inisialisasi data level
 const uuid_user = ref();
 const user_username = ref('');
@@ -102,17 +104,50 @@ const Ubahnilai_jumlah_row = async () => {
 
 const fetchData = async () => {
     try {
-        const response = await axios.get('http://localhost:9900/api/v1/user/get_all', {
-            params: {
-                order: { user_id: selectedOrder.value },
-                keyword: inputSearch.value
-            }
+        const params = new URLSearchParams();
+
+        // Parameter 'order' dikirim sebagai string dan bukan objek
+        if (selectedOrder.value !== 'default') {
+            params.append(`order[${'user_id'}]`, selectedOrder.value);
+        }
+
+        // Tambahkan parameter 'limit' jika bukan default
+        if (selectedLimit.value !== 'default') {
+            params.append('limit', selectedLimit.value);
+        }
+
+        // Tambahkan parameter 'keyword' jika ada input
+        if (inputSearch.value.trim()) {
+            params.append('keyword', inputSearch.value.trim());
+        }
+
+        // Buat request ke backend
+        const response = await axios.get(`http://localhost:9900/api/v1/user/get_all`, {
+            params: params
         });
 
-        console.log('Respon API:', response.data);
-        tableData.value = response.data.data || [];
+        console.log('Respon API:', response);
+
+        if (response.data.success) {
+            tableData.value = response.data.data || [];
+
+            tableData.value.forEach((item) => {
+                if (!item.user_nohp) {
+                    item.user_nohp = 'BELUM DI ISI';
+                }
+                if (!item.user_address) {
+                    item.user_address = 'BELUM DI ISI';
+                }
+            });
+        } else {
+            console.error('Respon sukses tetapi tidak ada data:', response.data.message);
+            tableData.value = [];
+        }
     } catch (error) {
         console.error('Error mengambil data:', error);
+        if (error.response) {
+            console.error('Error response dari backend:', error.response.data);
+        }
     }
 };
 const addDataData = async () => {
@@ -200,11 +235,12 @@ const DeleteDataData = async () => {
         window.location.reload();
     }
 };
-
-watch(fetchData);
 </script>
 <template>
     <div class="judul-halaman-user">
+        <div v-if="errorMessage" class="error-message">
+            {{ errorMessage }}
+        </div>
         <h1>Data User</h1>
     </div>
     <div v-if="isModalOpen" class="modal">
@@ -246,7 +282,7 @@ watch(fetchData);
                 <button class="modal-button-suceess" @click="UpdateDataData">Ubah data</button>
             </div>
         </div>
-    </div>  
+    </div>
     <div v-if="isDeleteModalOpen" class="modal">
         <div class="modal-content">
             <!-- Close button -->
@@ -290,8 +326,20 @@ watch(fetchData);
                     <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
                         <Column field="user_username" header="Username" class="name-column"></Column>
                         <Column field="user_full_name" header="Nama Langkap" class="name-column"></Column>
-                        <Column field="user_nohp" header="Nomor Telepon" class="name-column"></Column>
-                        <Column field="user_address" header="Alamat" class="name-column"></Column>
+                        <Column field="user_nohp" header="Nomor Telepon" class="name-column">
+                            <template #body="rowData">
+                                <span :class="rowData.data.user_nohp === 'BELUM DI ISI' ? 'text-red' : 'text-black'">
+                                    {{ rowData.data.user_nohp }}
+                                </span>
+                            </template>
+                        </Column>
+                        <Column field="user_address" header="Alamat" class="name-column">
+                            <template #body="rowData">
+                                <span :class="rowData.data.user_address === 'BELUM DI ISI' ? 'text-red' : 'text-black'">
+                                    {{ rowData.data.user_address }}
+                                </span>
+                            </template>
+                        </Column>
                         <Column field="user_email" header="Email" class="name-column"></Column>
                         <Column class="actions">
                             <template #body="rowData">
