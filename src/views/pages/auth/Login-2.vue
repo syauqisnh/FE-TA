@@ -21,12 +21,6 @@ const logoUrl = computed(() => {
     return `${contextPath}layout/images/Test.jpg`;
 });
 
-const { layoutConfig, contextPath } = useLayout();
-const email = ref('');
-const password = ref('');
-const checked = ref(false);
-
-
 </script>
 
 <template>
