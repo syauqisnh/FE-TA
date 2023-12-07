@@ -1,5 +1,8 @@
 <!-- eslint-disable no-unused-vars -->
 <script setup>
+const Hakaksestolak = ref('');
+const Hakakses = ref('');
+
 import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import DataTable from 'primevue/datatable';
@@ -144,8 +147,9 @@ const fetchData = async () => {
 
         console.log('Respon API:', response.data);
         tableData.value = response.data.data || [];
+        Hakakses.value = response.data.message;
     } catch (error) {
-        console.error('Error mengambil data:', error);
+        Hakaksestolak.value = error.response.data.msg;
     }
 };
 
@@ -230,149 +234,155 @@ watch(multiselectValueLevel, fetchData);
 </script>
 
 <template>
-    <div class="judul-halaman-access">
-        <h1>Data Access</h1>
+    <div v-if="Hakaksestolak">
+        <p>{{ Hakaksestolak }}</p>
     </div>
 
-    <div v-if="isModalOpen" class="modal">
-        <div class="modal-content">
-            <!-- Close button -->
-            <span class="close" @click="closeModal">&times;</span>
-            <h4>Tambah Data</h4>
-            <div class="modal-form-group">
-                <Dropdown v-model="access_modul" :options="moduleOptions" optionLabel="label" optionValue="value" placeholder="Pilih Module" class="modal-input"></Dropdown>
-                <Dropdown v-model="access_permission" :options="permissionOptions" optionLabel="label" optionValue="value" placeholder="Pilih Permission" class="modal-input"></Dropdown>
-                <Dropdown v-model="access_level" :options="levelOptions" optionLabel="label" optionValue="value" placeholder="Pilih Level" class="modal-input"></Dropdown>
-            </div>
-            <div class="modal-form-group">
-                <button class="modal-button-suceess" @click="addDataData">Submit</button>
+    <div v-if="Hakakses">
+        <div class="judul-halaman-access">
+            <h1>Data Access</h1>
+        </div>
+
+        <div v-if="isModalOpen" class="modal">
+            <div class="modal-content">
+                <!-- Close button -->
+                <span class="close" @click="closeModal">&times;</span>
+                <h4>Tambah Data</h4>
+                <div class="modal-form-group">
+                    <Dropdown v-model="access_modul" :options="moduleOptions" optionLabel="label" optionValue="value" placeholder="Pilih Module" class="modal-input"></Dropdown>
+                    <Dropdown v-model="access_permission" :options="permissionOptions" optionLabel="label" optionValue="value" placeholder="Pilih Permission" class="modal-input"></Dropdown>
+                    <Dropdown v-model="access_level" :options="levelOptions" optionLabel="label" optionValue="value" placeholder="Pilih Level" class="modal-input"></Dropdown>
+                </div>
+                <div class="modal-form-group">
+                    <button class="modal-button-suceess" @click="addDataData">Submit</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- modal update -->
-    <div v-if="isUpdateModalOpen" class="modal">
-        <div class="modal-content">
-            <!-- Close button -->
-            <span class="close" @click="closeModalUpdate">&times;</span>
-            <h4>Ubah Data</h4>
-            <div class="modal-form-group">
-                <Dropdown v-model="access_modul" :options="moduleOptions" optionLabel="label" optionValue="value" class="modal-input"></Dropdown>
-                <Dropdown v-model="access_permission" :options="permissionOptions" optionLabel="label" optionValue="value" class="modal-input"></Dropdown>
-                <Dropdown v-model="access_level" :options="levelOptions" optionLabel="label" optionValue="value" class="modal-input"></Dropdown>
-            </div>
-            <div class="modal-form-group">
-                <button class="modal-button-suceess" @click="UpdateDataData">Ubah data</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- modal delete -->
-    <div v-if="isDeleteModalOpen" class="modal">
-        <div class="modal-content">
-            <!-- Close button -->
-            <span class="close" @click="closeModalDelete">&times;</span>
-            <h4>Hapus Data</h4>
-            <div class="modal-form-group">
-                <p>
-                    Apakah Anda yakin untuk menghapus nama level <span class="bold-text"> "{{ access_modul.modul_name }}"</span>
-                </p>
-            </div>
-            <div class="modal-form-group">
-                <button class="modal-button-suceess" @click="DeleteDataData">Hapus data</button>
-            </div>
-            <div class="modal-form-group">
-                <button class="modal-button-danger" @click="closeModalDelete">Batal</button>
+        <!-- modal update -->
+        <div v-if="isUpdateModalOpen" class="modal">
+            <div class="modal-content">
+                <!-- Close button -->
+                <span class="close" @click="closeModalUpdate">&times;</span>
+                <h4>Ubah Data</h4>
+                <div class="modal-form-group">
+                    <Dropdown v-model="access_modul" :options="moduleOptions" optionLabel="label" optionValue="value" class="modal-input"></Dropdown>
+                    <Dropdown v-model="access_permission" :options="permissionOptions" optionLabel="label" optionValue="value" class="modal-input"></Dropdown>
+                    <Dropdown v-model="access_level" :options="levelOptions" optionLabel="label" optionValue="value" class="modal-input"></Dropdown>
+                </div>
+                <div class="modal-form-group">
+                    <button class="modal-button-suceess" @click="UpdateDataData">Ubah data</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="grid p-fluid">
-        <div class="col-12">
-            <div class="card">
-                <div class="container">
-                    <div class="top-tabel-access">
-                        <button class="create-data-access" @click="openModal">Tambah Data</button>
+        <!-- modal delete -->
+        <div v-if="isDeleteModalOpen" class="modal">
+            <div class="modal-content">
+                <!-- Close button -->
+                <span class="close" @click="closeModalDelete">&times;</span>
+                <h4>Hapus Data</h4>
+                <div class="modal-form-group">
+                    <p>
+                        Apakah Anda yakin untuk menghapus nama level <span class="bold-text"> "{{ access_modul.modul_name }}"</span>
+                    </p>
+                </div>
+                <div class="modal-form-group">
+                    <button class="modal-button-suceess" @click="DeleteDataData">Hapus data</button>
+                </div>
+                <div class="modal-form-group">
+                    <button class="modal-button-danger" @click="closeModalDelete">Batal</button>
+                </div>
+            </div>
+        </div>
 
-                        <span class="p-float-label">
-                            <Dropdown class="limit-drop" :options="limit" optionLabel="label" optionValue="value" v-model="selectedLimit" @change="Ubahnilai_jumlah_row"> </Dropdown>
-                        </span>
+        <div class="grid p-fluid">
+            <div class="col-12">
+                <div class="card">
+                    <div class="container">
+                        <div class="top-tabel-access">
+                            <button class="create-data-access" @click="openModal">Tambah Data</button>
 
-                        <span class="p-float-label">
-                            <Dropdown class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData"> </Dropdown>
-                        </span>
+                            <span class="p-float-label">
+                                <Dropdown class="limit-drop" :options="limit" optionLabel="label" optionValue="value" v-model="selectedLimit" @change="Ubahnilai_jumlah_row"> </Dropdown>
+                            </span>
 
-                        <MultiSelect v-model="multiselectValue" :options="multiselectOptions" optionLabel="label" placeholder="Pilih Level" :filter="true">
-                            <label for="dropdown">Filter Data</label>
-                            <template #value="slotProps">
-                                <div class="inline-flex align-items-center py-1 px-2 bg-primary text-primary border-round mr-2" v-for="option of slotProps.value" :key="option.code">
-                                    <div>{{ option.label }}</div>
-                                </div>
-                                <template v-if="!slotProps.value || slotProps.value.length === 0">
-                                    <div class="p-1">Filter Modul</div>
+                            <span class="p-float-label">
+                                <Dropdown class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData"> </Dropdown>
+                            </span>
+
+                            <MultiSelect v-model="multiselectValue" :options="multiselectOptions" optionLabel="label" placeholder="Pilih Level" :filter="true">
+                                <label for="dropdown">Filter Data</label>
+                                <template #value="slotProps">
+                                    <div class="inline-flex align-items-center py-1 px-2 bg-primary text-primary border-round mr-2" v-for="option of slotProps.value" :key="option.code">
+                                        <div>{{ option.label }}</div>
+                                    </div>
+                                    <template v-if="!slotProps.value || slotProps.value.length === 0">
+                                        <div class="p-1">Filter Modul</div>
+                                    </template>
                                 </template>
-                            </template>
-                            <template #option="slotProps">
-                                <div class="flex align-items-center">
-                                    <div>{{ slotProps.option.label }}</div>
-                                </div>
-                            </template>
-                        </MultiSelect>
-
-                        <MultiSelect v-model="multiselectValuePermission" :options="multiselectOptionsPermission" optionLabel="label" placeholder="Pilih Level" :filter="true">
-                            <label for="dropdown">Filter Data</label>
-                            <template #value="slotProps">
-                                <div class="inline-flex align-items-center py-1 px-2 bg-primary text-primary border-round mr-2" v-for="option of slotProps.value" :key="option.code">
-                                    <div>{{ option.label }}</div>
-                                </div>
-                                <template v-if="!slotProps.value || slotProps.value.length === 0">
-                                    <div class="p-1">Filter Permession</div>
+                                <template #option="slotProps">
+                                    <div class="flex align-items-center">
+                                        <div>{{ slotProps.option.label }}</div>
+                                    </div>
                                 </template>
-                            </template>
-                            <template #option="slotProps">
-                                <div class="flex align-items-center">
-                                    <div>{{ slotProps.option.label }}</div>
-                                </div>
-                            </template>
-                        </MultiSelect>
+                            </MultiSelect>
 
-                        <MultiSelect v-model="multiselectValueLevel" :options="multiselectOptionsLevel" optionLabel="label" placeholder="Pilih Level" :filter="true">
-                            <label for="dropdown">Filter Data</label>
-                            <template #value="slotProps">
-                                <div class="inline-flex align-items-center py-1 px-2 bg-primary text-primary border-round mr-2" v-for="option of slotProps.value" :key="option.code">
-                                    <div>{{ option.label }}</div>
-                                </div>
-                                <template v-if="!slotProps.value || slotProps.value.length === 0">
-                                    <div class="p-1">Filter Level</div>
+                            <MultiSelect v-model="multiselectValuePermission" :options="multiselectOptionsPermission" optionLabel="label" placeholder="Pilih Level" :filter="true">
+                                <label for="dropdown">Filter Data</label>
+                                <template #value="slotProps">
+                                    <div class="inline-flex align-items-center py-1 px-2 bg-primary text-primary border-round mr-2" v-for="option of slotProps.value" :key="option.code">
+                                        <div>{{ option.label }}</div>
+                                    </div>
+                                    <template v-if="!slotProps.value || slotProps.value.length === 0">
+                                        <div class="p-1">Filter Permession</div>
+                                    </template>
                                 </template>
-                            </template>
-                            <template #option="slotProps">
-                                <div class="flex align-items-center">
-                                    <div>{{ slotProps.option.label }}</div>
-                                </div>
-                            </template>
-                        </MultiSelect>
-                    </div>
-                    <div class="data-table-access">
-                        <h5>Data Table Access</h5>
-                        <div class="search-container-access">
-                            <InputText v-model="inputSearch" placeholder="Search..." class="keyword" @keydown.enter="fetchData"></InputText>
-                            <Button icon="pi pi-search" class="search-button-access" @click="fetchData"></Button>
+                                <template #option="slotProps">
+                                    <div class="flex align-items-center">
+                                        <div>{{ slotProps.option.label }}</div>
+                                    </div>
+                                </template>
+                            </MultiSelect>
+
+                            <MultiSelect v-model="multiselectValueLevel" :options="multiselectOptionsLevel" optionLabel="label" placeholder="Pilih Level" :filter="true">
+                                <label for="dropdown">Filter Data</label>
+                                <template #value="slotProps">
+                                    <div class="inline-flex align-items-center py-1 px-2 bg-primary text-primary border-round mr-2" v-for="option of slotProps.value" :key="option.code">
+                                        <div>{{ option.label }}</div>
+                                    </div>
+                                    <template v-if="!slotProps.value || slotProps.value.length === 0">
+                                        <div class="p-1">Filter Level</div>
+                                    </template>
+                                </template>
+                                <template #option="slotProps">
+                                    <div class="flex align-items-center">
+                                        <div>{{ slotProps.option.label }}</div>
+                                    </div>
+                                </template>
+                            </MultiSelect>
                         </div>
+                        <div class="data-table-access">
+                            <h5>Data Table Access</h5>
+                            <div class="search-container-access">
+                                <InputText v-model="inputSearch" placeholder="Search..." class="keyword" @keydown.enter="fetchData"></InputText>
+                                <Button icon="pi pi-search" class="search-button-access" @click="fetchData"></Button>
+                            </div>
+                        </div>
+                        <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
+                            <Column field="access_modul.modul_name" header="Modul" class="name-column"></Column>
+                            <Column field="access_permission.permission_name" header="Permission" class="name-column"></Column>
+                            <Column field="access_level.level_name" header="Level" class="name-column"></Column>
+                            <Column class="actions">
+                                <template #body="rowData">
+                                    <div class="action-icons-access">
+                                        <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.access_uuid)"></Button>
+                                        <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.access_uuid)"></Button>
+                                    </div>
+                                </template>
+                            </Column>
+                        </DataTable>
                     </div>
-                    <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
-                        <Column field="access_modul.modul_name" header="Modul" class="name-column"></Column>
-                        <Column field="access_permission.permission_name" header="Permission" class="name-column"></Column>
-                        <Column field="access_level.level_name" header="Level" class="name-column"></Column>
-                        <Column class="actions">
-                            <template #body="rowData">
-                                <div class="action-icons-access">
-                                    <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.access_uuid)"></Button>
-                                    <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.access_uuid)"></Button>
-                                </div>
-                            </template>
-                        </Column>
-                    </DataTable>
                 </div>
             </div>
         </div>

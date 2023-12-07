@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -14,7 +14,14 @@ const inputSearch = ref('');
 const selectedOrder = ref('default');
 const selectedLimit = ref('default');
 
+const Hakaksestolak = ref('');
+const Hakakses = ref('');
+
 let jumlah_row = 5;
+
+onMounted(async () => {
+    fetchData();
+});
 
 const limit = ref([
     { value: 'default', label: 'Limit Data' },
@@ -36,77 +43,78 @@ const fetchData = async () => {
         const response = await axios.get('http://localhost:9900/api/v1/media/get_all', {
             params: {
                 order: { media_id: selectedOrder.value },
-                keyword: inputSearch.value,
+                keyword: inputSearch.value
             }
         });
 
         console.log('Respon API:', response.data);
         tableData.value = response.data.data || [];
+        Hakakses.value = response.data.message;
     } catch (error) {
         console.error('Error mengambil data:', error);
+        Hakaksestolak.value = error.response.data.msg;
     }
 };
-
-
-watch(fetchData);
 </script>
 <template>
-    <div class="judul-halaman-media">
-        <h1>Data Media</h1>
+    <div v-if="Hakaksestolak">
+        <p>{{ Hakaksestolak }}</p>
     </div>
-    <div class="grid p-fluid">
-        <div class="col-12">
-            <div class="card">
-                <div class="container">
-                    <div class="top-tabel-media">
-                        <span class="p-float-label">
-                            <Dropdown class="limit-drop" :options="limit" optionLabel="label" optionValue="value"
-                                v-model="selectedLimit" @change="Ubahnilai_jumlah_row"> </Dropdown>
-                        </span>
 
-                        <span class="p-float-label">
-                            <Dropdown class="order-drop" :options="order" optionLabel="label" optionValue="value"
-                                v-model="selectedOrder" @change="fetchData"> </Dropdown>
-                        </span>
+    <div v-if="Hakakses">
+        <div class="judul-halaman-media">
+            <h1>Data Media</h1>
+        </div>
+        <div class="grid p-fluid">
+            <div class="col-12">
+                <div class="card">
+                    <div class="container">
+                        <div class="top-tabel-media">
+                            <span class="p-float-label">
+                                <Dropdown class="limit-drop" :options="limit" optionLabel="label" optionValue="value" v-model="selectedLimit" @change="Ubahnilai_jumlah_row"> </Dropdown>
+                            </span>
 
-                        <MultiSelect v-model="multiselectValue" :options="multiselectValues" optionLabel="name" placeholder="Pilih Media" :filter="true">
-                            <label for="dropdown">Filter Data</label>
-                            <template #value="slotProps">
-                                <div class="inline-flex align-items-center py-1 px-2 bg-primary text-primary border-round mr-2" v-for="option of slotProps.value" :key="option.code">
-                                    <div>{{ option.name }}</div>
-                                </div>
-                                <template v-if="!slotProps.value || slotProps.value.length === 0">
-                                    <div class="p-1">Filter</div>
+                            <span class="p-float-label">
+                                <Dropdown class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData"> </Dropdown>
+                            </span>
+
+                            <MultiSelect v-model="multiselectValue" :options="multiselectValues" optionLabel="name" placeholder="Pilih Media" :filter="true">
+                                <label for="dropdown">Filter Data</label>
+                                <template #value="slotProps">
+                                    <div class="inline-flex align-items-center py-1 px-2 bg-primary text-primary border-round mr-2" v-for="option of slotProps.value" :key="option.code">
+                                        <div>{{ option.name }}</div>
+                                    </div>
+                                    <template v-if="!slotProps.value || slotProps.value.length === 0">
+                                        <div class="p-1">Filter</div>
+                                    </template>
                                 </template>
-                            </template>
-                            <template #option="slotProps">
-                                <div class="flex align-items-center">
-                                    <div>{{ slotProps.option.name }}</div>
-                                </div>
-                            </template>
-                        </MultiSelect>
-                    </div>
-                    <div class="data-table-media">
-                        <h5>Data Table Media</h5>
-                        <div class="search-container-media">
-                            <InputText v-model="inputSearch" placeholder="Search..." class="keyword"
-                                @keydown.enter="fetchData"></InputText>
-                            <Button icon="pi pi-search" class="search-button-media" @click="fetchData"></Button>
+                                <template #option="slotProps">
+                                    <div class="flex align-items-center">
+                                        <div>{{ slotProps.option.name }}</div>
+                                    </div>
+                                </template>
+                            </MultiSelect>
                         </div>
+                        <div class="data-table-media">
+                            <h5>Data Table Media</h5>
+                            <div class="search-container-media">
+                                <InputText v-model="inputSearch" placeholder="Search..." class="keyword" @keydown.enter="fetchData"></InputText>
+                                <Button icon="pi pi-search" class="search-button-media" @click="fetchData"></Button>
+                            </div>
+                        </div>
+                        <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
+                            <Column field="media_table" header="Tabel" class="name-column"></Column>
+                            <Column field="media_name" header="Nama" class="name-column"></Column>
+                            <Column field="media_hash_name" header="Nama Belakang" class="name-column"></Column>
+                            <Column field="media_category" header="Kategori" class="name-column"></Column>
+                            <Column field="media_extensi" header="Extensi" class="name-column"></Column>
+                            <Column field="media_size" header="Size" class="name-column"></Column>
+                            <Column field="media_url" header="URL" class="name-column"></Column>
+                            <Column field="media_metadata" header="Meta Data" class="name-column"></Column>
+                        </DataTable>
                     </div>
-                    <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
-                        <Column field="media_table" header="Tabel" class="name-column"></Column>
-                        <Column field="media_name" header="Nama" class="name-column"></Column>
-                        <Column field="media_hash_name" header="Nama Belakang" class="name-column"></Column>
-                        <Column field="media_category" header="Kategori" class="name-column"></Column>
-                        <Column field="media_extensi" header="Extensi" class="name-column"></Column>
-                        <Column field="media_size" header="Size" class="name-column"></Column>
-                        <Column field="media_url" header="URL" class="name-column"></Column>
-                        <Column field="media_metadata" header="Meta Data" class="name-column"></Column>
-                    </DataTable>
                 </div>
             </div>
         </div>
     </div>
 </template>
-

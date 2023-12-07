@@ -1,6 +1,6 @@
 <!-- eslint-disable no-unused-vars -->
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios, { Axios } from 'axios';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -8,6 +8,9 @@ import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import '../uikit/css/data-module.css';
+
+const Hakaksestolak = ref('');
+const Hakakses = ref('');
 
 const uuid_module = ref();
 const module_name = ref('');
@@ -72,17 +75,44 @@ onMounted(async () => {
 
 const fetchData = async () => {
     try {
-        const response = await axios.get('http://localhost:9900/api/v1/module/get_all', {
-            params: {
-                order: { module_id: selectedOrder.value },
-                keyword: inputSearch.value
-            }
+        const params = new URLSearchParams();
+
+        // Tambahkan parameter 'order' berdasarkan 'selectedOrder.value'
+        if (selectedOrder.value !== 'default') {
+            params.append(`order[${'module_id'}]`, selectedOrder.value);
+        }
+
+        // Tambahkan parameter 'limit' jika bukan default
+        if (selectedLimit.value && selectedLimit.value !== 'default') {
+            params.append('limit', selectedLimit.value);
+        }
+
+        // Tambahkan parameter 'keyword' jika ada input
+        if (inputSearch.value.trim()) {
+            params.append('keyword', inputSearch.value.trim());
+        }
+
+        // Buat request ke backend
+        const response = await axios.get(`http://localhost:9900/api/v1/module/get_all`, {
+            params: params
         });
 
-        console.log('Respon API:', response.data);
-        tableData.value = response.data.data || [];
+        console.log('Respon API:', response);
+
+        if (response.data.success) {
+            tableData.value = response.data.data || [];
+            Hakakses.value = response.data.message;
+            // Anda bisa menambahkan manipulasi data tambahan di sini jika diperlukan
+        } else {
+            console.error('Respon sukses tetapi tidak ada data:', response.data.message);
+            tableData.value = [];
+        }
     } catch (error) {
         console.error('Error mengambil data:', error);
+        if (error.response) {
+            console.error('Error response dari backend:', error.response.data);
+            Hakaksestolak.value = error.response.data.msg;
+        }
     }
 };
 
@@ -144,94 +174,98 @@ const Ubahnilai_jumlah_row = () => {
         jumlah_row = parseInt(selectedLimit.value, 10);
     }
 };
-
-watch(fetchData);
 </script>
 
 <template>
-    <div class="judul-halaman-module">
-        <h1>Data Module</h1>
+    <div v-if="Hakaksestolak">
+        <p>{{ Hakaksestolak }}</p>
     </div>
 
-    <div v-if="isModalOpen" class="modal">
-        <div class="modal-content">
-            <!-- Close button -->
-            <span class="close" @click="closeModal">&times;</span>
-            <h4>Tambah Data</h4>
-            <div class="modal-form-group">
-                <InputText v-model="module_name" placeholder="Tambahkan Module" class="modal-input"></InputText>
-            </div>
-            <div class="modal-form-group">
-                <button class="modal-button-suceess" @click="addData">Submit</button>
+    <div v-if="Hakakses">
+        <div class="judul-halaman-module">
+            <h1>Data Module</h1>
+        </div>
+
+        <div v-if="isModalOpen" class="modal">
+            <div class="modal-content">
+                <!-- Close button -->
+                <span class="close" @click="closeModal">&times;</span>
+                <h4>Tambah Data</h4>
+                <div class="modal-form-group">
+                    <InputText v-model="module_name" placeholder="Tambahkan Module" class="modal-input"></InputText>
+                </div>
+                <div class="modal-form-group">
+                    <button class="modal-button-suceess" @click="addData">Submit</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div v-if="isUpdateModalOpen" class="modal">
-        <div class="modal-content">
-            <span class="close" @click="closeModalUpdate">&times;</span>
-            <h4>Ubah Data</h4>
-            <div class="modal-form-group">
-                <InputText v-model="edit_module_name" :value="edit_module_name" class="modal-input"></InputText>
-            </div>
-            <div class="modal-form-group">
-                <button class="modal-button-suceess" @click="updateData">Ubah data</button>
-            </div>
-        </div>
-    </div>
-
-    <div v-if="isDeleteModalOpen" class="modal">
-        <div class="modal-content">
-            <!-- Close button -->
-            <span class="close" @click="closeModalDelete">&times;</span>
-            <h4>Hapus Data</h4>
-            <div class="modal-form-group">
-                <p>
-                    Apakah Anda yakin untuk menghapus nama modul <span class="bold-text"> "{{ module_name }}"</span>
-                </p>
-            </div>
-            <div class="modal-form-group">
-                <button class="modal-button-suceess" @click="deleteData">Hapus data</button>
-            </div>
-            <div class="modal-form-group">
-                <button class="modal-button-danger" @click="closeModalDelete">Batal</button>
+        <div v-if="isUpdateModalOpen" class="modal">
+            <div class="modal-content">
+                <span class="close" @click="closeModalUpdate">&times;</span>
+                <h4>Ubah Data</h4>
+                <div class="modal-form-group">
+                    <InputText v-model="edit_module_name" :value="edit_module_name" class="modal-input"></InputText>
+                </div>
+                <div class="modal-form-group">
+                    <button class="modal-button-suceess" @click="updateData">Ubah data</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="grid p-fluid">
-        <div class="col-12">
-            <div class="card">
-                <div class="container">
-                    <div class="top-tabel-module">
-                        <button class="create-data-module" @click="openModal">Tambah Data</button>
+        <div v-if="isDeleteModalOpen" class="modal">
+            <div class="modal-content">
+                <!-- Close button -->
+                <span class="close" @click="closeModalDelete">&times;</span>
+                <h4>Hapus Data</h4>
+                <div class="modal-form-group">
+                    <p>
+                        Apakah Anda yakin untuk menghapus nama modul <span class="bold-text"> "{{ module_name }}"</span>
+                    </p>
+                </div>
+                <div class="modal-form-group">
+                    <button class="modal-button-suceess" @click="deleteData">Hapus data</button>
+                </div>
+                <div class="modal-form-group">
+                    <button class="modal-button-danger" @click="closeModalDelete">Batal</button>
+                </div>
+            </div>
+        </div>
 
-                        <span class="p-float-label">
-                            <Dropdown class="limit-drop" :options="limit" optionLabel="label" optionValue="value" v-model="selectedLimit" @change="Ubahnilai_jumlah_row"> </Dropdown>
-                        </span>
+        <div class="grid p-fluid">
+            <div class="col-12">
+                <div class="card">
+                    <div class="container">
+                        <div class="top-tabel-module">
+                            <button class="create-data-module" @click="openModal">Tambah Data</button>
 
-                        <span class="p-float-label">
-                            <Dropdown class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData"> </Dropdown>
-                        </span>
-                    </div>
-                    <div class="data-table-module">
-                        <h5>Data Table Module</h5>
-                        <div class="search-container-module">
-                            <InputText v-model="inputSearch" placeholder="Search..." class="keyword" @keydown.enter="fetchData"></InputText>
-                            <Button icon="pi pi-search" class="search-button-module" @click="fetchData"></Button>
+                            <span class="p-float-label">
+                                <Dropdown class="limit-drop" :options="limit" optionLabel="label" optionValue="value" v-model="selectedLimit" @change="Ubahnilai_jumlah_row"> </Dropdown>
+                            </span>
+
+                            <span class="p-float-label">
+                                <Dropdown class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData"> </Dropdown>
+                            </span>
                         </div>
+                        <div class="data-table-module">
+                            <h5>Data Table Module</h5>
+                            <div class="search-container-module">
+                                <InputText v-model="inputSearch" placeholder="Search..." class="keyword" @keydown.enter="fetchData"></InputText>
+                                <Button icon="pi pi-search" class="search-button-module" @click="fetchData"></Button>
+                            </div>
+                        </div>
+                        <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
+                            <Column field="module_name" header="Nama" class="name-column"></Column>
+                            <Column class="actions">
+                                <template #body="rowData">
+                                    <div class="action-icons-module">
+                                        <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.module_uuid)"></Button>
+                                        <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.module_uuid)"></Button>
+                                    </div>
+                                </template>
+                            </Column>
+                        </DataTable>
                     </div>
-                    <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
-                        <Column field="module_name" header="Nama" class="name-column"></Column>
-                        <Column class="actions">
-                            <template #body="rowData">
-                                <div class="action-icons-module">
-                                    <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.module_uuid)"></Button>
-                                    <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.module_uuid)"></Button>
-                                </div>
-                            </template>
-                        </Column>
-                    </DataTable>
                 </div>
             </div>
         </div>

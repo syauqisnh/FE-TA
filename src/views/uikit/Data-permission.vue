@@ -8,6 +8,9 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import '../uikit/css/data-permission.css';
 
+const Hakaksestolak = ref('');
+const Hakakses = ref('');
+
 const uuid_permission = ref();
 const permission_name = ref('');
 const edit_permission_name = ref('');
@@ -74,14 +77,15 @@ const fetchData = async () => {
         const response = await axios.get('http://localhost:9900/api/v1/permissions/get_all', {
             params: {
                 order: { permission_id: selectedOrder.value },
-                keyword: inputSearch.value,
+                keyword: inputSearch.value
             }
         });
 
         console.log('Respon API:', response.data);
         tableData.value = response.data.data || [];
+        Hakakses.value = response.data.message;
     } catch (error) {
-        console.error('Error mengambil data:', error);
+        Hakaksestolak.value = error.response.data.msg;
     }
 };
 
@@ -148,89 +152,95 @@ watch(fetchData);
 </script>
 
 <template>
-    <div class="judul-halaman-permission">
-        <h1>Data Permission</h1>
+    <div v-if="Hakaksestolak">
+        <p>{{ Hakaksestolak }}</p>
     </div>
 
-    <div v-if="isModalOpen" class="modal">
-        <div class="modal-content">
-            <!-- Close button -->
-            <span class="close" @click="closeModal">&times;</span>
-            <h4>Tambah Data</h4>
-            <div class="modal-form-group">
-                <InputText v-model="permission_name" placeholder="Tambahkan Permission" class="modal-input"></InputText>
-            </div>
-            <div class="modal-form-group">
-                <button class="modal-button-suceess" @click="addData">Submit</button>
+    <div v-if="Hakakses">
+        <div class="judul-halaman-permission">
+            <h1>Data Permission</h1>
+        </div>
+
+        <div v-if="isModalOpen" class="modal">
+            <div class="modal-content">
+                <!-- Close button -->
+                <span class="close" @click="closeModal">&times;</span>
+                <h4>Tambah Data</h4>
+                <div class="modal-form-group">
+                    <InputText v-model="permission_name" placeholder="Tambahkan Permission" class="modal-input"></InputText>
+                </div>
+                <div class="modal-form-group">
+                    <button class="modal-button-suceess" @click="addData">Submit</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div v-if="isUpdateModalOpen" class="modal">
-        <div class="modal-content">
-            <span class="close" @click="closeModalUpdate">&times;</span>
-            <h4>Ubah Data</h4>
-            <div class="modal-form-group">
-                <InputText v-model="edit_permission_name" :value="edit_permission_name" class="modal-input"></InputText>
-            </div>
-            <div class="modal-form-group">
-                <button class="modal-button-suceess" @click="updateData">Ubah data</button>
-            </div>
-        </div>
-    </div>
-
-    <div v-if="isDeleteModalOpen" class="modal">
-        <div class="modal-content">
-            <!-- Close button -->
-            <span class="close" @click="closeModalDelete">&times;</span>
-            <h4>Hapus Data</h4>
-            <div class="modal-form-group">
-                <p>
-                    Apakah Anda yakin untuk menghapus nama permission <span class="bold-text"> "{{ permission_name }}"</span>
-                </p>
-            </div>
-            <div class="modal-form-group">
-                <button class="modal-button-suceess" @click="deleteData">Hapus data</button>
-            </div>
-            <div class="modal-form-group">
-                <button class="modal-button-danger" @click="closeModalDelete">Batal</button>
+        <div v-if="isUpdateModalOpen" class="modal">
+            <div class="modal-content">
+                <span class="close" @click="closeModalUpdate">&times;</span>
+                <h4>Ubah Data</h4>
+                <div class="modal-form-group">
+                    <InputText v-model="edit_permission_name" :value="edit_permission_name" class="modal-input"></InputText>
+                </div>
+                <div class="modal-form-group">
+                    <button class="modal-button-suceess" @click="updateData">Ubah data</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="grid p-fluid">
-        <div class="col-12">
-            <div class="card">
-                <div class="container">
-                    <div class="top-tabel-permission">
-                        <button class="create-data-permission" @click="openModal">Tambah Data</button>
+        <div v-if="isDeleteModalOpen" class="modal">
+            <div class="modal-content">
+                <!-- Close button -->
+                <span class="close" @click="closeModalDelete">&times;</span>
+                <h4>Hapus Data</h4>
+                <div class="modal-form-group">
+                    <p>
+                        Apakah Anda yakin untuk menghapus nama permission <span class="bold-text"> "{{ permission_name }}"</span>
+                    </p>
+                </div>
+                <div class="modal-form-group">
+                    <button class="modal-button-suceess" @click="deleteData">Hapus data</button>
+                </div>
+                <div class="modal-form-group">
+                    <button class="modal-button-danger" @click="closeModalDelete">Batal</button>
+                </div>
+            </div>
+        </div>
 
-                        <span class="p-float-label">
-                            <Dropdown class="limit-drop" :options="limit" optionLabel="label" optionValue="value" v-model="selectedLimit" @change="Ubahnilai_jumlah_row"> </Dropdown>
-                        </span>
+        <div class="grid p-fluid">
+            <div class="col-12">
+                <div class="card">
+                    <div class="container">
+                        <div class="top-tabel-permission">
+                            <button class="create-data-permission" @click="openModal">Tambah Data</button>
 
-                        <span class="p-float-label">
-                            <Dropdown class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData"> </Dropdown>
-                        </span>
-                    </div>
-                    <div class="data-table-permission">
-                        <h5>Data Table Permission</h5>
-                        <div class="search-container-permission">
-                            <InputText v-model="inputSearch" placeholder="Search..." class="keyword" @keydown.enter="fetchData"></InputText>
-                            <Button icon="pi pi-search" class="search-button-permission" @click="fetchData"></Button>
+                            <span class="p-float-label">
+                                <Dropdown class="limit-drop" :options="limit" optionLabel="label" optionValue="value" v-model="selectedLimit" @change="Ubahnilai_jumlah_row"> </Dropdown>
+                            </span>
+
+                            <span class="p-float-label">
+                                <Dropdown class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData"> </Dropdown>
+                            </span>
                         </div>
+                        <div class="data-table-permission">
+                            <h5>Data Table Permission</h5>
+                            <div class="search-container-permission">
+                                <InputText v-model="inputSearch" placeholder="Search..." class="keyword" @keydown.enter="fetchData"></InputText>
+                                <Button icon="pi pi-search" class="search-button-permission" @click="fetchData"></Button>
+                            </div>
+                        </div>
+                        <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
+                            <Column field="permission_name" header="Nama" class="name-column"></Column>
+                            <Column class="actions">
+                                <template #body="rowData">
+                                    <div class="action-icons-permission">
+                                        <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.permission_uuid)"></Button>
+                                        <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.permission_uuid)"></Button>
+                                    </div>
+                                </template>
+                            </Column>
+                        </DataTable>
                     </div>
-                    <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
-                        <Column field="permission_name" header="Nama" class="name-column"></Column>
-                        <Column class="actions">
-                            <template #body="rowData">
-                                <div class="action-icons-permission">
-                                    <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.permission_uuid)"></Button>
-                                    <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.permission_uuid)"></Button>
-                                </div>
-                            </template>
-                        </Column>
-                    </DataTable>
                 </div>
             </div>
         </div>

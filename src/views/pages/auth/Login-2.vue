@@ -5,6 +5,8 @@ import { useRouter } from 'vue-router';
 import AppConfig from '@/layout/AppConfig.vue';
 import axios from 'axios';
 
+const validationLogin = ref('');
+
 const user_email = ref('');
 const user_password = ref('');
 const { contextPath } = useLayout();
@@ -30,6 +32,7 @@ const handleLogin = async () => {
     } catch (error) {
         // Tampilkan error jika login gagal
         console.error(error);
+        validationLogin.value = error.response.data.msg
     }
     // const email = 'haasstt@gmail.com';
     // const password = '12345678';
@@ -62,6 +65,7 @@ const logoUrl = computed(() => {
             </div>
             <div class="judul-login-1">
                 <h2>Silahkan Login</h2>
+                <p v-if="validationLogin" class="validation-error text-danger">{{ validationLogin }}</p>
             </div>
             <div class="email-1">
                 <InputText v-model="user_email" id="email" type="text" placeholder="Email address" class="w-full mb-5" style="padding: 1rem"/>

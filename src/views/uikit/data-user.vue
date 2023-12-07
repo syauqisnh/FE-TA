@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -8,7 +8,11 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import '../uikit/css/data-user.css';
 
+const Hakaksestolak = ref('');
+const Hakakses = ref('');
+
 const errorMessage = ref('');
+const phoneValidationError = ref('');
 
 //inisialisasi data level
 const uuid_user = ref();
@@ -59,6 +63,7 @@ const closeModalUpdate = () => {
     user_address.value = '';
     user_email.value = '';
     user_password.value = '';
+    phoneValidationError.value = '';
 };
 
 const openModalDelete = () => {
@@ -130,6 +135,7 @@ const fetchData = async () => {
 
         if (response.data.success) {
             tableData.value = response.data.data || [];
+            Hakakses.value = response.data.message;
 
             tableData.value.forEach((item) => {
                 if (!item.user_nohp) {
@@ -147,6 +153,7 @@ const fetchData = async () => {
         console.error('Error mengambil data:', error);
         if (error.response) {
             console.error('Error response dari backend:', error.response.data);
+            Hakaksestolak.value = error.response.data.msg;
         }
     }
 };
@@ -193,21 +200,25 @@ const UpdateDataData = async () => {
     const nama_langkap = user_full_name.value;
     const nohp = user_nohp.value;
     const address = user_address.value;
-    const email = user_email.value;
-    const password = user_password.value;
-    const response = await axios.put(`http://localhost:9900/api/v1/user/${uuid_user.value}`, {
-        user_username: username,
-        user_full_name: nama_langkap,
-        user_nohp: nohp,
-        user_address: address,
-        user_email: email,
-        user_password: password
-    });
+    // const email = user_email.value;
+    // const password = user_password.value;
+    try {
+        const response = await axios.put(`http://localhost:9900/api/v1/user/${uuid_user.value}`, {
+            user_username: username,
+            user_full_name: nama_langkap,
+            user_nohp: nohp,
+            user_address: address
+            // user_email: email,
+            // user_password: password
+        });
 
-    if (response) {
-        closeModalUpdate();
-        window.location.reload();
-        uuid_user.value = '';
+        if (response) {
+            closeModalUpdate();
+            window.location.reload();
+            uuid_user.value = '';
+        }
+    } catch (error) {
+        ceknohp(error.response.data.message);
     }
 };
 const openModalHapus = async (value) => {
@@ -235,121 +246,132 @@ const DeleteDataData = async () => {
         window.location.reload();
     }
 };
+
+const ceknohp = (newVal) => {
+    phoneValidationError.value = newVal;
+};
 </script>
 <template>
-    <div class="judul-halaman-user">
-        <div v-if="errorMessage" class="error-message">
-            {{ errorMessage }}
-        </div>
-        <h1>Data User</h1>
+    <div v-if="Hakaksestolak">
+        <p>{{ Hakaksestolak }}</p>
     </div>
-    <div v-if="isModalOpen" class="modal">
-        <div class="modal-content">
-            <!-- Close button -->
-            <span class="close" @click="closeModal">&times;</span>
-            <h4>Tambah Data</h4>
-            <div class="modal-form-group">
-                <InputText v-model="user_username" placeholder="Username" class="modal-input"></InputText>
-                <InputText v-model="user_full_name" placeholder="Nama Lengkap" class="modal-input"></InputText>
-                <InputText v-model="user_nohp" placeholder="Nomor Telepon (OPSIONAL)" class="modal-input"></InputText>
-                <InputText v-model="user_address" placeholder="Alamat (OPSIONAL)" class="modal-input"></InputText>
-                <InputText v-model="user_email" placeholder="Email" class="modal-input"></InputText>
-                <InputText id="password" :type="checked ? 'text' : 'password'" placeholder="Password" class="modal-input" v-model="user_password" />
-                <div class="cekpw-1">
-                    <input type="checkbox" name="cekpw" id="cekpw" v-model="checked" />
-                    <label for="cekpw">Lihat password</label>
+    <div v-if="Hakakses">
+        <div class="judul-halaman-user">
+            <div v-if="errorMessage" class="error-message">
+                {{ errorMessage }}
+            </div>
+            <h1>Data User</h1>
+        </div>
+        <div v-if="isModalOpen" class="modal">
+            <div class="modal-content">
+                <!-- Close button -->
+                <span class="close" @click="closeModal">&times;</span>
+                <h4>Tambah Data</h4>
+                <div class="modal-form-group">
+                    <InputText v-model="user_username" placeholder="Username" class="modal-input"></InputText>
+                    <InputText v-model="user_full_name" placeholder="Nama Lengkap" class="modal-input"></InputText>
+                    <InputText v-model="user_nohp" placeholder="Nomor Telepon (OPSIONAL)" class="modal-input"></InputText>
+                    <InputText v-model="user_address" placeholder="Alamat (OPSIONAL)" class="modal-input"></InputText>
+                    <InputText v-model="user_email" placeholder="Email" class="modal-input"></InputText>
+                    <InputText id="password" :type="checked ? 'text' : 'password'" placeholder="Password" class="modal-input" v-model="user_password" />
+                    <div class="cekpw-1">
+                        <input type="checkbox" name="cekpw" id="cekpw" v-model="checked" />
+                        <label for="cekpw">Lihat password</label>
+                    </div>
+                </div>
+                <div class="modal-form-group">
+                    <button class="modal-button-suceess" @click="addDataData">Submit</button>
                 </div>
             </div>
-            <div class="modal-form-group">
-                <button class="modal-button-suceess" @click="addDataData">Submit</button>
+        </div>
+        <div v-if="isUpdateModalOpen" class="modal">
+            <div class="modal-content">
+                <!-- Close button -->
+                <span class="close" @click="closeModalUpdate">&times;</span>
+                <h4>Ubah Data</h4>
+                <div class="modal-form-group">
+                    <InputText v-model="user_username" :value="user_username" class="modal-input"></InputText>
+                    <InputText v-model="user_full_name" :value="user_full_name" class="modal-input"></InputText>
+                    <InputText v-model="user_nohp" :value="user_nohp" class="modal-input"></InputText>
+                    <p v-if="phoneValidationError" class="validation-error text-red">{{ phoneValidationError }}</p>
+                    <InputText v-model="user_address" :value="user_address" class="modal-input"></InputText>
+                    <!-- <InputText v-model="user_email" :value="user_email" class="modal-input"></InputText>
+                <InputText v-model="user_password" :value="user_password" class="modal-input"></InputText> -->
+                </div>
+                <div class="modal-form-group">
+                    <button class="modal-button-suceess" @click="UpdateDataData">Ubah data</button>
+                </div>
             </div>
         </div>
-    </div>
-    <div v-if="isUpdateModalOpen" class="modal">
-        <div class="modal-content">
-            <!-- Close button -->
-            <span class="close" @click="closeModalUpdate">&times;</span>
-            <h4>Ubah Data</h4>
-            <div class="modal-form-group">
-                <InputText v-model="user_username" :value="user_username" class="modal-input"></InputText>
-                <InputText v-model="user_full_name" :value="user_full_name" class="modal-input"></InputText>
-                <InputText v-model="user_nohp" :value="user_nohp" class="modal-input"></InputText>
-                <InputText v-model="user_address" :value="user_address" class="modal-input"></InputText>
-                <InputText v-model="user_email" :value="user_email" class="modal-input"></InputText>
-                <InputText v-model="user_password" :value="user_password" class="modal-input"></InputText>
-            </div>
-            <div class="modal-form-group">
-                <button class="modal-button-suceess" @click="UpdateDataData">Ubah data</button>
-            </div>
-        </div>
-    </div>
-    <div v-if="isDeleteModalOpen" class="modal">
-        <div class="modal-content">
-            <!-- Close button -->
-            <span class="close" @click="closeModalDelete">&times;</span>
-            <h4>Hapus Data</h4>
-            <div class="modal-form-group">
-                <p>
-                    Apakah Anda yakin untuk menghapus nama User <span class="bold-text"> "{{ user_username }}"</span>
-                </p>
-            </div>
-            <div class="modal-form-group">
-                <button class="modal-button-suceess" @click="DeleteDataData">Hapus data</button>
-            </div>
-            <div class="modal-form-group">
-                <button class="modal-button-danger" @click="closeModalDelete">Batal</button>
+        <div v-if="isDeleteModalOpen" class="modal">
+            <div class="modal-content">
+                <!-- Close button -->
+                <span class="close" @click="closeModalDelete">&times;</span>
+                <h4>Hapus Data</h4>
+                <div class="modal-form-group">
+                    <p>
+                        Apakah Anda yakin untuk menghapus nama User <span class="bold-text"> "{{ user_username }}"</span>
+                    </p>
+                </div>
+                <div class="modal-form-group">
+                    <button class="modal-button-suceess" @click="DeleteDataData">Hapus data</button>
+                </div>
+                <div class="modal-form-group">
+                    <button class="modal-button-danger" @click="closeModalDelete">Batal</button>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="grid p-fluid">
-        <div class="col-12">
-            <div class="card">
-                <div class="container">
-                    <div class="top-tabel-user">
-                        <button class="create-data-user" @click="openModal">Tambah Data</button>
+        <div class="grid p-fluid">
+            <div class="col-12">
+                <div class="card">
+                    <div class="container">
+                        <div class="top-tabel-user">
+                            <button class="create-data-user" @click="openModal">Tambah Data</button>
 
-                        <span class="p-float-label">
-                            <Dropdown class="limit-drop" :options="limit" optionLabel="label" optionValue="value" v-model="selectedLimit" @change="Ubahnilai_jumlah_row"> </Dropdown>
-                        </span>
+                            <span class="p-float-label">
+                                <Dropdown class="limit-drop" :options="limit" optionLabel="label" optionValue="value" v-model="selectedLimit" @change="Ubahnilai_jumlah_row"> </Dropdown>
+                            </span>
 
-                        <span class="p-float-label">
-                            <Dropdown class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData"> </Dropdown>
-                        </span>
-                    </div>
-                    <div class="data-table-user">
-                        <h5>Data Table User</h5>
-                        <div class="search-container-user">
-                            <InputText v-model="inputSearch" placeholder="Search..." class="keyword" @keydown.enter="fetchData"></InputText>
-                            <Button icon="pi pi-search" class="search-button" @click="fetchData"></Button>
+                            <span class="p-float-label">
+                                <Dropdown class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData"> </Dropdown>
+                            </span>
                         </div>
+                        <div class="data-table-user">
+                            <h5>Data Table User</h5>
+                            <div class="search-container-user">
+                                <InputText v-model="inputSearch" placeholder="Search..." class="keyword" @keydown.enter="fetchData"></InputText>
+                                <Button icon="pi pi-search" class="search-button" @click="fetchData"></Button>
+                            </div>
+                        </div>
+                        <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
+                            <Column field="user_username" header="Username" class="name-column"></Column>
+                            <Column field="user_full_name" header="Nama Langkap" class="name-column"></Column>
+                            <Column field="user_nohp" header="Nomor Telepon" class="name-column">
+                                <template #body="rowData">
+                                    <span :class="rowData.data.user_nohp === 'BELUM DI ISI' ? 'text-red' : 'text-black'">
+                                        {{ rowData.data.user_nohp }}
+                                    </span>
+                                </template>
+                            </Column>
+                            <Column field="user_address" header="Alamat" class="name-column">
+                                <template #body="rowData">
+                                    <span :class="rowData.data.user_address === 'BELUM DI ISI' ? 'text-red' : 'text-black'">
+                                        {{ rowData.data.user_address }}
+                                    </span>
+                                </template>
+                            </Column>
+                            <Column field="user_email" header="Email" class="name-column"></Column>
+                            <Column field="user_level.level_name" header="Level" class="name-column"></Column>
+                            <Column class="actions">
+                                <template #body="rowData">
+                                    <div class="action-icons-user">
+                                        <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.user_uuid)"></Button>
+                                        <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.user_uuid)"></Button>
+                                    </div>
+                                </template>
+                            </Column>
+                        </DataTable>
                     </div>
-                    <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
-                        <Column field="user_username" header="Username" class="name-column"></Column>
-                        <Column field="user_full_name" header="Nama Langkap" class="name-column"></Column>
-                        <Column field="user_nohp" header="Nomor Telepon" class="name-column">
-                            <template #body="rowData">
-                                <span :class="rowData.data.user_nohp === 'BELUM DI ISI' ? 'text-red' : 'text-black'">
-                                    {{ rowData.data.user_nohp }}
-                                </span>
-                            </template>
-                        </Column>
-                        <Column field="user_address" header="Alamat" class="name-column">
-                            <template #body="rowData">
-                                <span :class="rowData.data.user_address === 'BELUM DI ISI' ? 'text-red' : 'text-black'">
-                                    {{ rowData.data.user_address }}
-                                </span>
-                            </template>
-                        </Column>
-                        <Column field="user_email" header="Email" class="name-column"></Column>
-                        <Column class="actions">
-                            <template #body="rowData">
-                                <div class="action-icons-user">
-                                    <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.level_uuid)"></Button>
-                                    <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.level_uuid)"></Button>
-                                </div>
-                            </template>
-                        </Column>
-                    </DataTable>
                 </div>
             </div>
         </div>

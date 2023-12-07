@@ -101,3 +101,7 @@
     transform: scale(1.5);  
     margin-right: 10px;
 }
+
+.text-danger{
+    color: red;
+}
