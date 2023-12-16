@@ -48,6 +48,9 @@ import '../uikit/css/data-teams.css'
                     </div>
                     <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
                         <Column field="level_name" header="Nama" class="name-column"></Column>
+                        <Column field="level_name" header="Job Desc" class="name-column"></Column>
+                        <Column field="level_name" header="Scope" class="name-column"></Column>
+                        <Column field="level_name" header="Bisnis" class="name-column"></Column>
                         <Column class="actions">
                             <template #body="rowData">
                                 <div class="action-icons-teams">

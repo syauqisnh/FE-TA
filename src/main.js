@@ -6,6 +6,7 @@ import axios from 'axios';
 axios.defaults.withCredentials = true;
 
 import PrimeVue from 'primevue/config';
+import '@fortawesome/fontawesome-free/css/all.css';
 import AutoComplete from 'primevue/autocomplete';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';

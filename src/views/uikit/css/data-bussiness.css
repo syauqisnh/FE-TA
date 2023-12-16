@@ -1,4 +1,4 @@
-.judul-halaman-bussiness h1 {
+.judul-halaman-business h1 {
     font-size: 30px;
     font-family: Arial, Helvetica, sans-serif;
     margin-top: 10px;
@@ -6,7 +6,97 @@
     font-weight: bold;
 }
 
-.top-tabel-bussiness {
+.modal {
+    display: flex; 
+    align-items: start; 
+    justify-content: end; 
+    position: fixed; 
+    z-index: 1;
+    top: 100px;
+    left: 0; 
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0);
+    overflow: auto;
+}
+
+.modal-content {
+    overflow: auto;
+    max-height: 90vh;
+    background-color: #fefefe;
+    padding: 20px;
+    box-shadow:  0 0 5px rgba(0, 0, 0, 0.347);
+    width: 100%; 
+    max-width: 600px; 
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    animation: slideInRight 0.5s ease-in-out; 
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+.modal-input {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.modal-form-group{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.modal-button-suceess {
+    width: 100%;
+    padding: 5px, 5px, 5px, 5px;
+    height: 40px;
+    border: none;
+    color: white;
+    font-weight: bold;
+    background-color: #28a745;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.modal-button-suceess:hover {
+    background-color: #218838;
+}
+.modal-button-danger {
+    width: 100%;
+    padding: 5px, 5px, 5px, 5px;
+    height: 40px;
+    border: none;
+    color: white;
+    font-weight: bold;
+    background-color: #bf2121; /* Ubah warna sesuai kebutuhan */
+    border-radius: 5px; /* Sesuaikan dengan border-radius yang digunakan di elemen lain */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Efek transisi saat hover */
+}
+.modal-button-danger:hover {
+    background-color: #951a1a;
+}
+
+@keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+
+.top-tabel-business {
     background-color: rgb(233, 233, 233);
     border-radius: 10px;
     padding: 20px;
@@ -16,21 +106,21 @@
     margin-bottom: 30px;
 }
 
-.search-container-bussiness {
+.search-container-business {
     display: flex;
     align-items: center;
     position: relative;
     width: 25%;
 }
 
-.data-table-bussiness {
+.data-table-business {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 20px;
 }
 
-.search-button-bussiness {
+.search-button-business {
     position: absolute;
     right: 0;
     top: 50%;
@@ -39,7 +129,7 @@
     color: white;
 }
 
-.action-icons-bussiness {
+.action-icons {
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -65,22 +155,42 @@
     }
 }
 
-.create-data-bussiness {
+.create-data-business {
     height: 40px;
     width: 120px;
     border: none;
     color: white;
     font-weight: bold;
-    background-color: #28a745;
-    border-radius: 5px;
+    background-color: #28a745; /* Ubah warna sesuai kebutuhan */
+    border-radius: 5px; /* Sesuaikan dengan border-radius yang digunakan di elemen lain */
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease; /* Efek transisi saat hover */
 }
 
-.create-data-bussiness:hover {
-    background-color: #218838;
+.create-data-business:hover {
+    background-color: #218838; /* Ubah warna hover sesuai kebutuhan */
 }
 
 .bold-text{
     font-weight: bold;
 }
+
+.text-red {
+    color: red;
+    font-style: italic;
+}
+
+.modal-textarea {
+    overflow: auto;
+    width: 100%; /* Lebar penuh kontainer */
+    height: 150px; /* Tinggi yang lebih besar untuk lebih banyak teks */
+    font-size: 14px; /* Match this to the size of your .modal-input */
+    line-height: 1.5; /* Match line-height as well */
+    padding: 8px; /* Example padding, adjust as needed */
+    border: 1px solid #ccc; /* Example border, adjust as needed */
+    border-radius: 4px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  
+  

@@ -99,8 +99,8 @@ const isOutsideClicked = (event) => {
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
             <button @click="onProfileClick()" class="p-link layout-topbar-button px-5">
-                <span class="pi pi-user"></span>
-                <i class="px-2">{{ user_username }}</i>
+                <i class="fa fa-user"></i>
+                <i class="username">{{ user_username }}</i>
             </button>
         </div>
     </div>
@@ -133,4 +133,9 @@ const isOutsideClicked = (event) => {
 .dashboard {
     color: orange;
 }
+.username {
+    margin-left: 15px;
+    margin-right: 50px;
+}
+
 </style>

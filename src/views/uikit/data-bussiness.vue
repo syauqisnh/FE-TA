@@ -9,8 +9,22 @@ import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
+import FileUpload from 'primevue/fileupload';
 
 const router = useRouter();
+
+const uuid_business = ref('');
+const business_name = ref('');
+const business_desc = ref('');
+const business_province = ref('');
+const business_regency = ref('');
+const business_subdistrict = ref('');
+const business_address = ref('');
+const business_notelp = ref('');
+const business_email = ref('');
+const business_link_wa = ref('');
+const business_media = ref('');
+const validasi_business_media = ref('');
 
 const tableData = ref([]);
 const inputSearch = ref('');
@@ -22,9 +36,100 @@ const user_uuid = ref('');
 
 let jumlah_row = 5;
 
+const isModalOpen = ref(false);
+const isModalOpenFile = ref(false);
+const isUpdateModalOpen = ref(false);
+const isDeleteModalOpen = ref(false);
+
+const openModal = () => {
+    isModalOpen.value = true;
+};
+
+const closeModal = () => {
+    isModalOpen.value = false;
+
+    business_name.value = '';
+    business_desc.value = '';
+    business_province.value = '';
+    business_regency.value = '';
+    business_subdistrict.value = '';
+    business_address.value = '';
+    business_notelp.value = '';
+    business_email.value = '';
+    business_link_wa.value = '';
+    business_media.value = '';
+    validasi_business_media.value = '';
+};
+
+const openModalFile = () => {
+    isModalOpenFile.value = true;
+};
+
+const closeModalFile = () => {
+    isModalOpenFile.value = false;
+};
+
+const openModalUpdate = () => {
+    isUpdateModalOpen.value = true;
+};
+
+const closeModalUpdate = () => {
+    isUpdateModalOpen.value = false;
+
+    business_name.value = '';
+    business_desc.value = '';
+    business_province.value = '';
+    business_regency.value = '';
+    business_subdistrict.value = '';
+    business_address.value = '';
+    business_notelp.value = '';
+    business_email.value = '';
+    business_link_wa.value = '';
+};
+
+const openModalDelete = () => {
+    isDeleteModalOpen.value = true;
+};
+
+const closeModalDelete = () => {
+    isDeleteModalOpen.value = false;
+    business_name.value = '';
+    business_desc.value = '';
+    business_province.value = '';
+    business_regency.value = '';
+    business_subdistrict.value = '';
+    business_address.value = '';
+    business_notelp.value = '';
+    business_email.value = '';
+    business_link_wa.value = '';
+};
+
+const order = ref([
+    { value: 'default', label: 'Urutkan data' },
+    { value: 'asc', label: 'Urutkan dari data awal ditambahkan' },
+    { value: 'desc', label: 'Urutkan dari data terbaru' }
+]);
+
+const limit = ref([
+    { value: 'default', label: 'Limit Data' },
+    { value: 5, label: '5 Data perhalaman' },
+    { value: 10, label: '10 Data perhalaman' },
+    { value: 25, label: '25 Data perhalaman' },
+    { value: 50, label: '50 Data perhalaman' },
+    { value: 100, label: '100 Data perhalaman' }
+]);
+
 onMounted(async () => {
     await DataMe();
 });
+
+const Ubahnilai_jumlah_row = async () => {
+    if (selectedLimit.value === 'default') {
+        jumlah_row = 5;
+    } else {
+        jumlah_row = parseInt(selectedLimit.value, 10);
+    }
+};
 
 const DataMe = async () => {
     try {
@@ -37,12 +142,9 @@ const DataMe = async () => {
 
             if (user_level.value == 'customer') {
                 await fetchDataCustomer();
-                
             } else {
-                await fetchData()
+                await fetchData();
             }
-
-
         }
     } catch (error) {
         if (error.response && error.response.status === 401) {
@@ -89,7 +191,6 @@ const fetchData = async () => {
                     item.business_address = 'BELUM DI ISI';
                 }
             });
-            
         } else {
             console.error('Respon sukses tetapi tidak ada data:', response.data.message);
             tableData.value = [];
@@ -142,7 +243,6 @@ const fetchDataCustomer = async () => {
                     item.business_address = 'BELUM DI ISI';
                 }
             });
-            
         } else {
             console.error('Respon sukses tetapi tidak ada data:', response.data.message);
             tableData.value = [];
@@ -154,18 +254,245 @@ const fetchDataCustomer = async () => {
         }
     }
 };
+
+const addDataData = async () => {
+    const name = business_name.value;
+    const desc = business_desc.value;
+    const provinsi = business_province.value;
+    const kabupaten = business_regency.value;
+    const kecamatan = business_subdistrict.value;
+    const alamat = business_address.value;
+    const notelp = business_notelp.value;
+    const email = business_email.value;
+    const link_wa = business_link_wa.value;
+    const media = business_media.value;
+
+    if (media == '') {
+        validasi_business_media.value = '*Mohon upload file Anda dahulu';
+    } else {
+        const response = await axios.post('http://localhost:9900/api/v1/business', {
+            business_name: name,
+            business_desc: desc,
+            business_province: provinsi,
+            business_regency: kabupaten,
+            business_subdistrict: kecamatan,
+            business_address: alamat,
+            business_notelp: notelp,
+            business_email: email,
+            business_link_wa: link_wa,
+            business_media: media
+        });
+
+        if (response) {
+            closeModal();
+            window.location.reload();
+        }
+    }
+};
+
+const OpenModalEdit = async (value) => {
+    uuid_business.value = value;
+    // console.log(value)
+    try {
+        const response = await axios.get(`http://localhost:9900/api/v1/business/${uuid_business.value}`);
+        if (response) {
+            business_name.value = response.data.data.business_name;
+            business_desc.value = response.data.data.business_desc;
+            business_province.value = response.data.data.business_province;
+            business_regency.value = response.data.data.business_regency;
+            business_subdistrict.value = response.data.data.business_subdistrict;
+            business_address.value = response.data.data.business_address;
+            business_notelp.value = response.data.data.business_notelp;
+            business_email.value = response.data.data.business_email;
+            business_link_wa.value = response.data.data.business_link_wa;
+            openModalUpdate();
+        }
+    } catch (error) {
+        console.error('Error saat mengedit data:', error);
+    }
+};
+
+const UpdateDataData = async () => {
+    const name = business_name.value;
+    const desc = business_desc.value;
+    const provinsi = business_province.value;
+    const kabupaten = business_regency.value;
+    const kecamatan = business_subdistrict.value;
+    const alamat = business_address.value;
+    const notelp = business_notelp.value;
+    const email = business_email.value;
+    const link_wa = business_link_wa.value;
+    const response = await axios.put(`http://localhost:9900/api/v1/business/${uuid_business.value}`, {
+        business_name: name,
+        business_desc: desc,
+        business_province: provinsi,
+        business_regency: kabupaten,
+        business_subdistrict: kecamatan,
+        business_address: alamat,
+        business_notelp: notelp,
+        business_email: email,
+        business_link_wa: link_wa
+    });
+
+    if (response) {
+        closeModalUpdate();
+        window.location.reload();
+        uuid_business.value = '';
+    }
+};
+
+const openModalHapus = async (value) => {
+    uuid_business.value = value;
+    try {
+        const response = await axios.get(`http://localhost:9900/api/v1/business/${uuid_business.value}`);
+        if (response) {
+            business_name.value = response.data.data.business_name;
+            business_desc.value = response.data.data.business_desc;
+            business_province.value = response.data.data.business_province;
+            business_regency.value = response.data.data.business_regency;
+            business_subdistrict.value = response.data.data.business_subdistrict;
+            business_address.value = response.data.data.business_address;
+            business_notelp.value = response.data.data.business_notelp;
+            business_email.value = response.data.data.business_email;
+            business_link_wa.value = response.data.data.business_link_wa;
+            openModalDelete();
+        }
+    } catch (error) {
+        console.error('Error saat menghapus data:', error);
+    }
+};
+const DeleteDataData = async () => {
+    const response = await axios.delete(`http://localhost:9900/api/v1/business/${uuid_business.value}`);
+
+    if (response) {
+        closeModalDelete();
+        window.location.reload();
+    }
+};
+
+const onUpload = async (event) => {
+    if (event.xhr.status === 200) {
+        const responseText = event.xhr.responseText;
+
+        // Parse response text menjadi objek JavaScript
+        const responseObj = JSON.parse(responseText);
+
+        // Sekarang Anda dapat mengakses media_uuid dari responseObj
+        const mediaUuid = responseObj.data.media_uuid;
+        business_media.value = mediaUuid;
+    } else {
+        console.error('Upload failed', event);
+    }
+};
 </script>
 
 <template>
-    <div class="judul-halaman-bussiness">
+    <div class="judul-halaman-business">
         <h1>Data Bisnis</h1>
     </div>
+    <div v-if="isModalOpen" class="modal">
+        <div class="modal-content">
+            <!-- Close button -->
+            <span class="close" @click="closeModal">&times;</span>
+            <h4>Tambah Data</h4>
+            <div class="modal-form-group">
+                <InputText v-model="business_name" placeholder="Tambahkan Name" class="modal-input"></InputText>
+                <textarea v-model="business_desc" placeholder="Tambahkan Desc" class="modal-textarea"></textarea>
+                <InputText v-model="business_province" placeholder="Tambahkan Provinsi" class="modal-input"></InputText>
+                <InputText v-model="business_regency" placeholder="Tambahkan Kabupaten" class="modal-input"></InputText>
+                <InputText v-model="business_subdistrict" placeholder="Tambahkan Kecamatan" class="modal-input"></InputText>
+                <InputText v-model="business_address" placeholder="Tambahkan Alamat" class="modal-input"></InputText>
+                <InputText v-model="business_notelp" placeholder="Tambahkan Nohp" class="modal-input"></InputText>
+                <InputText v-model="business_email" placeholder="Tambahkan Email" class="modal-input"></InputText>
+                <InputText v-model="business_link_wa" placeholder="Tambahkan Link Wa" class="modal-input"></InputText>
+            </div>
+            <div class="modal-form-group">
+                <FileUpload
+                    name="file"
+                    url="http://localhost:9900/api/v1/media/upload_media"
+                    :onUpload="onUpload"
+                    :multiple="true"
+                    accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,image/*"
+                    :maxFileSize="300 * 1024 * 1024"
+                >
+                </FileUpload>
+            </div>
+            <p v-if="validasi_business_media" class="validation-error text-red">{{ validasi_business_media }}</p>
+            <div class="modal-form-group">
+                <button class="modal-button-suceess" @click="addDataData">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <div v-if="isModalOpenFile" class="modal">
+        <div class="modal-content">
+            <!-- Close button -->
+            <span class="close" @click="closeModalFile">&times;</span>
+            <h4>Tambah File</h4>
+            <div class="modal-form-group">
+                <FileUpload
+                    name="file"
+                    url="http://localhost:9900/api/v1/media/upload_media"
+                    :onUpload="onUpload"
+                    :multiple="true"
+                    accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,image/*"
+                    :maxFileSize="300 * 1024 * 1024"
+                >
+                </FileUpload>
+            </div>
+            <div class="modal-form-group">
+                <button class="modal-button-suceess">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <div v-if="isUpdateModalOpen" class="modal">
+        <div class="modal-content">
+            <!-- Close button -->
+            <span class="close" @click="closeModalUpdate">&times;</span>
+            <h4>Ubah Data</h4>
+            <div class="modal-form-group">
+                <InputText v-model="business_name" :value="business_name" class="modal-input"></InputText>
+                <textarea v-model="business_desc" class="modal-textarea"></textarea>
+                <InputText v-model="business_province" :value="business_province" class="modal-input"></InputText>
+                <InputText v-model="business_regency" :value="business_regency" class="modal-input"></InputText>
+                <InputText v-model="business_subdistrict" :value="business_subdistrict" class="modal-input"></InputText>
+                <InputText v-model="business_address" :value="business_address" class="modal-input"></InputText>
+                <InputText v-model="business_notelp" :value="business_notelp" class="modal-input"></InputText>
+                <InputText v-model="business_email" :value="business_email" class="modal-input"></InputText>
+                <InputText v-model="business_link_wa" :value="business_link_wa" class="modal-input"></InputText>
+            </div>
+            <div class="modal-form-group">
+                <button class="modal-button-suceess" @click="UpdateDataData">Ubah data</button>
+            </div>
+        </div>
+    </div>
+
+    <div v-if="isDeleteModalOpen" class="modal">
+        <div class="modal-content">
+            <!-- Close button -->
+            <span class="close" @click="closeModalDelete">&times;</span>
+            <h4>Hapus Data</h4>
+            <div class="modal-form-group">
+                <p>
+                    Apakah Anda yakin untuk menghapus nama Customer <span class="bold-text"> "{{ business_name }}"</span>
+                </p>
+            </div>
+            <div class="modal-form-group">
+                <button class="modal-button-suceess" @click="DeleteDataData">Hapus data</button>
+            </div>
+            <div class="modal-form-group">
+                <button class="modal-button-danger" @click="closeModalDelete">Batal</button>
+            </div>
+        </div>
+    </div>
+
     <div class="grid p-fluid">
         <div class="col-12">
             <div class="card">
                 <div class="container">
-                    <div class="top-tabel-bussiness">
-                        <button class="create-data-bussiness" @click="openModal">Tambah Data</button>
+                    <div class="top-tabel-business">
+                        <button class="create-data-business" @click="openModal">Tambah Data</button>
 
                         <span class="p-float-label">
                             <Dropdown class="limit-drop" :options="limit" optionLabel="label" optionValue="value" v-model="selectedLimit" @change="Ubahnilai_jumlah_row"> </Dropdown>
@@ -175,11 +502,11 @@ const fetchDataCustomer = async () => {
                             <Dropdown class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData"> </Dropdown>
                         </span>
                     </div>
-                    <div class="data-table-bussiness">
+                    <div class="data-table-business">
                         <h5>Data Table Bisnis</h5>
-                        <div class="search-container-bussiness">
+                        <div class="search-container-business">
                             <InputText v-model="inputSearch" placeholder="Search..." class="keyword" @keydown.enter="fetchData"></InputText>
-                            <Button icon="pi pi-search" class="search-button-bussiness" @click="fetchData"></Button>
+                            <Button icon="pi pi-search" class="search-button-business" @click="fetchData"></Button>
                         </div>
                     </div>
                     <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
@@ -193,11 +520,12 @@ const fetchDataCustomer = async () => {
                         <Column field="business_email" header="Email" class="name-column"></Column>
                         <Column field="business_link_wa" header="Link WA" class="name-column"></Column>
                         <Column field="business_customer.customer_full_name" header="Customer" class="name-column"></Column>
+                        <Column field="business_media.media_name" header="media" class="name-column"></Column>
                         <Column class="actions">
                             <template #body="rowData">
-                                <div class="action-icons-bussiness">
-                                    <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.level_uuid)"></Button>
-                                    <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.level_uuid)"></Button>
+                                <div class="action-icons-business">
+                                    <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.business_uuid)"></Button>
+                                    <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.business_uuid)"></Button>
                                 </div>
                             </template>
                         </Column>
