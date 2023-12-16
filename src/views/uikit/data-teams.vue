@@ -1,11 +1,62 @@
 <!-- eslint-disable no-unused-vars -->
 <script setup>
+import { ref, onMounted, watch } from 'vue';
+import axios from 'axios';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Dropdown from 'primevue/dropdown';
+import MultiSelect from 'primevue/multiselect';
+import InputText from 'primevue/inputtext';
+import Button from 'primevue/button';
+import '../uikit/css/data-scopes.css';
 import '../uikit/css/data-teams.css'
+
+
+const isModalOpen = ref(false);
+const isUpdateModalOpen = ref(false);
+const isDeleteModalOpen = ref(false);
+
+const openModal = () => {
+    isModalOpen.value = true;
+};
+
+const closeModal = () => {
+    isModalOpen.value = false;
+};
+
 </script>
 
 <template>
     <div class="judul-halaman-teams">
         <h1>Tim Atau Kelompok</h1>
+    </div>
+
+    <div v-if="isModalOpen" class="modal">
+        <div class="modal-content">
+            <!-- Close button -->
+            <span class="close" @click="closeModal">&times;</span>
+            <h4>Tambah Data</h4>
+            <div class="modal-form-group">
+                <InputText v-model="business_name" placeholder="Tambahkan Name" class="modal-input"></InputText>
+                <textarea v-model="business_desc" placeholder="Tambahkan Desc" class="modal-textarea"></textarea>
+                <Dropdown v-model="team_scope" :options="teamOptions" optionLabel="label" optionValue="value" placeholder="Pilih Scope" class="modal-input"></Dropdown>
+            </div>
+            <div class="modal-form-group">
+                <FileUpload
+                    name="file"
+                    url="http://localhost:9900/api/v1/media/upload_media"
+                    :onUpload="onUpload"
+                    :multiple="true"
+                    accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,image/*"
+                    :maxFileSize="300 * 1024 * 1024"
+                >
+                </FileUpload>
+            </div>
+            <p v-if="validasi_business_media" class="validation-error text-red">{{ validasi_business_media }}</p>
+            <div class="modal-form-group">
+                <button class="modal-button-suceess" @click="addDataData">Submit</button>
+            </div>
+        </div>
     </div>
     <div class="grid p-fluid">
         <div class="col-12">

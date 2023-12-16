@@ -48,10 +48,10 @@ const model = ref([
         label: 'Data Menu Customer',
         items: [
             { label: 'Bisnis', icon: 'pi pi-fw pi-chart-line', to: '/uikit/data-bussiness' },
-            { label: 'Daftar Harga', icon: 'pi pi-fw pi-tag', to: '/uikit/data-price-list' },
-            { label: 'TNC', icon: 'pi pi-fw pi-chart-bar', to: '/uikit/data-tnc' },
             { label: 'Ruang Lingkup', icon: 'pi pi-fw pi-globe', to: '/uikit/data-scopes' },
-            { label: 'Tim atau Kelompok', icon: 'pi pi-fw pi-users', to: '/uikit/data-teams' }
+            { label: 'Tim atau Kelompok', icon: 'pi pi-fw pi-users', to: '/uikit/data-teams' },
+            { label: 'Daftar Harga', icon: 'pi pi-fw pi-tag', to: '/uikit/data-price-list' },
+            { label: 'TNC', icon: 'pi pi-fw pi-chart-bar', to: '/uikit/data-tnc' }
         ]
     },
     {
@@ -78,10 +78,10 @@ const model_customer = ref([
         label: 'Data Menu Customer',
         items: [
             { label: 'Bisnis', icon: 'pi pi-fw pi-chart-line', to: '/uikit/data-bussiness' },
-            { label: 'Daftar Harga', icon: 'pi pi-fw pi-tag', to: '/uikit/data-price-list' },
-            { label: 'TNC', icon: 'pi pi-fw pi-chart-bar', to: '/uikit/data-tnc' },
             { label: 'Ruang Lingkup', icon: 'pi pi-fw pi-globe', to: '/uikit/data-scopes' },
-            { label: 'Tim atau Kelompok', icon: 'pi pi-fw pi-users', to: '/uikit/data-teams' }
+            { label: 'Tim atau Kelompok', icon: 'pi pi-fw pi-users', to: '/uikit/data-teams' },
+            { label: 'Daftar Harga', icon: 'pi pi-fw pi-tag', to: '/uikit/data-price-list' },
+            { label: 'TNC', icon: 'pi pi-fw pi-chart-bar', to: '/uikit/data-tnc' }
         ]
     },
     {

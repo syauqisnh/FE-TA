@@ -49,6 +49,14 @@ onMounted(async () => {
     await DataMe();
 });
 
+const Ubahnilai_jumlah_row = async () => {
+    if (selectedLimit.value === 'default') {
+        jumlah_row = 5;
+    } else {
+        jumlah_row = parseInt(selectedLimit.value, 10);
+    }
+};
+
 const DataMe = async () => {
     try {
         const response = await axios.get('http://localhost:9900/api/v1/me');
@@ -233,7 +241,7 @@ const UpdateDataData = async () => {
     const response = await axios.put(`http://localhost:9900/api/v1/scope/${uuid_scope.value}`, {
         scope_name: name,
         scope_desc: desc,
-        scope_business: business,
+        scope_business: business
     });
 
     if (response) {
@@ -389,7 +397,9 @@ const order = ref([
                             </span>
 
                             <span class="p-float-label">
-                                <Dropdown class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData"> </Dropdown>
+                                <Dropdown v-if="user_level === 'administrator' || user_level === 'super administrator'" class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData">
+                                </Dropdown>
+                                <Dropdown v-if="user_level === 'customer'" class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchDataCustomer"> </Dropdown>
                             </span>
                         </div>
                         <div class="data-table-scope">

@@ -121,6 +121,7 @@ const limit = ref([
 
 onMounted(async () => {
     await DataMe();
+    console.log(user_level.value)
 });
 
 const Ubahnilai_jumlah_row = async () => {
@@ -499,7 +500,8 @@ const onUpload = async (event) => {
                         </span>
 
                         <span class="p-float-label">
-                            <Dropdown class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData"> </Dropdown>
+                            <Dropdown  v-if="user_level === 'administrator' || user_level === 'super administrator'" class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData"> </Dropdown>
+                            <Dropdown  v-if="user_level === 'customer'" class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchDataCustomer"> </Dropdown>
                         </span>
                     </div>
                     <div class="data-table-business">
