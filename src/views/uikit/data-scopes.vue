@@ -405,8 +405,10 @@ const order = ref([
                         <div class="data-table-scope">
                             <h5>Data Table scope</h5>
                             <div class="search-container-scope">
-                                <InputText v-model="inputSearch" placeholder="Search..." class="keyword" @keydown.enter="fetchData"></InputText>
-                                <Button icon="pi pi-search" class="search-button-scope" @click="fetchData"></Button>
+                                <InputText v-if="user_level === 'administrator' || user_level === 'super administrator'" v-model="inputSearch" placeholder="Search..." class="keyword" @keydown.enter="fetchData"></InputText>
+                                <InputText v-if="user_level === 'customer'" v-model="inputSearch" placeholder="Search..." class="keyword" @keydown.enter="fetchDataCustomer"></InputText>
+                                <Button v-if="user_level === 'administrator' || user_level === 'super administrator'" icon="pi pi-search" class="search-button-scope" @click="fetchData"></Button>
+                                <Button v-if="user_level === 'customer'" icon="pi pi-search" class="search-button-scope" @click="fetchDataCustomer"></Button>
                             </div>
                         </div>
                         <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
