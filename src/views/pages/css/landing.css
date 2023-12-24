@@ -10,6 +10,7 @@
 }
 .fitur .list {
     display: flex;
+    align-items: center;
 }
 .list {
     list-style: none;
@@ -86,4 +87,85 @@
 
 .gambar-1 img {
     height: 300px;
+}
+
+.menu-toggle {
+    display: none;
+    cursor: pointer;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 30px;
+    height: 3px;
+    background-color: #333;
+    margin: 6px 0;
+}
+@media (min-width: 280px) and (max-width: 768px) {
+    .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        background-color: white;
+        height: 80px;
+    }
+    .isi-content {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        flex-direction: column;
+        height: 100vh;
+        background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, rgb(238, 239, 175) 0%, rgb(195, 227, 250) 100%);
+    }
+
+    .gambar-1 img {
+        height: 200px;
+    }
+
+    .fitur {
+        display: none;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background-color: #f9f9f9;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .fitur.active {
+        display: block;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .menu-toggle span {
+        display: block;
+    }
+
+
+    .list {
+        flex-direction: column;
+    }
+
+    .login-reg {
+        display: none;
+    }
+
+    .content-text h1 {
+        font-weight: bold;
+        font-size: 30px;
+    }
+    
+    .content-text p {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 40px;
+    }
+
+    .logo-bekantan img {
+        height: 50px;
+    }
 }

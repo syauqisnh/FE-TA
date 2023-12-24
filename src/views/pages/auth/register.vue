@@ -53,7 +53,7 @@ const addDataData = async () => {
         <div class="gambar-login-2">
             <div class="konten-2">
                 <h1>REGISTER</h1>
-                <h1>CV.BEKANTANJANTAN</h1>
+                <p>CV.BEKANTANJANTAN</p>
                 <img src="/demo/images/landing/screen-2.png" alt="" />
             </div>
         </div>

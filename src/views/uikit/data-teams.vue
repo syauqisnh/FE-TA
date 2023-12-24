@@ -477,7 +477,11 @@ const order = ref([
                         <Column field="team_job_desc" header="Job Desc" class="name-column"></Column>
                         <Column field="team_business.business_name" header="Bisnis" class="name-column"></Column>
                         <Column field="team_scope.scope_name" header="Scope" class="name-column"></Column>
-                        <Column field="team_media.media_name" header="File" class="name-column"></Column>
+                        <Column header="File" class="name-column">
+                            <template #body="slotProps">
+                                <img :src="slotProps.data.team_media.media_url" alt="Media" :width="100"/>
+                            </template>
+                        </Column>
                         <Column class="actions">
                             <template #body="rowData">
                                 <div class="action-icons-teams">

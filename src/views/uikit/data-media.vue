@@ -109,7 +109,11 @@ const fetchData = async () => {
                             <Column field="media_category" header="Kategori" class="name-column"></Column>
                             <Column field="media_extensi" header="Extensi" class="name-column"></Column>
                             <Column field="media_size" header="Size" class="name-column"></Column>
-                            <Column field="media_url" header="URL" class="name-column"></Column>
+                            <Column header="URL" class="name-column">
+                            <template #body="slotProps">
+                                <a :href="slotProps.data.media_url" style="color: blue;">{{ slotProps.data.media_url }}</a>
+                            </template>
+                            </Column>
                             <Column field="media_metadata" header="Meta Data" class="name-column"></Column>
                         </DataTable>
                     </div>
