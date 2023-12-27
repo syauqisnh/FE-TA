@@ -71,6 +71,11 @@ const router = createRouter({
                     component: () => import('@/views/uikit/data-tnc.vue')
                 },
                 {
+                    path: '/uikit/data-gallery',
+                    name: 'data-gallery',
+                    component: () => import('@/views/uikit/data-gallery.vue')
+                },
+                {
                     path: '/uikit/data-scopes',
                     name: 'data-scopes',
                     component: () => import('@/views/uikit/data-scopes.vue')

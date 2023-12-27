@@ -51,7 +51,8 @@ const model = ref([
             { label: 'Ruang Lingkup', icon: 'pi pi-fw pi-globe', to: '/uikit/data-scopes' },
             { label: 'Tim atau Kelompok', icon: 'pi pi-fw pi-users', to: '/uikit/data-teams' },
             { label: 'Daftar Harga', icon: 'pi pi-fw pi-tag', to: '/uikit/data-price-list' },
-            { label: 'TNC', icon: 'pi pi-fw pi-chart-bar', to: '/uikit/data-tnc' }
+            { label: 'TNC', icon: 'pi pi-fw pi-chart-bar', to: '/uikit/data-tnc' },
+            { label: 'Gambar', icon: 'fas fa-camera', to: '/uikit/data-gallery' },
         ]
     },
     {

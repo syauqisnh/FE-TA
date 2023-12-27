@@ -48,7 +48,6 @@ const closeModal = () => {
     isModalOpen.value = false;
 };
 
-
 const updateOptions = () => {
     businesOptions.value = [{ label: 'Pilih Bisnis', value: null }, ...DataBusines.value.map((index) => ({ label: index.business_name, value: index.business_uuid }))];
 
@@ -205,7 +204,7 @@ const order = ref([
             <h4>Tambah Data</h4>
             <div class="modal-form-group">
                 <InputText v-model="price_list_name" placeholder="Tambahkan Nama" class="modal-input"></InputText>
-                <InputText v-model="price_list_price" placeholder="Tambahkan Harga" class="modal-input"></InputText>
+                <InputNumber v-model="price_list_price" inputId="currency-id" mode="currency" currency="IDR" locale="id-ID" :style="{ width: '100%' }" />
                 <textarea v-model="price_list_desc" placeholder="Tambahkan Deskripsi" class="modal-textarea"></textarea>
                 <label>Status:</label>
                 <div class="radio-group">

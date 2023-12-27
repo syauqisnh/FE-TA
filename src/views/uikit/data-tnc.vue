@@ -21,23 +21,6 @@ import '../uikit/css/data-tnc.css'
                         <span class="p-float-label">
                             <Dropdown class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData"> </Dropdown>
                         </span>
-
-                        <MultiSelect v-model="multiselectValue" :options="multiselectValues" optionLabel="name" placeholder="Pilih Level" :filter="true">
-                            <label for="dropdown">Filter Data</label>
-                            <template #value="slotProps">
-                                <div class="inline-flex align-items-center py-1 px-2 bg-primary text-primary border-round mr-2" v-for="option of slotProps.value" :key="option.code">
-                                    <div>{{ option.name }}</div>
-                                </div>
-                                <template v-if="!slotProps.value || slotProps.value.length === 0">
-                                    <div class="p-1">Filter</div>
-                                </template>
-                            </template>
-                            <template #option="slotProps">
-                                <div class="flex align-items-center">
-                                    <div>{{ slotProps.option.name }}</div>
-                                </div>
-                            </template>
-                        </MultiSelect>
                     </div>
                     <div class="data-table-tnc">
                         <h5>Data Table TNC</h5>
