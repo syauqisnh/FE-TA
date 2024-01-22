@@ -121,7 +121,7 @@ const limit = ref([
 
 onMounted(async () => {
     await DataMe();
-    console.log(user_level.value)
+    console.log(user_level.value);
 });
 
 const Ubahnilai_jumlah_row = async () => {
@@ -413,7 +413,7 @@ const onUpload = async (event) => {
                     url="http://localhost:9900/api/v1/media/upload_media"
                     :onUpload="onUpload"
                     :multiple="true"
-                    accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,image/*"
+                    accept=".doc, .docx, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf, image/*, video/*, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     :maxFileSize="300 * 1024 * 1024"
                 >
                 </FileUpload>
@@ -500,8 +500,8 @@ const onUpload = async (event) => {
                         </span>
 
                         <span class="p-float-label">
-                            <Dropdown  v-if="user_level === 'administrator' || user_level === 'super administrator'" class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData"> </Dropdown>
-                            <Dropdown  v-if="user_level === 'customer'" class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchDataCustomer"> </Dropdown>
+                            <Dropdown v-if="user_level === 'administrator' || user_level === 'super administrator'" class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchData"> </Dropdown>
+                            <Dropdown v-if="user_level === 'customer'" class="order-drop" :options="order" optionLabel="label" optionValue="value" v-model="selectedOrder" @change="fetchDataCustomer"> </Dropdown>
                         </span>
                     </div>
                     <div class="data-table-business">
@@ -520,9 +520,21 @@ const onUpload = async (event) => {
                         <Column field="business_address" header="Alamat" class="name-column"></Column>
                         <Column field="business_notelp" header="No Hp" class="name-column"></Column>
                         <Column field="business_email" header="Email" class="name-column"></Column>
-                        <Column field="business_link_wa" header="Link WA" class="name-column"></Column>
+                        <Column header="WhatsApp" class="name-column">
+                            <template #body="slotProps">
+                                <a :href="slotProps.data.business_link_wa" style="color: blue">
+                                    <img src="demo/images/product/wa2.png" alt="WhatsApp Image" style="width: 60px; height: 60px; margin-right: 5px" />
+                                </a>
+                            </template>
+                        </Column>
                         <Column field="business_customer.customer_full_name" header="Customer" class="name-column"></Column>
-                        <Column field="business_media.media_name" header="media" class="name-column"></Column>
+                        <Column header="File" class="name-column">
+                            <template #body="slotProps">
+                                <a :href="slotProps.data.business_media.media_url" style="color: blue">
+                                    <img src="demo/images/product/ddc.png" alt="WhatsApp Image" style="width: 80px; height: 50px; margin-right: 5px" />
+                                </a>
+                            </template>
+                        </Column>
                         <Column class="actions">
                             <template #body="rowData">
                                 <div class="action-icons-business">

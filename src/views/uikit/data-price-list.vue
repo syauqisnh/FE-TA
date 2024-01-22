@@ -260,7 +260,7 @@ const order = ref([
                     </div>
                     <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
                         <Column field="price_list_name" header="Nama" class="name-column"></Column>
-                        <Column field="price_list_price" header="Harga" class="name-column"></Column>
+                        <Column field="price_list_price" header="Harga" class="name-column" ></Column>
                         <Column field="price_list_desc" header="Desc" class="name-column"></Column>
                         <Column field="price_list_status" header="Status" class="name-column"></Column>
                         <Column field="price_list_order" header="Pesanan" class="name-column"></Column>

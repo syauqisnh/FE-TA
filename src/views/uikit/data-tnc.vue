@@ -1,11 +1,180 @@
 <!-- eslint-disable no-unused-vars -->
 <script setup>
-import '../uikit/css/data-tnc.css'
+import { ref, onMounted, watch } from 'vue';
+import axios from 'axios';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Dropdown from 'primevue/dropdown';
+import InputText from 'primevue/inputtext';
+import Button from 'primevue/button';
+import { useRouter } from 'vue-router';
+import '../uikit/css/data-tnc.css';
+
+const router = useRouter();
+
+const tableData = ref([]);
+
+const inputSearch = ref('');
+const selectedOrder = ref('default');
+const selectedLimit = ref('default');
+
+const user_username = ref('');
+const user_level = ref('');
+const user_uuid = ref('');
+
+const tnc_uuid_table = ref(null);
+const tnc_name = ref('');
+const DataPrice = ref([]);
+const priceOptions = ref([]);
+const multiselectOptionsPrice = ref([]);
+
+const isModalOpen = ref(false);
+const isUpdateModalOpen = ref(false);
+const isDeleteModalOpen = ref(false);
+
+const openModal = () => {
+    isModalOpen.value = true;
+};
+
+const closeModal = () => {
+    isModalOpen.value = false;
+};
+
+onMounted(async () => {
+    await DataMe();
+});
+
+const fetchData = async () => {
+    try {
+        const params = new URLSearchParams();
+
+        // Parameter 'order' dikirim sebagai string dan bukan objek
+        if (selectedOrder.value !== 'default') {
+            params.append(`order[${'tnc_id'}]`, selectedOrder.value);
+        }
+
+        // Tambahkan parameter 'limit' jika bukan default
+        if (selectedLimit.value !== 'default') {
+            params.append('limit', selectedLimit.value);
+        }
+
+        // Tambahkan parameter 'keyword' jika ada input
+        if (inputSearch.value.trim()) {
+            params.append('keyword', inputSearch.value.trim());
+        }
+
+        // Buat request ke backend
+        const response = await axios.get(`http://localhost:9900/api/v1/tnc/get_all`, {
+            params: params
+        });
+
+        console.log('Respon API:', response);
+
+        if (response) {
+            tableData.value = response.data.data || [];
+
+            console.log(tableData.value);
+        } else {
+            console.error('Respon sukses tetapi tidak ada data:', response.data.message);
+            tableData.value = [];
+        }
+    } catch (error) {
+        console.error('Error mengambil data:', error);
+        if (error.response) {
+            console.error('Error response dari backend:', error.response.data);
+        }
+    }
+};
+const updateOptions = () => {
+    priceOptions.value = [{ label: 'Pilih Harga', value: null }, ...DataPrice.value.map((index) => ({ label: index.price_list_name, value: index.price_list_uuid }))];
+
+    multiselectOptionsPrice.value = [...DataPrice.value.map((index) => ({ label: index.module_name, value: index.module_uuid }))];
+};
+
+const fetchDataOption = async () => {
+    try {
+        const getPrice = await axios.get('http://localhost:9900/api/v1/price_list/get_all');
+
+        // Filter data berdasarkan status 'N'
+        const filteredData = getPrice.data.data.filter((price) => price.price_list_status !== 'N');
+
+        DataPrice.value = filteredData;
+        updateOptions();
+    } catch (error) {
+        console.error('Error mengambil data:', error);
+    }
+};
+
+const DataMe = async () => {
+    try {
+        const response = await axios.get('http://localhost:9900/api/v1/me');
+
+        if (response) {
+            user_username.value = response.data.name;
+            user_level.value = response.data.level;
+            user_uuid.value = response.data.uuid;
+
+            if (user_level.value == 'customer' || user_level.value == 'administrator') {
+                await fetchData();
+                await fetchDataOption();
+            }
+        }
+    } catch (error) {
+        if (error.response && error.response.status === 401) {
+            router.push('/Landing-2'); // Pengguna belum login, arahkan ke landing page
+        } else {
+            console.error('Error: ', error); // Kesalahan lain
+        }
+    }
+};
+
+const addDataData = async () => {
+    const nameHarga = tnc_uuid_table.value;
+    const name = tnc_name.value;
+
+    const response = await axios.post('http://localhost:9900/api/v1/tnc', {
+        tnc_uuid_table: nameHarga,
+        tnc_name: name
+    });
+
+    if (response) {
+        closeModal();
+        window.location.reload();
+    }
+};
+const limit = ref([
+    { value: 'default', label: 'Limit Data' },
+    { value: 5, label: '5 Data perhalaman' },
+    { value: 10, label: '10 Data perhalaman' },
+    { value: 25, label: '25 Data perhalaman' },
+    { value: 50, label: '50 Data perhalaman' },
+    { value: 100, label: '100 Data perhalaman' }
+]);
+
+const order = ref([
+    { value: 'default', label: 'Urutkan data' },
+    { value: 'asc', label: 'Urutkan dari data awal ditambahkan' },
+    { value: 'desc', label: 'Urutkan dari data terbaru' }
+]);
 </script>
 
 <template>
     <div class="judul-halaman-tnc">
         <h1>Third National Communication</h1>
+    </div>
+    <div v-if="isModalOpen" class="modal">
+        <div class="modal-content">
+            <!-- Close button -->
+            <span class="close" @click="closeModal">&times;</span>
+            <h4>Tambah Data</h4>
+            <div class="modal-form-group">
+                <Dropdown v-model="tnc_uuid_table" :options="priceOptions" optionLabel="label" optionValue="value" placeholder="Pilih Harga" class="modal-input"></Dropdown>
+                <InputText v-model="tnc_name" placeholder="Tambahkan Name" class="modal-input"></InputText>
+            </div>
+            <div class="modal-form-group">
+                <button class="modal-button-suceess" @click="addDataData">Submit</button>
+            </div>
+        </div>
     </div>
     <div class="grid p-fluid">
         <div class="col-12">
@@ -29,8 +198,10 @@ import '../uikit/css/data-tnc.css'
                             <Button icon="pi pi-search" class="search-button-tnc" @click="fetchData"></Button>
                         </div>
                     </div>
-                    <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
-                        <Column field="level_name" header="Nama" class="name-column"></Column>
+                    <DataTable :value="tableData" :paginator="true" :rows="5" class="tabel">
+                        <Column field="tnc_uuid_table.price_list_name" header="Nama Harga" class="name-column"></Column>
+                        <Column field="tnc_name" header="Name" class="name-column"></Column>
+                        <Column field="tnc_business.business_name" header="Bisnis" class="name-column"></Column>
                         <Column class="actions">
                             <template #body="rowData">
                                 <div class="action-icons-tnc">

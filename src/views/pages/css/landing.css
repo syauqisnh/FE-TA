@@ -1,176 +1,407 @@
+* {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-color: white;
+}
+
 .navbar {
     display: flex;
     align-items: center;
-    justify-content: space-around;
     background-color: white;
-    height: 100px;
+    justify-content: space-between;
+    padding: 10px 20px 10px 20px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    border-bottom-left-radius: 30px; /* Radius sudut bawah kiri */
+    border-bottom-right-radius: 30px
 }
-.logo {
-    height: 65px;
-}
-.fitur .list {
+.logo-bekantan {
     display: flex;
     align-items: center;
 }
-.list {
-    list-style: none;
-}
-.list li a {
-    margin-left: 50px;
-    margin-right: 50px;
-    color: rgb(107, 107, 107);
-    font-weight: bold;
-    font-size: 16px;
+
+.logo-bekantan img {
+    height: 85px;
 }
 
-.list li a:hover {
+.menu ul {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 50px;
+}
+
+.menu ul li a {
+    margin-right: 70px;
+    color: grey;
+    cursor: pointer;
+}
+
+.menu ul li a:hover {
     color: orange;
+}
+
+.video-content iframe {
+    height: 600px;
+    width: 1200px;
+    margin-bottom: 20px;
 }
 
 .login-reg {
     display: flex;
-    align-items: center;
+}
+
+.login-reg button {
+    margin: 15px;
 }
 
 .login button {
-    margin-right: 40px;
-    height: 40px;
-    width: 90px;
-    border: 1px solid orange;
-    color: orange;
-    background-color: transparent;
+    height: 50px;
+    width: 100px;
+    background-color: white;
+    border: 3px solid orange;
+    cursor: pointer;
     border-radius: 20px;
     font-weight: bold;
-    cursor: pointer;
+    color: orange;
+    font-size: 16px;
+}
+
+.login button:hover {
+    background-color: orange;
+    color: white;
 }
 
 .register button {
-    margin-right: 40px;
-    height: 40px;
-    width: 90px;
-    border: none;
-    color: white;
     background-color: orange;
-    border-radius: 20px;
+    color: white;
+    height: 50px;
+    width: 100px;
+    border: none;
     font-weight: bold;
+    border-radius: 20px;
+    font-size: 16px;
     cursor: pointer;
 }
 
-.isi-content {
+.register button:hover {
+    background-color: rgb(255, 185, 56);
+}
+
+.content {
+    height: 150vh;
+    margin-top: 50px;
+    text-align: center;
+}
+
+.text-content {
+    margin-top: 10%;
+    margin-bottom: 30px;
+}
+
+.text-content h1 {
+    font-size: 50px;
+    font-weight: bold;
+}
+.text-content h1 span {
+    color: orange;
+}
+.text-content p {
+    font-size: 20px;
+    font-weight: bold;
+    color: grey;
+}
+.button-content button {
+    height: 60px;
+    width: 250px;
+    border: none;
+    border-radius: 10px;
+    background-color: orange;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.button-content p {
+    font-size: 18px;
+    font-weight: bold;
+    color: grey;
+}
+
+.button-content button:hover {
+    background-color: rgb(255, 179, 39);
+}
+
+.content-2 {
+    height: 100vh;
+}
+
+.content-2 h1 {
+    font-size: 50px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.content-2 h1 span {
+    color: orange;
+}
+
+.content-3 {
+    height: 150vh;
+}
+
+.content-3 h1 {
+    text-align: center;
+    font-size: 50px;
+    font-weight: bold;
+}
+
+.content-3 p {
+    text-align: center;
+}
+
+.content-3 h1 span {
+    color: orange;
+}
+
+.content-3 p {
+    font-size: 20px;
+    font-weight: bold;
+    color: gray;
+    margin-bottom: 50px;
+}
+
+.template-container {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-left: 50px;
+    margin-right: 50px;
+}
+  
+.template-item {
+    margin: 10px auto;
+    max-width: 450px;
+    background-color: white;
+    border-radius: 30px;
+    max-height: 400px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 3px 6px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+
+  .template-item:hover {
+    transform: translate(0, -5px);
+}
+  
+  .template-item img {
+    width: 80%;
+    height: auto;
+    border-radius: 5px;
+  }
+  
+  .pagination-buttons {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .pagination-buttons button {
+    padding: 8px 16px;
+    margin-right: 10px;
+    cursor: pointer;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    transition: background-color 0.3s ease;
+    font-size: 20px;
+}
+
+.pagination-buttons button:hover {
+    background-color: #2980b9; 
+}
+
+.pagination-buttons button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.pagination-buttons button:not(:disabled) {
+    transition: transform 0.3s ease;
+}
+
+.pagination-buttons button:hover:not(:disabled) {
+    transform: scale(1.1);
+}
+.desc {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.desc button {
+    margin-left: 5px;
+    margin-right: 5px;
+    height: 40px;
+    width: 40px;
+    background-color: rgb(130, 216, 0);
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+
+.desc .shop {
+    background-color: rgb(70, 70, 255);
+}
+
+.desc .shop:hover {
+    background-color: rgb(120, 120, 255);
+}
+
+.desc button:hover {
+    background-color: greenyellow;
+}
+
+.desc button i {
+    font-size: 20px;
+    color: white;
+}
+
+.desc p {
+    margin-bottom: 10px;
+    margin-right: 20px;
+    font-size: 17px;
+    color: black;
+}
+.user-count {
+    display: flex;
+    max-width: 300px;
+    max-height: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-right: 20px;
+}
+
+.user-count i {
+    font-size: 17px;
+    color: gray;
+}
+
+.user-count span {
+    font-size: 15px;
+    color: gray;
+    font-weight: bold;
+}
+
+.icon-card i {
+    margin-right: 10px;
+}
+
+.user-count .p-desc {
+    font-size: 17px;
+    margin-bottom: 10px;
+    color: black;
+}
+
+.content-4 {
+    height: 100vh;
+}
+.judul-content-4 h1 {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 50px;
+}
+
+.judul-content-4 span {
+    color: orange;
+}
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.card-items {
+    margin: 10px auto;
+    max-width: 450px;
+    background-color: white;
+    border-radius: 30px;
+    box-sizing: border-box;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 3px 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-items:nth-child(2) {
+    border: 6px solid orange;
+    border-radius: 10px;
+    box-shadow: 0 0 15px orange;
+}
+
+.card-items h1 {
+    font-weight: bold;
+}
+
+.penawaran p {
+    font-weight: bold;
+    color: white;
+    margin: 0;
+}
+
+.penawaran {
+    margin-bottom: 15px;
+    height: 50px;
+    width: 70%;
+    background-color: rgb(1, 189, 189);
     display: flex;
     align-items: center;
-    justify-content: space-around;
-    height: 87vh;
-    background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, rgb(238, 239, 175) 0%, rgb(195, 227, 250) 100%);
+    justify-content: center;
+    border-radius: 20px;
 }
 
-.get button {
-    height: 50px;
-    width: 120px;
+.judulnya {
+    margin: 0 auto;
     background-color: orange;
-    border: none;
-    color: white;
-    border-radius: 30px;
+}
+
+.harga {
+    margin-top: 10px;
+}
+
+.harga-dicoret {
+    text-decoration: line-through;
+    color: gray;
+    margin-right: 10px;
+}
+
+.harga-akhir {
+    margin: 0;
+    color: red;
     font-weight: bold;
-    cursor: pointer;
 }
 
-.content-text h1 {
-    font-weight: bold;
+.harga-akhir span {
+    font-size: 15px;
 }
 
-.content-text p {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 40px;
-}
-
-.gambar-1 img {
-    height: 300px;
-}
-
-.menu-toggle {
-    display: none;
-    cursor: pointer;
-    width: 25px; /* Ubah lebar toggle menu sesuai kebutuhan Anda */
-    height: 35px; /* Ubah tinggi toggle menu sesuai kebutuhan Anda */
-    position: absolute;
-    left: 25px; 
-}
-
-.menu-toggle span {
-    display: block;
-    width: 100%;
-    height: 3px;
-    background-color: #333;
-    margin: 6px 0;
-}
-@media (min-width: 280px) and (max-width: 768px) {
-    .navbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-around;
-        background-color: white;
-        height: 80px;
-    }
-    .isi-content {
-        padding: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-around;
-        flex-direction: column;
-        height: 100vh;
-        background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, rgb(238, 239, 175) 0%, rgb(195, 227, 250) 100%);
-    }
-
-    .gambar-1 img {
-        height: 200px;
-    }
-
-    .fitur {
-        display: none;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        width: 100%;
-        background-color: #f9f9f9;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .fitur.active {
-        display: block;
-    }
-
-    .menu-toggle {
-        display: block;
-    }
-
-    .menu-toggle span {
-        display: block;
-    }
-
-
-    .list {
-        flex-direction: column;
-    }
-
-    .login-reg {
-        display: none;
-    }
-
-    .content-text h1 {
-        font-weight: bold;
-        font-size: 30px;
-    }
-    
-    .content-text p {
-        font-size: 15px;
-        font-weight: 600;
-        margin-bottom: 40px;
-    }
-
-    .logo-bekantan img {
-        margin-top: 10px;
-        height: 50px;
-    }
+.harga-akhir-no span {
+    font-size: 15px;
 }

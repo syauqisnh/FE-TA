@@ -479,7 +479,9 @@ const order = ref([
                         <Column field="team_scope.scope_name" header="Scope" class="name-column"></Column>
                         <Column header="File" class="name-column">
                             <template #body="slotProps">
-                                <img :src="slotProps.data.team_media.media_url" alt="Media" :width="100"/>
+                                <a :href="slotProps.data.team_media.media_url">
+                                    <img :src="slotProps.data.team_media.media_url" alt="Media" :width="100" style="cursor: pointer; border-radius: 10px;" />
+                                </a>
                             </template>
                         </Column>
                         <Column class="actions">

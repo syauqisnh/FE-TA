@@ -1,9 +1,9 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import AppLayout from '@/layout/AppLayout.vue';
 import axios from 'axios';
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes: [
         {
             path: '/',
@@ -84,6 +84,11 @@ const router = createRouter({
                     path: '/uikit/data-teams',
                     name: 'data-teams',
                     component: () => import('@/views/uikit/data-teams.vue')
+                },
+                {
+                    path: '/uikit/halaman-view/:gallery_uuid',
+                    name: 'halaman-view',
+                    component: () => import('@/views/uikit/halaman-view.vue')
                 },
                 {
                     path: '/uikit/floatlabel',
@@ -216,9 +221,9 @@ const router = createRouter({
             component: () => import('@/views/pages/Landing.vue')
         },
         {
-            path: '/Landing-2',
-            name: 'Landing-2',
-            component: () => import('@/views/pages/Landing-2.vue')
+            path: '/landing-page',
+            name: 'landing-page',
+            component: () => import('@/views/pages/landing-page.vue')
         },
         {
             path: '/pages/notfound',

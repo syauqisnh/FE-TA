@@ -133,16 +133,36 @@ const fetchData = async () => {
         const filterNamesPermission = multiselectValuePermission.value ? multiselectValuePermission.value.map((item) => item.label) : [];
         const filterNamesLevel = multiselectValueLevel.value ? multiselectValueLevel.value.map((item) => item.label) : [];
 
+        const params = new URLSearchParams();
+
+        // Conditionally add the 'order' parameter
+        if (selectedOrder.value !== 'default') {
+            params.append(`order[${'access_id'}]`, selectedOrder.value);
+        }
+
+        // Tambahkan parameter 'keyword' jika ada input
+        if (inputSearch.value.trim()) {
+            params.append('keyword', inputSearch.value.trim());
+        }
+
+        // Tambahkan parameter 'filter' untuk module names
+        if (filterNames.length > 0) {
+            params.append('filter[modul_name]', filterNames.join(','));
+        }
+
+        // Tambahkan parameter 'filter' untuk permission names
+        if (filterNamesPermission.length > 0) {
+            params.append('filter[permission_name]', filterNamesPermission.join(','));
+        }
+
+        // Tambahkan parameter 'filter' untuk level names
+        if (filterNamesLevel.length > 0) {
+            params.append('filter[level_name]', filterNamesLevel.join(','));
+        }
+
+        // Buat request ke backend
         const response = await axios.get('http://localhost:9900/api/v1/access/get_all', {
-            params: {
-                order: { access_id: selectedOrder.value },
-                filter: {
-                    modul_name: filterNames.join(','),
-                    permission_name: filterNamesPermission.join(','),
-                    level_name: filterNamesLevel.join(',')
-                },
-                keyword: inputSearch.value
-            }
+            params: params
         });
 
         console.log('Respon API:', response.data);
@@ -152,6 +172,7 @@ const fetchData = async () => {
         Hakaksestolak.value = error.response.data.msg;
     }
 };
+
 
 const addDataData = async () => {
     const nama_modul = access_modul.value;

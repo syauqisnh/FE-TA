@@ -1,7 +1,173 @@
 <script setup>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Dropdown from 'primevue/dropdown';
+import InputText from 'primevue/inputtext';
+import Button from 'primevue/button';
 import '../uikit/css/data-gallery.css';
-</script>
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
+
+const inputSearch = ref('');
+const tableData = ref([]);
+
+const user_username = ref('');
+const user_level = ref('');
+const user_uuid = ref('');
+const businesOptions = ref([]);
+const multiselectOptionsBusiness = ref([]);
+
+const gallery_name = ref('');
+const gallery_desc = ref('');
+const gallery_business = ref(null);
+const DataBusines = ref([]);
+
+const selectedOrder = ref('default');
+const selectedLimit = ref('default');
+
+const isModalOpen = ref(false);
+
+const updateOptions = () => {
+    businesOptions.value = [{ label: 'Pilih Busines', value: null }, ...DataBusines.value.map((index) => ({ label: index.business_name, value: index.business_uuid }))];
+
+    multiselectOptionsBusiness.value = [...DataBusines.value.map((index) => ({ label: index.module_name, value: index.module_uuid }))];
+};
+
+onMounted(async () => {
+    await DataMe();
+});
+
+const order = ref([
+    { value: 'default', label: 'Urutkan data' },
+    { value: 'asc', label: 'Urutkan dari data awal ditambahkan' },
+    { value: 'desc', label: 'Urutkan dari data terbaru' }
+]);
+
+const limit = ref([
+    { value: 'default', label: 'Limit Data' },
+    { value: 5, label: '5 Data perhalaman' },
+    { value: 10, label: '10 Data perhalaman' },
+    { value: 25, label: '25 Data perhalaman' },
+    { value: 50, label: '50 Data perhalaman' },
+    { value: 100, label: '100 Data perhalaman' }
+]);
+
+const DataMe = async () => {
+    try {
+        const response = await axios.get('http://localhost:9900/api/v1/me');
+
+        if (response) {
+            user_username.value = response.data.name;
+            user_level.value = response.data.level;
+            user_uuid.value = response.data.uuid;
+
+            if (user_level.value == 'customer' || user_level.value == 'administrator') {
+                await fetchData();
+                await fetchDataOption();
+            }
+        }
+    } catch (error) {
+        if (error.response && error.response.status === 401) {
+            router.push('/Landing-2'); // Pengguna belum login, arahkan ke landing page
+        } else {
+            console.error('Error: ', error); // Kesalahan lain
+        }
+    }
+};
+
+const fetchDataOption = async () => {
+    try {
+        const getBusines = await axios.get('http://localhost:9900/api/v1/business/get_all');
+        DataBusines.value = getBusines.data.data;
+        updateOptions();
+    } catch (error) {
+        console.error('Error mengambil data:', error);
+    }
+};
+
+const fetchData = async () => {
+    try {
+        const params = new URLSearchParams();
+
+        // Parameter 'order' dikirim sebagai string dan bukan objek
+        if (selectedOrder.value !== 'default') {
+            params.append(`order[${'gallery_id'}]`, selectedOrder.value);
+        }
+
+        // Tambahkan parameter 'limit' jika bukan default
+        if (selectedLimit.value !== 'default') {
+            params.append('limit', selectedLimit.value);
+        }
+
+        // Tambahkan parameter 'keyword' jika ada input
+        if (inputSearch.value.trim()) {
+            params.append('keyword', inputSearch.value.trim());
+        }
+
+        // Buat request ke backend
+        const response = await axios.get(`http://localhost:9900/api/v1/galleries/get_all`, {
+            params: params
+        });
+
+        console.log('Respon API:', response);
+
+        if (response) {
+            tableData.value = response.data.data || [];
+
+            console.log(tableData.value);
+
+            tableData.value.forEach((item) => {
+                if (!item.business_nohp) {
+                    item.business_nohp = 'BELUM DI ISI';
+                }
+                if (!item.business_address) {
+                    item.business_address = 'BELUM DI ISI';
+                }
+            });
+        } else {
+            console.error('Respon sukses tetapi tidak ada data:', response.data.message);
+            tableData.value = [];
+        }
+    } catch (error) {
+        console.error('Error mengambil data:', error);
+        if (error.response) {
+            console.error('Error response dari backend:', error.response.data);
+        }
+    }
+};
+
+const addDataData = async () => {
+    const name = gallery_name.value;
+    const desc = gallery_desc.value;
+    const business = gallery_business.value;
+
+    const response = await axios.post('http://localhost:9900/api/v1/galleries', {
+        gallery_name: name,
+        gallery_desc: desc,
+        gallery_business: business
+    });
+
+    if (response) {
+        closeModal();
+        window.location.reload();
+    }
+};
+
+const openModal = () => {
+    isModalOpen.value = true;
+};
+
+const closeModal = () => {
+    isModalOpen.value = false;
+
+    gallery_name.value = null;
+    gallery_desc.value = null;
+    gallery_business.value = null;
+};
+</script>
 
 <template>
     <div class="judul-halaman-price">
@@ -12,33 +178,11 @@ import '../uikit/css/data-gallery.css';
         <div class="modal-content">
             <!-- Close button -->
             <span class="close" @click="closeModal">&times;</span>
-            <h4>Tambah Data</h4>
+            <h4>Buat Album</h4>
             <div class="modal-form-group">
-                <InputText v-model="price_list_name" placeholder="Tambahkan Nama" class="modal-input"></InputText>
-                <InputNumber v-model="price_list_price" inputId="currency-id" mode="currency" currency="IDR" locale="id-ID" :style="{ width: '100%' }" />
-                <textarea v-model="price_list_desc" placeholder="Tambahkan Deskripsi" class="modal-textarea"></textarea>
-                <label>Status:</label>
-                <div class="radio-group">
-                    <RadioButton v-model="price_list_status" value="active" label="Aktif"></RadioButton>
-                    <label for="active">Ditampilkan</label>
-                </div>
-                <div class="radio-group">
-                    <RadioButton v-model="price_list_status" value="inactive" label="Tidak Aktif"></RadioButton>
-                    <label for="inactive">Dinonaktifkan</label>
-                </div>
-                <InputText v-model="price_list_order" placeholder="Tambahkan Urutan" class="modal-input"></InputText>
-                <Dropdown v-model="price_list_business" :options="businesOptions" optionLabel="label" optionValue="value" placeholder="Pilih Bisnis" class="modal-input"></Dropdown>
-            </div>
-            <div class="modal-form-group">
-                <FileUpload
-                    name="file"
-                    url="http://localhost:9900/api/v1/media/upload_media"
-                    :onUpload="onUpload"
-                    :multiple="true"
-                    accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,image/*"
-                    :maxFileSize="300 * 1024 * 1024"
-                >
-                </FileUpload>
+                <InputText v-model="gallery_name" placeholder="Tambahkan Judul" class="modal-input"></InputText>
+                <InputText v-model="gallery_desc" placeholder="Tambahkan Desc" class="modal-input"></InputText>
+                <Dropdown v-model="gallery_business" :options="businesOptions" optionLabel="label" optionValue="value" placeholder="Pilih Bisnis" class="modal-input"></Dropdown>
             </div>
             <p v-if="validasi_price_media" class="validation-error text-red">{{ validasi_price_media }}</p>
             <div class="modal-form-group">
@@ -69,13 +213,18 @@ import '../uikit/css/data-gallery.css';
                             <Button icon="pi pi-search" class="search-button-price" @click="fetchData"></Button>
                         </div>
                     </div>
-                    <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
-                        <Column field="price_list_name" header="Name" class="name-column"></Column>
-                        <Column field="price_list_price" header="Desc" class="name-column"></Column>
-                        <Column field="price_list_desc" header="Bisnis" class="name-column"></Column>
+                    <DataTable :value="tableData" :paginator="true" :rows="5" class="tabel">
+                        <Column field="gallery_name" header="Judul" class="name-column"></Column>
+                        <!-- <Column field="gallery_uuid" header="Judul" class="name-column"></Column> -->
                         <Column class="actions">
                             <template #body="rowData">
-                                <div class="action-icons-price">
+                                <div class="action-icons">
+                                    <router-link :to="{ name: 'halaman-view', params: { gallery_uuid: rowData.data.gallery_uuid } }">
+                                        <button class="button-view">View</button>
+                                    </router-link>
+                                    <!-- <router-link to="/uikit/halaman-view">
+                                        <button class="button-view">View</button>
+                                    </router-link> -->
                                     <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.level_uuid)"></Button>
                                     <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.level_uuid)"></Button>
                                 </div>

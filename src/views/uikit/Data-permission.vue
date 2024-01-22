@@ -74,18 +74,44 @@ onMounted(async () => {
 
 const fetchData = async () => {
     try {
-        const response = await axios.get('http://localhost:9900/api/v1/permissions/get_all', {
-            params: {
-                order: { permission_id: selectedOrder.value },
-                keyword: inputSearch.value
-            }
+        const params = new URLSearchParams();
+
+        // Tambahkan parameter 'order' berdasarkan 'selectedOrder.value'
+        if (selectedOrder.value !== 'default') {
+            params.append(`order[${'permission_id'}]`, selectedOrder.value);
+        }
+
+        // Tambahkan parameter 'limit' jika bukan default
+        if (selectedLimit.value && selectedLimit.value !== 'default') {
+            params.append('limit', selectedLimit.value);
+        }
+
+        // Tambahkan parameter 'keyword' jika ada input
+        if (inputSearch.value.trim()) {
+            params.append('keyword', inputSearch.value.trim());
+        }
+
+        // Buat request ke backend
+        const response = await axios.get(`http://localhost:9900/api/v1/permissions/get_all`, {
+            params: params
         });
 
-        console.log('Respon API:', response.data);
-        tableData.value = response.data.data || [];
-        Hakakses.value = response.data.message;
+        console.log('Respon API:', response);
+
+        if (response.data.success) {
+            tableData.value = response.data.data || [];
+            Hakakses.value = response.data.message;
+            // Anda bisa menambahkan manipulasi data tambahan di sini jika diperlukan
+        } else {
+            console.error('Respon sukses tetapi tidak ada data:', response.data.message);
+            tableData.value = [];
+        }
     } catch (error) {
-        Hakaksestolak.value = error.response.data.msg;
+        console.error('Error mengambil data:', error);
+        if (error.response) {
+            console.error('Error response dari backend:', error.response.data);
+            Hakaksestolak.value = error.response.data.msg;
+        }
     }
 };
 
