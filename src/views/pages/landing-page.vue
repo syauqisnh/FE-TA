@@ -269,13 +269,25 @@ const scrollToSection = (sectionId) => {
                 </Card>
             </div>
         </div>
-        <div id="kontak" class="footer">
-            <!-- <div>
-                <img src="public/layout/images/logo-bekantan-v3.png" alt="logo-bekantan-jantan" />
-                <h1><i class="fas fa-envelope"></i> Email</h1>
-                <h1><i class="fas fa-phone"></i> Kontak</h1>
-                <h1><i class="fab fa-instagram"></i> Instagram</h1>
-            </div> -->
+        <div id="kontak" class="kontak">
+            <div class="kontak-content">
+                <img :src="logoUrl" alt="logo" />
+                <a href="mailto:your@email.com" target="_blank">
+                    <i class="fas fa-envelope"> Email</i>
+                </a>
+                <a href="tel:+123456789" target="_blank">
+                    <i class="fas fa-phone"> 08732881893</i>
+                </a>
+                <a href="your_map_link" target="_blank">
+                    <i class="fas fa-map-marker-alt"> Banjarmasin,Indonesia</i>
+                </a>
+            </div>
+            <div class="screen">
+                <img src="/demo/images/landing/screen-2.png" alt="" />
+            </div>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 Your Company Name. All rights reserved.</p>
         </div>
     </div>
     <AppConfig simple />

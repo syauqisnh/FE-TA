@@ -405,3 +405,25 @@ body {
 .harga-akhir-no span {
     font-size: 15px;
 }
+
+.kontak {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.kontak-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer {
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    height: 5vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
