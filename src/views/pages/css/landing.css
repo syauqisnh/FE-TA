@@ -1,24 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 * {
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Roboto', sans-serif;
 }
-
-body {
-    background-color: white;
-}
-
 .navbar {
     display: flex;
     align-items: center;
-    background-color: white;
     justify-content: space-between;
     padding: 10px 20px 10px 20px;
-    position: fixed;
     width: 100%;
     top: 0;
-    border-bottom-left-radius: 30px; /* Radius sudut bawah kiri */
+    border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px
 }
+
 .logo-bekantan {
     display: flex;
     align-items: center;
@@ -39,18 +34,11 @@ body {
 
 .menu ul li a {
     margin-right: 70px;
-    color: grey;
     cursor: pointer;
 }
 
 .menu ul li a:hover {
     color: orange;
-}
-
-.video-content iframe {
-    height: 600px;
-    width: 1200px;
-    margin-bottom: 20px;
 }
 
 .login-reg {
@@ -95,13 +83,28 @@ body {
 }
 
 .content {
-    height: 150vh;
-    margin-top: 50px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
     text-align: center;
 }
 
+.input-domain {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.content-text {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
 .text-content {
-    margin-top: 10%;
     margin-bottom: 30px;
 }
 
@@ -139,23 +142,94 @@ body {
 .button-content button:hover {
     background-color: rgb(255, 179, 39);
 }
+  
+  .template-container.slide-left {
+    transform: translateX(-100%);
+  }
+  
+  .template-container.slide-right {
+    transform: translateX(100%);
+  }
 
-.content-2 {
+
+  .content-2 {
     height: 100vh;
+    padding: 40px 20px; 
+    background-color: #f5f5f5; 
+    color: #333; 
 }
 
 .content-2 h1 {
-    font-size: 50px;
+    font-size: 50px; 
     font-weight: bold;
     text-align: center;
+    margin-bottom: 20px; 
+    color: #333; 
 }
 
 .content-2 h1 span {
     color: orange;
 }
 
+.content-2 .text-content-2 {
+    text-align: justify;
+    font-size: 18px;
+    margin: 0 auto;
+    padding-bottom: 30px;
+}
+
+.masalah h1 {
+    font-size: 30px;
+    text-align: center;
+    margin-bottom: 15px; 
+}
+
+.text2-content-2 {
+    font-size: 18px;
+    color: #444; 
+    line-height: 1.6; 
+    margin: 0 auto; 
+}
+
+.text2-content-2 ul {
+    text-align: left; 
+    padding-left: 20px;
+}
+
+
+.masalah h1:hover, .content-2 h1:hover {
+    color: #ff8c00; /* Darker shade of orange */
+    cursor: pointer; /* Indicate interactivity */
+    transition: color 0.3s ease-in-out; /* Smooth transition */
+}
+
+.list-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    gap: 40px; /* Spacing between columns */
+    position: relative; /* For the vertical line positioning */
+    padding: 20px; /* Space around the list */
+}
+
+.list-column {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0; /* Remove default padding */
+}
+
+.list-container::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px; /* Width of the vertical line */
+    background-color: orange; /* Orange color for the vertical line */
+    transform: translateX(-50%); /* Center the line */
+}
+
+
 .content-3 {
-    height: 150vh;
+    height: 100vh;
 }
 
 .content-3 h1 {
@@ -179,19 +253,12 @@ body {
     margin-bottom: 50px;
 }
 
-.template-container {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    margin-left: 50px;
-    margin-right: 50px;
-}
-  
 .template-item {
     margin: 10px auto;
     max-width: 450px;
+    height: 450px;
     background-color: white;
     border-radius: 30px;
-    max-height: 400px;
     margin-bottom: 20px;
     box-sizing: border-box;
     padding: 10px;
@@ -200,13 +267,7 @@ body {
     flex-direction: column;
     align-items: center;
     box-shadow: 3px 6px 12px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
   }
-
-  .template-item:hover {
-    transform: translate(0, -5px);
-}
-  
   .template-item img {
     width: 80%;
     height: auto;
@@ -216,9 +277,9 @@ body {
   .pagination-buttons {
     text-align: center;
     margin-top: 20px;
-  }
-  
-  .pagination-buttons button {
+}
+
+.pagination-buttons button {
     padding: 8px 16px;
     margin-right: 10px;
     cursor: pointer;
@@ -232,7 +293,7 @@ body {
 }
 
 .pagination-buttons button:hover {
-    background-color: #2980b9; 
+    background-color: #2980b9;
 }
 
 .pagination-buttons button:disabled {
@@ -247,6 +308,7 @@ body {
 .pagination-buttons button:hover:not(:disabled) {
     transform: scale(1.1);
 }
+
 .desc {
     display: flex;
     justify-content: space-between;
@@ -322,6 +384,7 @@ body {
     height: 100vh;
 }
 .judul-content-4 h1 {
+    font-size: 50px;
     text-align: center;
     font-weight: bold;
     margin-bottom: 50px;
@@ -407,22 +470,106 @@ body {
 }
 
 .kontak {
-    height: 100vh;
+    height: 80vh;
+    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-left: 30px;
+}
+.screen {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+}
+.screen img {
+    height: 250px; 
 }
 
 .kontak-content {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
 }
 
+.lokasi {
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
+.lokasi p {
+    color: black;
+}
+
+.lokasi h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: grey;
+}
+
+.whatsapp {
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
+.whatsapp p {
+    color: black;
+}
+
+.whatsapp h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: gray;
+}
+
+.email {
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
+.email h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: gray;
+}
+
+.email p {
+    color: black;
+}
+
+.sejajar img {
+    height: 50px;
+}
+
+.bekantan-logo img {
+    margin-bottom: 20px;
+    height: 80px;
+}
+
+.isi-foot{
+    display: flex;
+    justify-content: center;
+}
+.sosmed {
+    display: flex;
+    align-items: center;
+}
+.icon a.icons i {
+    font-size: 3em;
+}
+.icon {
+    margin-right: 10px;
+}
 .footer {
     text-align: center;
     font-weight: bold;
     font-size: 20px;
-    height: 5vh;
     display: flex;
     align-items: center;
     justify-content: center;

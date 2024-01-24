@@ -64,27 +64,27 @@ const templateList = ref([
     },
     {
         imageUrl: './public/layout/images/contoh.png',
-        description: 'Description of Template 1',
+        description: 'Description of Template 6',
         userCount: '500'
     },
     {
         imageUrl: './public/layout/images/contoh.png',
-        description: 'Description of Template 2',
+        description: 'Description of Template 7',
         userCount: '500'
     },
     {
         imageUrl: './public/layout/images/contoh.png',
-        description: 'Description of Template 3',
+        description: 'Description of Template 8',
         userCount: '500'
     },
     {
         imageUrl: './public/layout/images/contoh.png',
-        description: 'Description of Template 4',
+        description: 'Description of Template 9',
         userCount: '500'
     },
     {
         imageUrl: './public/layout/images/contoh.png',
-        description: 'Description of Template 5',
+        description: 'Description of Template 10',
         userCount: '500'
     }
 ]);
@@ -98,14 +98,6 @@ const displayedTemplates = computed(() => {
     return templateList.value.slice(startIndex, endIndex);
 });
 
-const totalPages = computed(() => Math.ceil(templateList.value.length / itemsPerPage));
-
-const goToPage = (page) => {
-    if (page >= 1 && page <= totalPages.value) {
-        currentPage.value = page;
-    }
-};
-
 const scrollToSection = (sectionId) => {
     const targetSection = document.getElementById(sectionId);
 
@@ -118,62 +110,110 @@ const scrollToSection = (sectionId) => {
         });
     }
 };
+const responsiveOptions = ref([
+    {
+        breakpoint: '1024px',
+        numVisible: 3,
+        numScroll: 3
+    },
+    {
+        breakpoint: '768px',
+        numVisible: 2,
+        numScroll: 2
+    },
+    {
+        breakpoint: '560px',
+        numVisible: 1,
+        numScroll: 1
+    }
+]);
 </script>
 
 <template>
     <div class="container">
-        <div class="navbar">
-            <div class="logo-bekantan">
-                <img :src="logoUrl" alt="logo" />
-            </div>
-            <div class="menu">
-                <ul>
-                    <li><a @click="() => scrollToSection('beranda')">Beranda</a></li>
-                    <li><a @click="() => scrollToSection('Tentang')">Tentang Kami</a></li>
-                    <li><a @click="() => scrollToSection('produk')">Produk</a></li>
-                    <li><a @click="() => scrollToSection('harga')">Harga</a></li>
-                </ul>
-            </div>
-            <div class="login-reg">
-                <div class="login">
-                    <button @click="goToLogin">Login</button>
-                </div>
-                <div class="register">
-                    <button @click="goToRegister">Daftar</button>
-                </div>
-            </div>
-        </div>
         <div id="beranda" class="content">
-            <div class="text-content">
-                <h1>
-                    Membuat Jejak Digital <br />
-                    Mengesankan untuk <span>Bisnis Fotografer Anda</span>
-                </h1>
-                <p>
-                    Bekantan Jantan adalah pilihan yang tepat bagi para fotografer yang ingin menciptakan jejak digital mereka dengan <br />
-                    kombinasi kreativitas tinggi dan teknologi terkini.
-                </p>
+            <div class="navbar">
+                <div class="logo-bekantan">
+                    <img :src="logoUrl" alt="logo" />
+                </div>
+                <div class="menu">
+                    <ul>
+                        <li><a @click="() => scrollToSection('beranda')">Beranda</a></li>
+                        <li><a @click="() => scrollToSection('Tentang')">Tentang Kami</a></li>
+                        <li><a @click="() => scrollToSection('produk')">Produk</a></li>
+                        <li><a @click="() => scrollToSection('harga')">Harga</a></li>
+                    </ul>
+                </div>
+                <div class="login-reg">
+                    <div class="login">
+                        <button @click="goToLogin">Login</button>
+                    </div>
+                    <div class="register">
+                        <button @click="goToRegister">Daftar</button>
+                    </div>
+                </div>
             </div>
-            <div class="button-content">
-                <button @click="goToRegister">Ayo Daftar Sekarang Juga</button>
-                <p>Temukan potensi Anda dalam dunia fotografi bersama Bekantan Jantan.</p>
+            <div class="content-text">
+                <div class="text-content">
+                    <h1>Membuat website lebih mudah untuk <span>Bisnis Anda</span></h1>
+                    <p>
+                        Pilihan yang tepat bagi para fotografer yang ingin menciptakan jejak digital mereka dengan <br />
+                        kombinasi kreativitas tinggi dan teknologi terkini.
+                    </p>
+                </div>
+                <div class="input-domain">
+                    <InputText v-model="value3" type="text" size="large" placeholder="Nama Domain Anda" style="width: 70%; height: 70px; margin-right: 15px; font-size: 20px" />
+                    <Button label="Search" style="background-color: rgb(112, 194, 227); height: 70px; width: 13%; font-size: 17px; border: none" severity="secondary" raised />
+                </div>
+                <div class="button-content">
+                    <button @click="goToRegister">Ayo Bergabung Sekarang</button>
+                    <p>Temukan potensi Anda dalam dunia fotografi bersama Bekantan Jantan.</p>
+                </div>
             </div>
         </div>
         <div id="Tentang" class="content-2">
-            <h1>Apa Itu Web Builder <span>Company Profile?</span></h1>
-            <p>
-                Web Builder Company Profile adalah layanan yang menyediakan platform untuk membangun dan mengelola halaman profil perusahaan secara online. Dengan fokus khusus pada bidang jasa fotografi, web builder ini memberikan solusi praktis bagi
-                fotografer yang ingin meningkatkan kehadiran mereka di dunia digital.
-            </p>
-            <p>
-                Dengan menggunakan Web Builder Company Profile untuk jasa fotografer, Anda dapat dengan mudah membuat dan mengelola halaman profil perusahaan Anda. Ini termasuk menampilkan portofolio foto terbaik Anda, memberikan informasi tentang
-                layanan yang Anda tawarkan, dan berbagi cerita unik mengenai pengalaman fotografi Anda.
+            <div>
+                <h1>Apa Itu Web Builder <span>Company Profile?</span></h1>
+            </div>
+            <div class="text-content-2">
+                <p>
+                    Web Builder Company Profile adalah layanan yang menyediakan platform untuk membangun dan mengelola halaman profil perusahaan secara online. Dengan fokus
+                    khusus pada bidang jasa fotografi, web builder ini memberikan solusi praktis bagi fotografer yang ingin meningkatkan kehadiran mereka di dunia digital.
+                </p>
+            </div>
+            <div class="masalah">
+                <h1>Alasan Kami Menyediakan Layanan Ini</h1>
+            </div>
+            <div class="text2-content-2">
+                <p>
+                    Di era digital saat ini, keberadaan online menjadi sangat penting, terutama bagi para profesional di bidang kreatif seperti fotografi. Berikut adalah beberapa alasan mengapa kami menyediakan layanan Web Builder Company Profile:<br /><br />
+                </p>
+                <div class="list-container">
+                    <ul class="list-column">
+                        <li>
+                            <strong>Memudahkan Fotografer Membuat Jejak Digital:</strong> Kami memahami bahwa fotografer sering kali lebih fokus pada aspek kreatif daripada teknis. Layanan kami memungkinkan para fotografer untuk dengan mudah
+                            membangun dan mengelola kehadiran online mereka tanpa perlu keahlian teknis khusus.
+                        </li>
+                        <li><strong>Peningkatan Visibilitas:</strong> Dengan adanya website yang profesional, fotografer dapat meningkatkan visibilitas mereka.</li>
+                        <li><strong>Pemasaran yang Efektif:</strong> Website merupakan alat pemasaran yang efektif.</li>
+                    </ul>
+                    <ul class="list-column">
+                        <li><strong>Personalisasi Branding:</strong> Web Builder kami menyediakan berbagai pilihan desain dan template.</li>
+                        <li><strong>Kemudahan Akses dan Manajemen:</strong> Platform kami dirancang agar mudah digunakan.</li>
+                        <li><strong>Integrasi Media Sosial:</strong> Kami menyadari pentingnya media sosial dalam dunia fotografi saat ini.</li>
+                    </ul>
+                </div>
+                <br />
+                <p>Kami berkomitmen untuk mendukung para fotografer dalam perjalanan kreatif mereka, menyediakan alat yang mereka butuhkan untuk berkembang dan sukses di dunia digital.</p>
+            </div>
+            <!-- <p>
+                
             </p>
             <p>
                 Keuntungan menggunakan layanan ini meliputi desain template yang responsif dan menarik secara visual, memungkinkan potensi klien melihat karya-karya Anda dengan mudah. Selain itu, integrasi media sosial dan fitur lainnya mempermudah
                 berbagi konten dan meningkatkan interaksi dengan pengunjung.
             </p>
-            <p>Dengan Web Builder Company Profile untuk fotografer, Anda dapat fokus pada passion Anda dalam fotografi, sementara platform ini membantu membangun citra profesional dan menjangkau lebih banyak klien potensial secara online.</p>
+            <p>Dengan Web Builder Company Profile untuk fotografer, Anda dapat fokus pada passion Anda dalam fotografi, sementara platform ini membantu membangun citra profesional dan menjangkau lebih banyak klien potensial secara online.</p> -->
         </div>
         <div id="produk" class="content-3">
             <h1>Jenis-Jenis Template <span>Company Profile</span></h1>
@@ -181,42 +221,38 @@ const scrollToSection = (sectionId) => {
                 Company profile adalah alat penting dalam memperkenalkan dan mempromosikan bisnis Anda. <br />
                 Berikut ini beberapa jenis template yang bisa Anda pertimbangkan:
             </p>
-            <div class="template-container">
-                <div v-for="(template, index) in displayedTemplates" :key="index" class="template-item">
-                    <img :src="template.imageUrl" alt="Template" />
-                    <div class="desc">
-                        <div class="user-count">
-                            <span class="p-desc">{{ template.description }}</span>
-                            <div class="icon-card">
-                                <i class="fa fa-user" aria-hidden="true"></i>
-                                <span>Jumlah Pengguna {{ template.userCount }}</span>
+            <Carousel :value="displayedTemplates" :numVisible="3" :numScroll="3" :responsiveOptions="responsiveOptions">
+                <template #item="slotProps">
+                    <div class="column">
+                        <div class="template-item">
+                            <img :src="slotProps.data.imageUrl" alt="Template" />
+                            <div class="desc">
+                                <div class="user-count">
+                                    <span class="p-desc">{{ slotProps.data.description }}</span>
+                                    <div class="icon-card">
+                                        <i class="fa fa-user" aria-hidden="true"></i>
+                                        <span>Jumlah Pengguna {{ slotProps.data.userCount }}</span>
+                                    </div>
+                                </div>
+                                <div class="button-card">
+                                    <button class="shop">
+                                        <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                    </button>
+                                    <button>
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <div class="button-card">
-                            <button class="shop">
-                                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-                            </button>
-                            <button>
-                                <i class="fa fa-eye" aria-hidden="true"></i>
-                            </button>
-                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="pagination-buttons">
-                <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1">
-                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                </button>
-                <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages">
-                    <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                </button>
-            </div>
+                </template>
+            </Carousel>
         </div>
         <div id="harga" class="content-4">
             <div class="judul-content-4">
                 <h1>
-                    <span>Dapatkan situs web</span> yang berkelas <br />
-                    dengan harga yang sesuai dengan anggaran bisnis Anda.
+                    <span>Dapatkan Harga</span> yang <br />
+                    Sesuai dengan Anggaran Bisnis Anda
                 </h1>
             </div>
             <div class="card-container">
@@ -269,30 +305,69 @@ const scrollToSection = (sectionId) => {
                 </Card>
             </div>
         </div>
+        <hr />
         <div id="kontak" class="kontak">
             <div class="kontak-content">
-                <img :src="logoUrl" alt="logo" />
-                <a href="mailto:your@email.com" target="_blank">
-                    <i class="fas fa-envelope"> Email</i>
-                </a>
-                <a href="tel:+123456789" target="_blank">
-                    <i class="fas fa-phone"> 08732881893</i>
-                </a>
-                <a href="your_map_link" target="_blank">
-                    <i class="fas fa-map-marker-alt"> Banjarmasin,Indonesia</i>
-                </a>
+                <div class="sejajar">
+                    <div class="bekantan-logo">
+                        <img :src="logoUrl" alt="logo" />
+                    </div>
+                    <div class="lokasi">
+                        <img src="/public/layout/images/mapp.png" alt="nohp" />
+                        <div>
+                            <h3>Lokasi</h3>
+                            <p>
+                                Jln. Musium Perjuangan Komp. Wasaka, <br />
+                                Kel.Sungai Jingah.RT.14 RW.02
+                            </p>
+                        </div>
+                    </div>
+                    <div class="email">
+                        <img src="/public/layout/images/emaill.png" alt="nohp" />
+                        <div>
+                            <h3>Email</h3>
+                            <p>admin@bekantanjantan.com</p>
+                        </div>
+                    </div>
+                    <div class="whatsapp">
+                        <img src="/public/layout/images/wa2.png" alt="nohp" />
+                        <div>
+                            <h3>WhatsApp</h3>
+                            <p>0878-1449-3571</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="isi-foot">
+                <div class="ikuti">
+                    <h1>Ikuti Kami</h1>
+                    <div class="sosmed">
+                        <div class="icon">
+                            <a href="#" target="_blank" class="icons"><i class="fab fa-instagram"></i></a>
+                        </div>
+                        <div class="icon">
+                            <a href="#" target="_blank" class="icons"><i class="fab fa-facebook"></i></a>
+                        </div>
+                        <div class="icon">
+                            <a href="#" target="_blank" class="icons"><i class="fab fa-twitter"></i></a>
+                        </div>
+                        <div class="icon">
+                            <a href="#" target="_blank" class="icons"><i class="fab fa-youtube"></i></a>
+                        </div>
+                        <div class="icon">
+                            <a href="#" target="_blank" class="icons"><i class="fab fa-tiktok"></i></a>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="screen">
                 <img src="/demo/images/landing/screen-2.png" alt="" />
             </div>
         </div>
         <div class="footer">
-            <p>&copy; 2024 Your Company Name. All rights reserved.</p>
+            <p>Copyright &copy; 2024 CV. Bekantan Jantan. All Rights Reserved.</p>
         </div>
     </div>
     <AppConfig simple />
 </template>
-
-<style scoped>
-/* Tambahan gaya jika diperlukan */
-</style>
+<style scoped></style>
