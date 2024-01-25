@@ -166,7 +166,7 @@ const responsiveOptions = ref([
                     <Button label="Search" style="background-color: rgb(112, 194, 227); height: 70px; width: 13%; font-size: 17px; border: none" severity="secondary" raised />
                 </div>
                 <div class="button-content">
-                    <button @click="goToRegister">Ayo Bergabung Sekarang</button>
+                    <Button @click="goToRegister" label="Ayo Bergabung Sekarang" style="background-color: orange; border: none;" severity="secondary" raised />
                     <p>Temukan potensi Anda dalam dunia fotografi bersama Bekantan Jantan.</p>
                 </div>
             </div>
@@ -176,44 +176,24 @@ const responsiveOptions = ref([
                 <h1>Apa Itu Web Builder <span>Company Profile?</span></h1>
             </div>
             <div class="text-content-2">
-                <p>
-                    Web Builder Company Profile adalah layanan yang menyediakan platform untuk membangun dan mengelola halaman profil perusahaan secara online. Dengan fokus
-                    khusus pada bidang jasa fotografi, web builder ini memberikan solusi praktis bagi fotografer yang ingin meningkatkan kehadiran mereka di dunia digital.
-                </p>
-            </div>
-            <div class="masalah">
-                <h1>Alasan Kami Menyediakan Layanan Ini</h1>
-            </div>
-            <div class="text2-content-2">
-                <p>
-                    Di era digital saat ini, keberadaan online menjadi sangat penting, terutama bagi para profesional di bidang kreatif seperti fotografi. Berikut adalah beberapa alasan mengapa kami menyediakan layanan Web Builder Company Profile:<br /><br />
-                </p>
-                <div class="list-container">
-                    <ul class="list-column">
-                        <li>
-                            <strong>Memudahkan Fotografer Membuat Jejak Digital:</strong> Kami memahami bahwa fotografer sering kali lebih fokus pada aspek kreatif daripada teknis. Layanan kami memungkinkan para fotografer untuk dengan mudah
-                            membangun dan mengelola kehadiran online mereka tanpa perlu keahlian teknis khusus.
-                        </li>
-                        <li><strong>Peningkatan Visibilitas:</strong> Dengan adanya website yang profesional, fotografer dapat meningkatkan visibilitas mereka.</li>
-                        <li><strong>Pemasaran yang Efektif:</strong> Website merupakan alat pemasaran yang efektif.</li>
-                    </ul>
-                    <ul class="list-column">
-                        <li><strong>Personalisasi Branding:</strong> Web Builder kami menyediakan berbagai pilihan desain dan template.</li>
-                        <li><strong>Kemudahan Akses dan Manajemen:</strong> Platform kami dirancang agar mudah digunakan.</li>
-                        <li><strong>Integrasi Media Sosial:</strong> Kami menyadari pentingnya media sosial dalam dunia fotografi saat ini.</li>
-                    </ul>
+                <div class="gambar-content2">
+                    <img src="/demo/images/landing/screen-2.png" alt="" />
                 </div>
-                <br />
-                <p>Kami berkomitmen untuk mendukung para fotografer dalam perjalanan kreatif mereka, menyediakan alat yang mereka butuhkan untuk berkembang dan sukses di dunia digital.</p>
+                <div class="p-content-2">
+                    <p>
+                        Web Builder Company Profile adalah layanan yang menyediakan platform untuk membangun dan mengelola halaman profil perusahaan secara online. Dengan fokus khusus pada bidang jasa fotografi, web builder ini memberikan solusi
+                        praktis bagi fotografer yang ingin meningkatkan kehadiran mereka di dunia digital.
+                    </p>
+                    <p>
+                        Menggunakan Web Builder Company Profile yang dirancang khusus untuk fotografi menawarkan berbagai keunggulan. Para fotografer dapat memanfaatkan desain yang telah disesuaikan khusus untuk menampilkan karya fotografi,
+                        memastikan bahwa portofolio mereka tampil secara maksimal.
+                    </p>
+                    <p>Platform ini sangat mudah digunakan, dengan antarmuka yang intuitif yang cocok untuk fotografer dari semua tingkat keahlian, memungkinkan mereka untuk dengan mudah membuat dan mengelola situs web mereka sendiri.</p>
+                </div>
             </div>
-            <!-- <p>
-                
-            </p>
-            <p>
-                Keuntungan menggunakan layanan ini meliputi desain template yang responsif dan menarik secara visual, memungkinkan potensi klien melihat karya-karya Anda dengan mudah. Selain itu, integrasi media sosial dan fitur lainnya mempermudah
-                berbagi konten dan meningkatkan interaksi dengan pengunjung.
-            </p>
-            <p>Dengan Web Builder Company Profile untuk fotografer, Anda dapat fokus pada passion Anda dalam fotografi, sementara platform ini membantu membangun citra profesional dan menjangkau lebih banyak klien potensial secara online.</p> -->
+            <div class="last-content-2">
+                <p>Kami berkomitmen untuk mendukung para fotografer dalam perjalanan kreatif mereka, <br> menyediakan alat yang mereka butuhkan untuk berkembang dan sukses di dunia digital.</p>
+            </div>
         </div>
         <div id="produk" class="content-3">
             <h1>Jenis-Jenis Template <span>Company Profile</span></h1>
