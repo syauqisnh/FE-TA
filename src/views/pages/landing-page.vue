@@ -146,10 +146,10 @@ const responsiveOptions = ref([
                 </div>
                 <div class="login-reg">
                     <div class="login">
-                        <button @click="goToLogin">Login</button>
+                        <Button @click="goToLogin" label="Login" style="height: 50px; width: 100px; color: orange; border: 2px solid orange; font-size: 15px" text raised />
                     </div>
                     <div class="register">
-                        <button @click="goToRegister">Daftar</button>
+                        <Button @click="goToRegister" label="Register" style="height: 50px; width: 100px; background-color: orange; color: white; font-size: 15px" text raised />
                     </div>
                 </div>
             </div>
@@ -166,7 +166,7 @@ const responsiveOptions = ref([
                     <Button label="Search" style="background-color: rgb(112, 194, 227); height: 70px; width: 13%; font-size: 17px; border: none" severity="secondary" raised />
                 </div>
                 <div class="button-content">
-                    <Button @click="goToRegister" label="Ayo Bergabung Sekarang" style="background-color: orange; border: none;" severity="secondary" raised />
+                    <Button @click="goToRegister" label="Ayo Bergabung Sekarang" style="background-color: orange; border: none" severity="secondary" raised />
                     <p>Temukan potensi Anda dalam dunia fotografi bersama Bekantan Jantan.</p>
                 </div>
             </div>
@@ -180,19 +180,39 @@ const responsiveOptions = ref([
                     <img src="/demo/images/landing/screen-2.png" alt="" />
                 </div>
                 <div class="p-content-2">
-                    <p>
-                        Web Builder Company Profile adalah layanan yang menyediakan platform untuk membangun dan mengelola halaman profil perusahaan secara online. Dengan fokus khusus pada bidang jasa fotografi, web builder ini memberikan solusi
-                        praktis bagi fotografer yang ingin meningkatkan kehadiran mereka di dunia digital.
-                    </p>
-                    <p>
-                        Menggunakan Web Builder Company Profile yang dirancang khusus untuk fotografi menawarkan berbagai keunggulan. Para fotografer dapat memanfaatkan desain yang telah disesuaikan khusus untuk menampilkan karya fotografi,
-                        memastikan bahwa portofolio mereka tampil secara maksimal.
-                    </p>
-                    <p>Platform ini sangat mudah digunakan, dengan antarmuka yang intuitif yang cocok untuk fotografer dari semua tingkat keahlian, memungkinkan mereka untuk dengan mudah membuat dan mengelola situs web mereka sendiri.</p>
+                    <div class="padding-content">
+                        <div class="border-items">
+                            <div class="icons-border">
+                                <i class="pi pi-pencil"></i>
+                            </div>
+                            <p>
+                                Web Builder Company Profile adalah layanan yang menyediakan platform untuk membangun dan mengelola halaman profil perusahaan secara online. Dengan fokus khusus pada bidang jasa fotografi, web builder ini memberikan
+                                solusi praktis bagi fotografer yang ingin meningkatkan kehadiran mereka di dunia digital.
+                            </p>
+                        </div>
+                        <div class="border-items">
+                            <div class="icons-border">
+                                <i class="pi pi-book"></i>
+                            </div>
+                            <p>
+                                Web Builder Company Profile yang dirancang khusus untuk fotografi menawarkan berbagai keunggulan. Para fotografer dapat memanfaatkan desain yang telah disesuaikan khusus untuk menampilkan karya fotografi, memastikan
+                                bahwa portofolio mereka tampil secara maksimal.
+                            </p>
+                        </div>
+                        <div class="border-items">
+                            <div class="icons-border">
+                                <i class="pi pi-angle-double-right"></i>
+                            </div>
+                            <p>Platform ini sangat mudah digunakan, dengan antarmuka yang intuitif yang cocok untuk fotografer dari semua tingkat keahlian, memungkinkan mereka untuk dengan mudah membuat dan mengelola situs web mereka sendiri.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="last-content-2">
-                <p>Kami berkomitmen untuk mendukung para fotografer dalam perjalanan kreatif mereka, <br> menyediakan alat yang mereka butuhkan untuk berkembang dan sukses di dunia digital.</p>
+                <p>
+                    Kami berkomitmen untuk mendukung para fotografer dalam perjalanan kreatif mereka, <br />
+                    menyediakan alat yang mereka butuhkan untuk berkembang dan sukses di dunia digital.
+                </p>
             </div>
         </div>
         <div id="produk" class="content-3">

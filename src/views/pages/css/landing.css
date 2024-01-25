@@ -49,45 +49,46 @@
     margin: 15px;
 }
 
-.login button {
-    height: 50px;
-    width: 100px;
-    background-color: white;
-    border: 3px solid orange;
-    cursor: pointer;
-    border-radius: 20px;
-    font-weight: bold;
-    color: orange;
-    font-size: 16px;
-}
-
-.login button:hover {
-    background-color: orange;
-    color: white;
-}
-
-.register button {
-    background-color: orange;
-    color: white;
-    height: 50px;
-    width: 100px;
-    border: none;
-    font-weight: bold;
-    border-radius: 20px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.register button:hover {
-    background-color: rgb(255, 185, 56);
-}
-
 .content {
     display: flex;
     align-items: center;
     flex-direction: column;
     height: 100vh;
     text-align: center;
+}
+
+.icons-border {
+    display: flex;
+    justify-content: center; /* Ini akan menengahkan ikon jika container ikon lebih lebar daripada ikon itu sendiri */
+    align-items: center;
+    font-size: 24px; /* Atau sesuaikan dengan ukuran yang diinginkan */
+    width: 50px; /* Sesuaikan ini berdasarkan ukuran ikon Anda */
+    height: 50px; /* Sesuaikan ini berdasarkan ukuran ikon Anda */
+  }
+
+  .p-content-2 {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+.border-items {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* atau nilai lain yang sesuai */
+    margin-bottom: 20px; /* Atur sesuai dengan kebutuhan */
+  }
+
+.icons-border i {
+    font-size: 25px;
+}
+
+.padding-content {
+    box-shadow: 3px 6px 12px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
 }
 
 .input-domain {
@@ -172,7 +173,7 @@
     color: gray;
 }
 .content-2 .text-content-2 {
-    padding-right: 100px;
+    padding-right: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
