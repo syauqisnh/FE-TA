@@ -4,6 +4,8 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import AppConfig from '@/layout/AppConfig.vue';
 import axios from 'axios';
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const version = import.meta.env.VITE_API_BASE_VERSION;
 
 import '../css/register.css';
 
@@ -29,7 +31,7 @@ const checked = ref(false);
 
 const addDataData = async () => {
     try {
-        const response = await axios.post('http://localhost:9900/api/v1/registrasi', {
+        const response = await axios.post(`${baseURL}/api/${version}/registrasi`, {
             customer_username: customer_username.value,
             customer_full_name: customer_full_name.value,
             customer_email: customer_email.value,

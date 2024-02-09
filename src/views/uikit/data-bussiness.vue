@@ -10,6 +10,8 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
 import FileUpload from 'primevue/fileupload';
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const version = import.meta.env.VITE_API_BASE_VERSION;
 
 const router = useRouter();
 
@@ -134,7 +136,7 @@ const Ubahnilai_jumlah_row = async () => {
 
 const DataMe = async () => {
     try {
-        const response = await axios.get('http://localhost:9900/api/v1/me');
+        const response = await axios.get(`${baseURL}/api/${version}/me`);
 
         if (response) {
             user_username.value = response.data.name;
@@ -149,7 +151,7 @@ const DataMe = async () => {
         }
     } catch (error) {
         if (error.response && error.response.status === 401) {
-            router.push('/Landing-2'); // Pengguna belum login, arahkan ke landing page
+            router.push('/landing-page'); // Pengguna belum login, arahkan ke landing page
         } else {
             console.error('Error: ', error); // Kesalahan lain
         }
@@ -175,7 +177,7 @@ const fetchData = async () => {
         }
 
         // Buat request ke backend
-        const response = await axios.get(`http://localhost:9900/api/v1/business/get_all`, {
+        const response = await axios.get(`${baseURL}/api/${version}/business/get_all`, {
             params: params
         });
 
@@ -227,7 +229,7 @@ const fetchDataCustomer = async () => {
         }
 
         // Buat request ke backend
-        const response = await axios.get(`http://localhost:9900/api/v1/business/get_all_customer`, {
+        const response = await axios.get(`${baseURL}/api/${version}/business/get_all_customer`, {
             params: params
         });
 
@@ -271,7 +273,7 @@ const addDataData = async () => {
     if (media == '') {
         validasi_business_media.value = '*Mohon upload file Anda dahulu';
     } else {
-        const response = await axios.post('http://localhost:9900/api/v1/business', {
+        const response = await axios.post(`${baseURL}/api/${version}/business`, {
             business_name: name,
             business_desc: desc,
             business_province: provinsi,
@@ -295,7 +297,7 @@ const OpenModalEdit = async (value) => {
     uuid_business.value = value;
     // console.log(value)
     try {
-        const response = await axios.get(`http://localhost:9900/api/v1/business/${uuid_business.value}`);
+        const response = await axios.get(`${baseURL}/api/${version}/business/${uuid_business.value}`);
         if (response) {
             business_name.value = response.data.data.business_name;
             business_desc.value = response.data.data.business_desc;
@@ -323,7 +325,7 @@ const UpdateDataData = async () => {
     const notelp = business_notelp.value;
     const email = business_email.value;
     const link_wa = business_link_wa.value;
-    const response = await axios.put(`http://localhost:9900/api/v1/business/${uuid_business.value}`, {
+    const response = await axios.put(`${baseURL}/api/${version}/business/${uuid_business.value}`, {
         business_name: name,
         business_desc: desc,
         business_province: provinsi,
@@ -345,7 +347,7 @@ const UpdateDataData = async () => {
 const openModalHapus = async (value) => {
     uuid_business.value = value;
     try {
-        const response = await axios.get(`http://localhost:9900/api/v1/business/${uuid_business.value}`);
+        const response = await axios.get(`${baseURL}/api/${version}/business/${uuid_business.value}`);
         if (response) {
             business_name.value = response.data.data.business_name;
             business_desc.value = response.data.data.business_desc;
@@ -363,7 +365,7 @@ const openModalHapus = async (value) => {
     }
 };
 const DeleteDataData = async () => {
-    const response = await axios.delete(`http://localhost:9900/api/v1/business/${uuid_business.value}`);
+    const response = await axios.delete(`${baseURL}/api/${version}/business/${uuid_business.value}`);
 
     if (response) {
         closeModalDelete();
@@ -410,7 +412,7 @@ const onUpload = async (event) => {
             <div class="modal-form-group">
                 <FileUpload
                     name="file"
-                    url="http://localhost:9900/api/v1/media/upload_media"
+                    :url="`${baseURL}/api/${version}/media/upload_media`"
                     :onUpload="onUpload"
                     :multiple="true"
                     accept=".doc, .docx, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf, image/*, video/*, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -433,7 +435,7 @@ const onUpload = async (event) => {
             <div class="modal-form-group">
                 <FileUpload
                     name="file"
-                    url="http://localhost:9900/api/v1/media/upload_media"
+                    :url="`${baseURL}/api/${version}/media/upload_media`"
                     :onUpload="onUpload"
                     :multiple="true"
                     accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,image/*"

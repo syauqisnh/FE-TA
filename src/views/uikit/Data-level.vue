@@ -9,6 +9,8 @@ import MultiSelect from 'primevue/multiselect';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import '../uikit/css/data-level.css';
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const version = import.meta.env.VITE_API_BASE_VERSION;
 
 //inisialisasi data level
 const uuid_level = ref();
@@ -118,7 +120,7 @@ const fetchData = async () => {
         }
 
         // Buat request ke backend
-        const response = await axios.get(`http://localhost:9900/api/v1/level/get_all`, {
+        const response = await axios.get(`${baseURL}/api/${version}/level/get_all`, {
             params: params
         });
 
@@ -127,7 +129,6 @@ const fetchData = async () => {
         if (response.data.success) {
             tableData.value = response.data.data || [];
             Hakakses.value = response.data.message;
-            // Anda bisa menambahkan manipulasi data tambahan di sini jika diperlukan
         } else {
             console.error('Respon sukses tetapi tidak ada data:', response.data.message);
             tableData.value = [];
@@ -143,7 +144,7 @@ const fetchData = async () => {
 
 const addDataData = async () => {
     const nama_level = level_name.value;
-    const response = await axios.post('http://localhost:9900/api/v1/level', {
+    const response = await axios.post(`${baseURL}/api/${version}/level`, {
         level_name: nama_level
     });
 
@@ -154,7 +155,7 @@ const addDataData = async () => {
 };
 const OpenModalEdit = async (value) => {
     uuid_level.value = value;
-    const response = await axios.get(`http://localhost:9900/api/v1/level/${uuid_level.value}`);
+    const response = await axios.get(`${baseURL}/api/${version}/level/${uuid_level.value}`);
     if (response) {
         level_name.value = response.data.data.level_name;
         openModalUpdate();
@@ -162,7 +163,7 @@ const OpenModalEdit = async (value) => {
 };
 const UpdateDataData = async () => {
     const nama_level = level_name.value;
-    const response = await axios.put(`http://localhost:9900/api/v1/level/${uuid_level.value}`, {
+    const response = await axios.put(`${baseURL}/api/${version}/level/${uuid_level.value}`, {
         level_name: nama_level
     });
 
@@ -174,14 +175,14 @@ const UpdateDataData = async () => {
 };
 const openModalHapus = async (value) => {
     uuid_level.value = value;
-    const response = await axios.get(`http://localhost:9900/api/v1/level/${uuid_level.value}`);
+    const response = await axios.get(`${baseURL}/api/${version}/level/${uuid_level.value}`);
     if (response) {
         level_name.value = response.data.data.level_name;
         openModalDelete();
     }
 };
 const DeleteDataData = async () => {
-    const response = await axios.delete(`http://localhost:9900/api/v1/level/${uuid_level.value}`);
+    const response = await axios.delete(`${baseURL}/api/${version}/level/${uuid_level.value}`);
 
     if (response) {
         closeModalDelete();

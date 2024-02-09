@@ -1,10 +1,14 @@
+<!-- eslint-disable prettier/prettier -->
 <script setup>
-import { useLayout } from '@/layout/composables/layout';
 import { ref, computed } from 'vue';
 import AppConfig from '@/layout/AppConfig.vue';
 import { useRouter } from 'vue-router';
+import '/public/layout/css/landing.css';
+import AOS from 'aos'
+import 'aos/dist/aos.css'; 
 
 const router = useRouter();
+  AOS.init();
 
 const goToLogin = () => {
     router.push('/auth/Login-2');
@@ -14,13 +18,9 @@ const goToRegister = () => {
     router.push('/auth/register');
 };
 
-import '../pages/css/landing.css';
-
-const { contextPath } = useLayout();
-
-const logoUrl = computed(() => {
-    return `${contextPath}layout/images/logo-bekantan-v3.png`;
-});
+const goToPaymentPage = () => {
+    router.push('/pembayaran');
+};
 
 const isMenuOpen = ref(false);
 
@@ -38,52 +38,52 @@ window.addEventListener('resize', () => {
 
 const templateList = ref([
     {
-        imageUrl: './public/layout/images/contoh.png',
+        imageUrl: '/public/layout/images/images-cv.svg',
         description: 'Description of Template 1',
         userCount: '500'
     },
     {
-        imageUrl: './public/layout/images/contoh.png',
+        imageUrl: '/public/layout/images/images-cv.svg',
         description: 'Description of Template 2',
         userCount: '500'
     },
     {
-        imageUrl: './public/layout/images/contoh.png',
+        imageUrl: '/public/layout/images/images-cv.svg',
         description: 'Description of Template 3',
         userCount: '500'
     },
     {
-        imageUrl: './public/layout/images/contoh.png',
+        imageUrl: '/public/layout/images/images-cv.svg',
         description: 'Description of Template 4',
         userCount: '500'
     },
     {
-        imageUrl: './public/layout/images/contoh.png',
+        imageUrl: '/public/layout/images/images-cv.svg',
         description: 'Description of Template 5',
         userCount: '500'
     },
     {
-        imageUrl: './public/layout/images/contoh.png',
+        imageUrl: '/public/layout/images/images-cv.svg',
         description: 'Description of Template 6',
         userCount: '500'
     },
     {
-        imageUrl: './public/layout/images/contoh.png',
+        imageUrl: '/public/layout/images/images-cv.svg',
         description: 'Description of Template 7',
         userCount: '500'
     },
     {
-        imageUrl: './public/layout/images/contoh.png',
+        imageUrl: '/public/layout/images/images-cv.svg',
         description: 'Description of Template 8',
         userCount: '500'
     },
     {
-        imageUrl: './public/layout/images/contoh.png',
+        imageUrl: '/public/layout/images/images-cv.svg',
         description: 'Description of Template 9',
         userCount: '500'
     },
     {
-        imageUrl: './public/layout/images/contoh.png',
+        imageUrl: '/public/layout/images/images-cv.svg',
         description: 'Description of Template 10',
         userCount: '500'
     }
@@ -134,7 +134,9 @@ const responsiveOptions = ref([
         <div id="beranda" class="content">
             <div class="navbar">
                 <div class="logo-bekantan">
-                    <img :src="logoUrl" alt="logo" />
+                    <a href=""
+                        ><h1>USAHAMIKRO<span>SITE</span></h1></a
+                    >
                 </div>
                 <div class="menu">
                     <ul>
@@ -143,31 +145,29 @@ const responsiveOptions = ref([
                         <li><a @click="() => scrollToSection('produk')">Produk</a></li>
                         <li><a @click="() => scrollToSection('harga')">Harga</a></li>
                     </ul>
-                </div>
-                <div class="login-reg">
                     <div class="login">
-                        <Button @click="goToLogin" label="Login" style="height: 50px; width: 100px; color: orange; border: 2px solid orange; font-size: 15px" text raised />
+                        <Button @click="goToLogin" label="Login" style="height: 50px; width: 100px; margin-right: 10px; color: orange; border: 2px solid orange; font-size: 15px" text raised />
                     </div>
                     <div class="register">
-                        <Button @click="goToRegister" label="Register" style="height: 50px; width: 100px; background-color: orange; color: white; font-size: 15px" text raised />
+                        <Button @click="goToRegister" label="Register" style="height: 50px; width: 100px; margin-left: 10px; background-color: orange; color: white; font-size: 15px" text raised />
                     </div>
                 </div>
             </div>
             <div class="content-text">
                 <div class="text-content">
-                    <h1>Membuat website lebih mudah untuk <span>Bisnis Anda</span></h1>
+                    <h1>Membuat website lebih mudah untuk Bisnis Anda</h1>
                     <p>
-                        Pilihan yang tepat bagi para fotografer yang ingin menciptakan jejak digital mereka dengan <br />
+                        Pilihan yang tepat bagi para pembisnis yang ingin menciptakan jejak digital mereka dengan <br />
                         kombinasi kreativitas tinggi dan teknologi terkini.
                     </p>
                 </div>
                 <div class="input-domain">
                     <InputText v-model="value3" type="text" size="large" placeholder="Nama Domain Anda" style="width: 70%; height: 70px; margin-right: 15px; font-size: 20px" />
-                    <Button label="Search" style="background-color: rgb(112, 194, 227); height: 70px; width: 13%; font-size: 17px; border: none" severity="secondary" raised />
+                    <Button label="Search" style="background-color: orange; height: 70px; width: 13%; font-size: 17px; border: none" severity="secondary" raised />
                 </div>
                 <div class="button-content">
-                    <Button @click="goToRegister" label="Ayo Bergabung Sekarang" style="background-color: orange; border: none" severity="secondary" raised />
-                    <p>Temukan potensi Anda dalam dunia fotografi bersama Bekantan Jantan.</p>
+                    <Button @click="goToRegister" label="Ayo Bergabung Sekarang" style="background-color: rgb(112, 194, 227); border: none" severity="secondary" raised />
+                    <p>Temukan potensi Anda dalam dunia bisnis bersama kami</p>
                 </div>
             </div>
         </div>
@@ -176,18 +176,18 @@ const responsiveOptions = ref([
                 <h1>Apa Itu Web Builder <span>Company Profile?</span></h1>
             </div>
             <div class="text-content-2">
-                <div class="gambar-content2">
-                    <img src="/demo/images/landing/screen-2.png" alt="" />
+                <div data-aos="fade-right" class="gambar-content2">
+                    <img src="/public/layout/images/images-cv.svg" alt="" />
                 </div>
-                <div class="p-content-2">
+                <div data-aos="fade-left" class="p-content-2">
                     <div class="padding-content">
                         <div class="border-items">
                             <div class="icons-border">
                                 <i class="pi pi-pencil"></i>
                             </div>
                             <p>
-                                Web Builder Company Profile adalah layanan yang menyediakan platform untuk membangun dan mengelola halaman profil perusahaan secara online. Dengan fokus khusus pada bidang jasa fotografi, web builder ini memberikan
-                                solusi praktis bagi fotografer yang ingin meningkatkan kehadiran mereka di dunia digital.
+                                Web Builder Company Profile adalah layanan yang menyediakan platform untuk membangun dan mengelola halaman profil perusahaan secara online. Dengan fokus khusus pada bidang bisnis jasa, web builder ini memberikan solusi
+                                praktis bagi fotografer yang ingin meningkatkan kehadiran mereka di dunia digital.
                             </p>
                         </div>
                         <div class="border-items">
@@ -195,15 +195,15 @@ const responsiveOptions = ref([
                                 <i class="pi pi-book"></i>
                             </div>
                             <p>
-                                Web Builder Company Profile yang dirancang khusus untuk fotografi menawarkan berbagai keunggulan. Para fotografer dapat memanfaatkan desain yang telah disesuaikan khusus untuk menampilkan karya fotografi, memastikan
-                                bahwa portofolio mereka tampil secara maksimal.
+                                Web Builder Company Profile yang dirancang khusus untuk jasa menawarkan berbagai keunggulan. Para jasa dapat memanfaatkan desain yang telah disesuaikan khusus untuk menampilkan karya fotografi, memastikan bahwa
+                                portofolio mereka tampil secara maksimal.
                             </p>
                         </div>
                         <div class="border-items">
                             <div class="icons-border">
                                 <i class="pi pi-angle-double-right"></i>
                             </div>
-                            <p>Platform ini sangat mudah digunakan, dengan antarmuka yang intuitif yang cocok untuk fotografer dari semua tingkat keahlian, memungkinkan mereka untuk dengan mudah membuat dan mengelola situs web mereka sendiri.</p>
+                            <p>Platform ini sangat mudah digunakan, dengan antarmuka yang intuitif yang cocok untuk bisnis anda dari semua tingkat keahlian, memungkinkan mereka untuk dengan mudah membuat dan mengelola situs web mereka sendiri.</p>
                         </div>
                     </div>
                 </div>
@@ -235,8 +235,8 @@ const responsiveOptions = ref([
                                     </div>
                                 </div>
                                 <div class="button-card">
-                                    <button class="shop">
-                                        <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                    <button @click="goToPaymentPage" class="shop">
+                                        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
                                     </button>
                                     <button>
                                         <i class="fa fa-eye" aria-hidden="true"></i>
@@ -258,15 +258,16 @@ const responsiveOptions = ref([
             <div class="card-container">
                 <Card class="card-items">
                     <template #title>
-                        <h1>3 bulan</h1>
+                        <h1 class="judul-h1">.com</h1>
                     </template>
                     <template #content>
-                        <p class="m-0">
+                        <p class="isi">
                             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate
                             neque quas!
                         </p>
                         <div class="harga">
-                            <h1 class="harga-akhir-no">Rp 170.000<span>/bulan</span></h1>
+                            <h1 class="harga-akhir-id">Rp 170.000<span>/bulan</span></h1>
+                            <Button label="Pilih Paket" style="background-color: rgb(112, 194, 227); height: 50px; width: 100%; font-size: 17px; margin-top: 50px; border: none" severity="secondary" raised />
                         </div>
                     </template>
                 </Card>
@@ -275,31 +276,37 @@ const responsiveOptions = ref([
                         <div class="penawaran">
                             <p>Penawaran Istimewa!</p>
                         </div>
-                        <h1 class="m-0">1 Tahun</h1>
+                        <div class="judul-domain">
+                            <h1 class="m-0">.co.id</h1>
+                        </div>
                     </template>
                     <template #content>
-                        <p class="m-0">
+                        <p class="isi">
                             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate
                             neque quas!
                         </p>
                         <div class="harga">
-                            <h3>Diskon Hingga 50%</h3>
-                            <span class="harga-dicoret">Rp 200.000</span>
-                            <h1 class="harga-akhir">Rp 100.000<span>/bulan</span></h1>
+                            <div class="diskon">
+                                <span class="harga-dicoret">Rp 400.000</span>
+                                <h3>Diskon 50%</h3>
+                            </div>
+                            <h1 class="harga-akhir">Rp 200.000<span>/bulan</span></h1>
+                            <Button @click="goToPaymentPage" label="Pilih Paket" style="background-color: red; height: 50px; width: 100%; font-size: 17px; margin-top: 50px; border: none" severity="secondary" raised />
                         </div>
                     </template>
                 </Card>
                 <Card class="card-items">
                     <template #title>
-                        <h1>6 bulan</h1>
+                        <h1 class="judul-h1-2">.id</h1>
                     </template>
                     <template #content>
-                        <p class="m-0">
+                        <p class="isi">
                             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate
                             neque quas!
                         </p>
                         <div class="harga">
-                            <h1 class="harga-akhir-no">Rp 150.000<span>/bulan</span></h1>
+                            <h1 class="harga-akhir-id">Rp 170.000<span>/bulan</span></h1>
+                            <Button label="Pilih Paket" style="background-color: rgb(112, 194, 227); height: 50px; width: 100%; font-size: 17px; margin-top: 50px; border: none" severity="secondary" raised />
                         </div>
                     </template>
                 </Card>
@@ -307,35 +314,23 @@ const responsiveOptions = ref([
         </div>
         <hr />
         <div id="kontak" class="kontak">
-            <div class="kontak-content">
-                <div class="sejajar">
-                    <div class="bekantan-logo">
-                        <img :src="logoUrl" alt="logo" />
-                    </div>
-                    <div class="lokasi">
-                        <img src="/public/layout/images/mapp.png" alt="nohp" />
-                        <div>
-                            <h3>Lokasi</h3>
-                            <p>
-                                Jln. Musium Perjuangan Komp. Wasaka, <br />
-                                Kel.Sungai Jingah.RT.14 RW.02
-                            </p>
-                        </div>
-                    </div>
-                    <div class="email">
-                        <img src="/public/layout/images/emaill.png" alt="nohp" />
-                        <div>
-                            <h3>Email</h3>
-                            <p>admin@bekantanjantan.com</p>
-                        </div>
-                    </div>
-                    <div class="whatsapp">
-                        <img src="/public/layout/images/wa2.png" alt="nohp" />
-                        <div>
-                            <h3>WhatsApp</h3>
-                            <p>0878-1449-3571</p>
-                        </div>
-                    </div>
+            <div>
+                <div class="logo-bekantan">
+                    <a href=""
+                        ><h1>USAHAMIKRO<span>SITE</span></h1></a
+                    >
+                </div>
+                <div class="admin-kontak">
+                    <a href="">
+                        <h1>Email:</h1>
+                        <p>email@gmail.com</p>
+                    </a>
+                </div>
+                <div class="admin-kontak">
+                    <a href="">
+                        <h1>Kontak:</h1>
+                        <p>082578991029</p>
+                    </a>
                 </div>
             </div>
             <div class="isi-foot">
@@ -343,25 +338,25 @@ const responsiveOptions = ref([
                     <h1>Ikuti Kami</h1>
                     <div class="sosmed">
                         <div class="icon">
-                            <a href="#" target="_blank" class="icons"><i class="fab fa-instagram"></i></a>
+                            <a href="#" target="_blank" class="icons"><i class="fab fa-instagram"></i><span>Instagram</span></a>
                         </div>
                         <div class="icon">
-                            <a href="#" target="_blank" class="icons"><i class="fab fa-facebook"></i></a>
+                            <a href="#" target="_blank" class="icons"><i class="fab fa-facebook"></i><span>Facebook</span></a>
                         </div>
                         <div class="icon">
-                            <a href="#" target="_blank" class="icons"><i class="fab fa-twitter"></i></a>
+                            <a href="#" target="_blank" class="icons"><i class="fab fa-twitter"></i><span>Twitter</span></a>
                         </div>
                         <div class="icon">
-                            <a href="#" target="_blank" class="icons"><i class="fab fa-youtube"></i></a>
+                            <a href="#" target="_blank" class="icons"><i class="fab fa-youtube"></i><span>Youtube</span></a>
                         </div>
                         <div class="icon">
-                            <a href="#" target="_blank" class="icons"><i class="fab fa-tiktok"></i></a>
+                            <a href="#" target="_blank" class="icons"><i class="fab fa-tiktok"></i><span>Tiktok</span></a>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="screen">
-                <img src="/demo/images/landing/screen-2.png" alt="" />
+                <img src="/public/layout/images/images-cv.svg" alt="" />
             </div>
         </div>
         <div class="footer">

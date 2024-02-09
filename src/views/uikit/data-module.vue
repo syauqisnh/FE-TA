@@ -8,6 +8,8 @@ import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import '../uikit/css/data-module.css';
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const version = import.meta.env.VITE_API_BASE_VERSION;
 
 const Hakaksestolak = ref('');
 const Hakakses = ref('');
@@ -93,7 +95,7 @@ const fetchData = async () => {
         }
 
         // Buat request ke backend
-        const response = await axios.get(`http://localhost:9900/api/v1/module/get_all`, {
+        const response = await axios.get(`${baseURL}/api/${version}/module/get_all`, {
             params: params
         });
 
@@ -118,7 +120,7 @@ const fetchData = async () => {
 
 const addData = async () => {
     const nama_modul = module_name.value;
-    const response = await axios.post('http://localhost:9900/api/v1/module', {
+    const response = await axios.post(`${baseURL}/api/${version}/module`, {
         module_name: nama_modul
     });
 
@@ -130,7 +132,7 @@ const addData = async () => {
 
 const OpenModalEdit = async (value) => {
     uuid_module.value = value;
-    const response = await axios.get(`http://localhost:9900/api/v1/module/${uuid_module.value}`);
+    const response = await axios.get(`${baseURL}/api/${version}/module/${uuid_module.value}`);
     if (response) {
         edit_module_name.value = response.data.data.module_name;
         openModalUpdate();
@@ -139,7 +141,7 @@ const OpenModalEdit = async (value) => {
 
 const updateData = async () => {
     const nama_modul = edit_module_name.value;
-    const response = await axios.put(`http://localhost:9900/api/v1/module/${uuid_module.value}`, {
+    const response = await axios.put(`${baseURL}/api/${version}/module/${uuid_module.value}`, {
         module_name: nama_modul
     });
 
@@ -152,14 +154,14 @@ const updateData = async () => {
 
 const openModalHapus = async (value) => {
     uuid_module.value = value;
-    const response = await axios.get(`http://localhost:9900/api/v1/module/${uuid_module.value}`);
+    const response = await axios.get(`${baseURL}/api/${version}/module/${uuid_module.value}`);
     if (response) {
         module_name.value = response.data.data.module_name;
         openModalDelete();
     }
 };
 const deleteData = async () => {
-    const response = await axios.delete(`http://localhost:9900/api/v1/module/${uuid_module.value}`);
+    const response = await axios.delete(`${baseURL}/api/${version}/module/${uuid_module.value}`);
 
     if (response) {
         closeModalDelete();

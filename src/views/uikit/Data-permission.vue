@@ -7,6 +7,8 @@ import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import '../uikit/css/data-permission.css';
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const version = import.meta.env.VITE_API_BASE_VERSION;
 
 const Hakaksestolak = ref('');
 const Hakakses = ref('');
@@ -92,7 +94,7 @@ const fetchData = async () => {
         }
 
         // Buat request ke backend
-        const response = await axios.get(`http://localhost:9900/api/v1/permissions/get_all`, {
+        const response = await axios.get(`${baseURL}/api/${version}/permissions/get_all`, {
             params: params
         });
 
@@ -117,7 +119,7 @@ const fetchData = async () => {
 
 const addData = async () => {
     const nama_permission = permission_name.value;
-    const response = await axios.post('http://localhost:9900/api/v1/permissions', {
+    const response = await axios.post(`${baseURL}/api/${version}/permissions`, {
         permission_name: nama_permission
     });
 
@@ -129,7 +131,7 @@ const addData = async () => {
 
 const OpenModalEdit = async (value) => {
     uuid_permission.value = value;
-    const response = await axios.get(`http://localhost:9900/api/v1/permissions/${uuid_permission.value}`);
+    const response = await axios.get(`${baseURL}/api/${version}/permissions/${uuid_permission.value}`);
     if (response) {
         edit_permission_name.value = response.data.data.permission_name;
         openModalUpdate();
@@ -138,7 +140,7 @@ const OpenModalEdit = async (value) => {
 
 const updateData = async () => {
     const nama_permission = edit_permission_name.value;
-    const response = await axios.put(`http://localhost:9900/api/v1/permissions/${uuid_permission.value}`, {
+    const response = await axios.put(`${baseURL}/api/${version}/permissions/${uuid_permission.value}`, {
         permission_name: nama_permission
     });
 
@@ -151,14 +153,14 @@ const updateData = async () => {
 
 const openModalHapus = async (value) => {
     uuid_permission.value = value;
-    const response = await axios.get(`http://localhost:9900/api/v1/permissions/${uuid_permission.value}`);
+    const response = await axios.get(`${baseURL}/api/${version}/permissions/${uuid_permission.value}`);
     if (response) {
         permission_name.value = response.data.data.permission_name;
         openModalDelete();
     }
 };
 const deleteData = async () => {
-    const response = await axios.delete(`http://localhost:9900/api/v1/permissions/${uuid_permission.value}`);
+    const response = await axios.delete(`${baseURL}/api/${version}/permissions/${uuid_permission.value}`);
 
     if (response) {
         closeModalDelete();

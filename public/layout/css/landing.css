@@ -4,14 +4,12 @@
     font-family: 'Roboto', sans-serif;
 }
 .navbar {
+    height: 100px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 10px 20px 10px 20px;
     width: 100%;
-    top: 0;
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px
 }
 
 .logo-bekantan {
@@ -19,10 +17,20 @@
     align-items: center;
 }
 
-.logo-bekantan img {
-    height: 85px;
+.logo-bekantan a h1 {
+    margin: 0 auto;
+    color: orange;
+    font-weight: bold;
+}
+.logo-bekantan a h1 span {
+    color: rgb(112, 194, 227);
 }
 
+.menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .menu ul {
     display: flex;
     align-items: center;
@@ -33,6 +41,7 @@
 }
 
 .menu ul li a {
+    color: #fff;
     margin-right: 70px;
     cursor: pointer;
 }
@@ -55,38 +64,43 @@
     flex-direction: column;
     height: 100vh;
     text-align: center;
+    background-image: url('/public/layout/images/back-fix.jpg');
+    background-size: 100% 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
 }
 
 .icons-border {
     display: flex;
-    justify-content: center; /* Ini akan menengahkan ikon jika container ikon lebih lebar daripada ikon itu sendiri */
-    align-items: center;
-    font-size: 24px; /* Atau sesuaikan dengan ukuran yang diinginkan */
-    width: 50px; /* Sesuaikan ini berdasarkan ukuran ikon Anda */
-    height: 50px; /* Sesuaikan ini berdasarkan ukuran ikon Anda */
-  }
-
-  .p-content-2 {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
     justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    width: 50px;
+    height: 50px;
   }
+  
 
 .border-items {
     display: flex;
     align-items: center;
-    gap: 10px; /* atau nilai lain yang sesuai */
-    margin-bottom: 20px; /* Atur sesuai dengan kebutuhan */
+    gap: 10px;
+    margin-bottom: 20px;
   }
 
 .icons-border i {
     font-size: 25px;
 }
 
+.gambar-content2 img {
+    height: 450px;
+    margin-right: 50px;
+}
+
 .padding-content {
+    width: 100%;
     box-shadow: 3px 6px 12px rgba(0, 0, 0, 0.1);
-    background-color: white;
+    background-color: rgb(112, 194, 227);
+    color: white;
     border-radius: 10px;
     padding: 20px;
 }
@@ -112,19 +126,17 @@
 .text-content h1 {
     font-size: 50px;
     font-weight: bold;
+    color: #fff;
 }
-.text-content h1 span {
-    color: orange;
-}
+
 .text-content p {
     font-size: 20px;
     font-weight: bold;
-    color: grey;
+    color: #fff;
 }
 .button-content button {
     height: 60px;
     width: 250px;
-    border-radius: 10px;
     color: white;
     font-size: 16px;
     font-weight: bold;
@@ -134,25 +146,18 @@
 .button-content p {
     font-size: 18px;
     font-weight: bold;
-    color: grey;
+    color: #fff;
 }
 
-.button-content button:hover {
-    background-color: rgb(255, 179, 39);
-}
-  
-  .template-container.slide-left {
-    transform: translateX(-100%);
-  }
-  
-  .template-container.slide-right {
-    transform: translateX(100%);
-  }
-
-
-  .content-2 {
+.content-2 {
     height: 100vh;
     color: #333; 
+    background-color: white;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
 
 .content-2 h1 {
@@ -181,16 +186,6 @@
     font-size: 18px;
     margin: 0 auto;
     padding-bottom: 30px;
-}
-
-.masalah h1 {
-    font-size: 30px;
-    text-align: center;
-    margin-bottom: 15px; 
-}
-
-.text2-content-2 p {
-    text-align: center;
 }
 
 .content-3 {
@@ -257,23 +252,6 @@
     font-size: 20px;
 }
 
-.pagination-buttons button:hover {
-    background-color: #2980b9;
-}
-
-.pagination-buttons button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-.pagination-buttons button:not(:disabled) {
-    transition: transform 0.3s ease;
-}
-
-.pagination-buttons button:hover:not(:disabled) {
-    transform: scale(1.1);
-}
-
 .desc {
     display: flex;
     justify-content: space-between;
@@ -302,6 +280,15 @@
 
 .desc button:hover {
     background-color: greenyellow;
+}
+.content-com {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.content-com h1 {
+    margin: 0;
+    margin-right: 10px;
 }
 
 .desc button i {
@@ -345,6 +332,19 @@
     color: black;
 }
 
+.judul-h1-2 {
+    color: red;
+    font-size: 50px;
+}
+
+.harga-akhir-id {
+    color: black;
+}
+
+.harga-akhir-id span {
+    font-size: 15px;
+}
+
 .content-4 {
     height: 100vh;
 }
@@ -359,12 +359,16 @@
     color: orange;
 }
 
+.container{
+    overflow: hidden;
+}
+
 .card-container {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
 }
-
 .card-items {
+    text-align: center;
     margin: 10px auto;
     max-width: 450px;
     background-color: white;
@@ -377,7 +381,10 @@
     align-items: center;
     box-shadow: 3px 6px 12px rgba(0, 0, 0, 0.1);
 }
-
+.judul-h1 {
+    font-size: 50px;
+    color: rgb(213, 213, 2);
+}
 .card-items:nth-child(2) {
     border: 6px solid orange;
     border-radius: 10px;
@@ -390,19 +397,17 @@
 
 .penawaran p {
     font-weight: bold;
-    color: white;
-    margin: 0;
+    color: red;
 }
 
 .penawaran {
-    margin-bottom: 15px;
+    border: 3px solid red;
+    border-radius: 10px;
     height: 50px;
-    width: 70%;
-    background-color: rgb(1, 189, 189);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 20px;
+    margin-bottom: 20px;
 }
 
 .judulnya {
@@ -414,7 +419,13 @@
     margin-top: 10px;
 }
 
+.judul-domain h1 {
+    font-size: 50px;
+    color: rgb(1, 189, 1);
+}
+
 .harga-dicoret {
+    font-size: 20px;
     text-decoration: line-through;
     color: gray;
     margin-right: 10px;
@@ -435,103 +446,85 @@
 }
 
 .kontak {
-    height: 80vh;
-    justify-content: center;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    margin-left: 30px;
-}
-.screen {
+    height: 50vh;
     display: flex;
-    justify-content: center;
-}
-.screen img {
-    height: 250px; 
+    align-items: center;
+    justify-content: space-around;
+    background-color: #333;
 }
 
-.kontak-content {
+.diskon {
     display: flex;
+    align-items: center;
     justify-content: center;
 }
 
-.lokasi {
+.diskon h3 {
+    color: white;
+    background-color: orange;
+    font-size: 20px;
+    width: 150px;
+    height: 30px;
     display: flex;
     align-items: center;
-    font-size: 15px;
-    margin-bottom: 20px;
-}
-
-.lokasi p {
-    color: black;
-}
-
-.lokasi h3 {
+    justify-content: center;
+    border-radius: 10px;
     margin: 0;
-    font-size: 20px;
-    font-weight: bold;
-    color: grey;
 }
 
-.whatsapp {
-    display: flex;
-    align-items: center;
-    font-size: 15px;
-    margin-bottom: 20px;
-}
-
-.whatsapp p {
-    color: black;
-}
-
-.whatsapp h3 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: bold;
-    color: gray;
-}
-
-.email {
-    display: flex;
-    align-items: center;
-    font-size: 15px;
-    margin-bottom: 20px;
-}
-
-.email h3 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: bold;
-    color: gray;
-}
-
-.email p {
-    color: black;
-}
-
-.sejajar img {
-    height: 50px;
-}
-
-.bekantan-logo img {
-    margin-bottom: 20px;
-    height: 80px;
+.isi {
+    text-align: justify;
 }
 
 .isi-foot{
     display: flex;
     justify-content: center;
 }
-.sosmed {
+.ikuti h1 {
+    color: #fff;
+}
+
+.icon a.icons i {
+    font-size: 3em;
+    color: #fff;
+}
+.admin-kontak {
+    background-color: #fff;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    height: 80px;
     display: flex;
     align-items: center;
 }
-.icon a.icons i {
-    font-size: 3em;
+
+.admin-kontak h1 {
+    margin: 0;
+    font-size: 25px;
+    color: rgb(112, 194, 227);
+    font-weight: bold;
+    margin-left: 10px;
 }
-.icon {
-    margin-right: 10px;
+.admin-kontak p {
+    font-size: 20px;
+    font-weight: bold;
+    color: orange;
+    margin-left: 10px;
+}
+.icon a {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.icon a span {
+    margin-left: 10px;
+    font-size: 17px;
+    color: #fff;
 }
 .footer {
+    color: #fff;
+    background-color: #333;
     text-align: center;
     font-weight: bold;
     font-size: 20px;

@@ -8,6 +8,8 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import '../uikit/css/data-gallery.css';
 import { useRouter } from 'vue-router';
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const version = import.meta.env.VITE_API_BASE_VERSION;
 
 const router = useRouter();
 
@@ -57,7 +59,7 @@ const limit = ref([
 
 const DataMe = async () => {
     try {
-        const response = await axios.get('http://localhost:9900/api/v1/me');
+        const response = await axios.get(`${baseURL}/api/${version}/me`);
 
         if (response) {
             user_username.value = response.data.name;
@@ -71,7 +73,7 @@ const DataMe = async () => {
         }
     } catch (error) {
         if (error.response && error.response.status === 401) {
-            router.push('/Landing-2'); // Pengguna belum login, arahkan ke landing page
+            router.push('/landing-page'); // Pengguna belum login, arahkan ke landing page
         } else {
             console.error('Error: ', error); // Kesalahan lain
         }
@@ -80,7 +82,7 @@ const DataMe = async () => {
 
 const fetchDataOption = async () => {
     try {
-        const getBusines = await axios.get('http://localhost:9900/api/v1/business/get_all');
+        const getBusines = await axios.get(`${baseURL}/api/${version}/business/get_all`);
         DataBusines.value = getBusines.data.data;
         updateOptions();
     } catch (error) {
@@ -108,7 +110,7 @@ const fetchData = async () => {
         }
 
         // Buat request ke backend
-        const response = await axios.get(`http://localhost:9900/api/v1/galleries/get_all`, {
+        const response = await axios.get(`${baseURL}/api/${version}/galleries/get_all`, {
             params: params
         });
 
@@ -144,7 +146,7 @@ const addDataData = async () => {
     const desc = gallery_desc.value;
     const business = gallery_business.value;
 
-    const response = await axios.post('http://localhost:9900/api/v1/galleries', {
+    const response = await axios.post(`${baseURL}/api/${version}/galleries`, {
         gallery_name: name,
         gallery_desc: desc,
         gallery_business: business

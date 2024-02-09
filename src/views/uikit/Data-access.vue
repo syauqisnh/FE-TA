@@ -1,8 +1,5 @@
 <!-- eslint-disable no-unused-vars -->
 <script setup>
-const Hakaksestolak = ref('');
-const Hakakses = ref('');
-
 import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import DataTable from 'primevue/datatable';
@@ -12,6 +9,10 @@ import MultiSelect from 'primevue/multiselect';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import '../uikit/css/data-access.css';
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const version = import.meta.env.VITE_API_BASE_VERSION;
+const Hakaksestolak = ref('');
+const Hakakses = ref('');
 
 const tableData = ref([]);
 const DataModul = ref([]);
@@ -115,9 +116,9 @@ onMounted(async () => {
 
 const fetchDataOption = async () => {
     try {
-        const getModule = await axios.get('http://localhost:9900/api/v1/module/get_all');
-        const getLevel = await axios.get('http://localhost:9900/api/v1/level/get_all');
-        const getPermession = await axios.get('http://localhost:9900/api/v1/permissions/get_all');
+        const getModule = await axios.get(`${baseURL}/api/${version}/module/get_all`);
+        const getLevel = await axios.get(`${baseURL}/api/${version}/level/get_all`);
+        const getPermession = await axios.get(`${baseURL}/api/${version}/permissions/get_all`);
         DataModul.value = getModule.data.data;
         DataPermission.value = getPermession.data.data;
         DataLevel.value = getLevel.data.data;
@@ -161,7 +162,7 @@ const fetchData = async () => {
         }
 
         // Buat request ke backend
-        const response = await axios.get('http://localhost:9900/api/v1/access/get_all', {
+        const response = await axios.get(`${baseURL}/api/${version}/access/get_all`, {
             params: params
         });
 
@@ -178,7 +179,7 @@ const addDataData = async () => {
     const nama_modul = access_modul.value;
     const nama_permission = access_permission.value;
     const nama_level = access_level.value;
-    const response = await axios.post('http://localhost:9900/api/v1/access', {
+    const response = await axios.post(`${baseURL}/api/${version}/access`, {
         access_modul: nama_modul,
         access_permission: nama_permission,
         access_level: nama_level
@@ -192,7 +193,7 @@ const addDataData = async () => {
 
 const OpenModalEdit = async (value) => {
     uuid_access.value = value;
-    const response = await axios.get(`http://localhost:9900/api/v1/access/${uuid_access.value}`);
+    const response = await axios.get(`${baseURL}/api/${version}/access/${uuid_access.value}`);
     if (response) {
         access_modul.value = response.data.data.access_modul.modul_uuid;
         access_permission.value = response.data.data.access_permission.permission_uuid;
@@ -207,7 +208,7 @@ const UpdateDataData = async () => {
     const nama_permission = access_permission.value;
     const nama_level = access_level.value;
 
-    const response = await axios.put(`http://localhost:9900/api/v1/access/${uuid_access.value}`, {
+    const response = await axios.put(`${baseURL}/api/${version}/access/${uuid_access.value}`, {
         access_modul: nama_modul,
         access_permission: nama_permission,
         access_level: nama_level
@@ -225,7 +226,7 @@ const UpdateDataData = async () => {
 };
 const openModalHapus = async (value) => {
     uuid_access.value = value;
-    const response = await axios.get(`http://localhost:9900/api/v1/access/${uuid_access.value}`);
+    const response = await axios.get(`${baseURL}/api/${version}/access/${uuid_access.value}`);
     if (response) {
         access_modul.value = response.data.data.access_modul;
         openModalDelete();
@@ -233,7 +234,7 @@ const openModalHapus = async (value) => {
 };
 
 const DeleteDataData = async () => {
-    const response = await axios.delete(`http://localhost:9900/api/v1/access/${uuid_access.value}`);
+    const response = await axios.delete(`${baseURL}/api/${version}/access/${uuid_access.value}`);
 
     if (response) {
         closeModalDelete();

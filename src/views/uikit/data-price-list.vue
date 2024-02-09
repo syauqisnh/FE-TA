@@ -11,6 +11,8 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
 import FileUpload from 'primevue/fileupload';
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const version = import.meta.env.VITE_API_BASE_VERSION;
 
 const router = useRouter();
 
@@ -56,7 +58,7 @@ const updateOptions = () => {
 
 const fetchDataOption = async () => {
     try {
-        const getBusines = await axios.get('http://localhost:9900/api/v1/business/get_all');
+        const getBusines = await axios.get(`${baseURL}/api/${version}/business/get_all`);
         DataBusines.value = getBusines.data.data;
         updateOptions();
     } catch (error) {
@@ -69,7 +71,7 @@ onMounted(async () => {
 
 const DataMe = async () => {
     try {
-        const response = await axios.get('http://localhost:9900/api/v1/me');
+        const response = await axios.get(`${baseURL}/api/${version}/me`);
 
         if (response) {
             user_username.value = response.data.name;
@@ -83,7 +85,7 @@ const DataMe = async () => {
         }
     } catch (error) {
         if (error.response && error.response.status === 401) {
-            router.push('/Landing-2'); // Pengguna belum login, arahkan ke landing page
+            router.push('/landing-page'); // Pengguna belum login, arahkan ke landing page
         } else {
             console.error('Error: ', error); // Kesalahan lain
         }
@@ -110,7 +112,7 @@ const fetchData = async () => {
         }
 
         // Buat request ke backend
-        const response = await axios.get(`http://localhost:9900/api/v1/price_list/get_all`, {
+        const response = await axios.get(`${baseURL}/api/${version}/price_list/get_all`, {
             params: params
         });
 
@@ -144,7 +146,7 @@ const addDataData = async () => {
     if (media == '') {
         validasi_price_media.value = '*Mohon upload file Anda dahulu';
     } else {
-        const response = await axios.post('http://localhost:9900/api/v1/price_list', {
+        const response = await axios.post(`${baseURL}/api/${version}/price_list`, {
             price_list_name: name,
             price_list_price: price,
             price_list_desc: desc,

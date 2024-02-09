@@ -4,6 +4,8 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import AppConfig from '@/layout/AppConfig.vue';
 import axios from 'axios';
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const version = import.meta.env.VITE_API_BASE_VERSION;
 
 const validationLogin = ref('');
 
@@ -23,7 +25,7 @@ const handleRegister = () => {
 
 const handleLogin = async () => {
     try {
-        await axios.post('http://localhost:9900/api/v1/login', {
+        await axios.post(`${baseURL}/api/${version}/login`, {
             email: user_email.value,
             password: user_password.value
         });

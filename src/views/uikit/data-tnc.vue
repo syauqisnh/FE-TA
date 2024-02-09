@@ -9,6 +9,8 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
 import '../uikit/css/data-tnc.css';
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const version = import.meta.env.VITE_API_BASE_VERSION;
 
 const router = useRouter();
 
@@ -64,7 +66,7 @@ const fetchData = async () => {
         }
 
         // Buat request ke backend
-        const response = await axios.get(`http://localhost:9900/api/v1/tnc/get_all`, {
+        const response = await axios.get(`${baseURL}/api/${version}/tnc/get_all`, {
             params: params
         });
 
@@ -93,7 +95,7 @@ const updateOptions = () => {
 
 const fetchDataOption = async () => {
     try {
-        const getPrice = await axios.get('http://localhost:9900/api/v1/price_list/get_all');
+        const getPrice = await axios.get(`${baseURL}/api/${version}/price_list/get_all`);
 
         // Filter data berdasarkan status 'N'
         const filteredData = getPrice.data.data.filter((price) => price.price_list_status !== 'N');
@@ -107,7 +109,7 @@ const fetchDataOption = async () => {
 
 const DataMe = async () => {
     try {
-        const response = await axios.get('http://localhost:9900/api/v1/me');
+        const response = await axios.get(`${baseURL}/api/${version}/me`);
 
         if (response) {
             user_username.value = response.data.name;
@@ -121,7 +123,7 @@ const DataMe = async () => {
         }
     } catch (error) {
         if (error.response && error.response.status === 401) {
-            router.push('/Landing-2'); // Pengguna belum login, arahkan ke landing page
+            router.push('/Landing-page'); // Pengguna belum login, arahkan ke landing page
         } else {
             console.error('Error: ', error); // Kesalahan lain
         }
@@ -132,7 +134,7 @@ const addDataData = async () => {
     const nameHarga = tnc_uuid_table.value;
     const name = tnc_name.value;
 
-    const response = await axios.post('http://localhost:9900/api/v1/tnc', {
+    const response = await axios.post(`${baseURL}/api/${version}/tnc`, {
         tnc_uuid_table: nameHarga,
         tnc_name: name
     });

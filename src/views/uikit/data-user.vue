@@ -7,7 +7,8 @@ import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import '../uikit/css/data-user.css';
-
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const version = import.meta.env.VITE_API_BASE_VERSION;
 const Hakaksestolak = ref('');
 const Hakakses = ref('');
 
@@ -127,7 +128,7 @@ const fetchData = async () => {
         }
 
         // Buat request ke backend
-        const response = await axios.get(`http://localhost:9900/api/v1/user/get_all`, {
+        const response = await axios.get(`${baseURL}/api/${version}/user/get_all`, {
             params: params
         });
 
@@ -164,7 +165,7 @@ const addDataData = async () => {
     const address = user_address.value;
     const email = user_email.value;
     const password = user_password.value;
-    const response = await axios.post('http://localhost:9900/api/v1/user', {
+    const response = await axios.post(`${baseURL}/api/${version}/user`, {
         user_username: username,
         user_full_name: nama_langkap,
         user_nohp: nohp,
@@ -182,7 +183,7 @@ const addDataData = async () => {
 const OpenModalEdit = async (value) => {
     uuid_user.value = value;
     try {
-        const response = await axios.get(`http://localhost:9900/api/v1/user/${uuid_user.value}`);
+        const response = await axios.get(`${baseURL}/api/${version}/user/${uuid_user.value}`);
         if (response) {
             user_username.value = response.data.data.user_username;
             user_full_name.value = response.data.data.user_full_name;
@@ -203,7 +204,7 @@ const UpdateDataData = async () => {
     // const email = user_email.value;
     // const password = user_password.value;
     try {
-        const response = await axios.put(`http://localhost:9900/api/v1/user/${uuid_user.value}`, {
+        const response = await axios.put(`${baseURL}/api/${version}/user/${uuid_user.value}`, {
             user_username: username,
             user_full_name: nama_langkap,
             user_nohp: nohp,
@@ -224,7 +225,7 @@ const UpdateDataData = async () => {
 const openModalHapus = async (value) => {
     uuid_user.value = value;
     try {
-        const response = await axios.get(`http://localhost:9900/api/v1/user/${uuid_user.value}`);
+        const response = await axios.get(`${baseURL}/api/${version}/user/${uuid_user.value}`);
         if (response) {
             user_username.value = response.data.data.user_username;
             user_full_name.value = response.data.data.user_full_name;
@@ -239,7 +240,7 @@ const openModalHapus = async (value) => {
     }
 };
 const DeleteDataData = async () => {
-    const response = await axios.delete(`http://localhost:9900/api/v1/user/${uuid_user.value}`);
+    const response = await axios.delete(`${baseURL}/api/${version}/user/${uuid_user.value}`);
 
     if (response) {
         closeModalDelete();

@@ -3,6 +3,8 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import '../uikit/css/data-gallery.css'; 'vue';
 import axios from 'axios';
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const version = import.meta.env.VITE_API_BASE_VERSION;
 
 const galleryUuid = ref(null);
 const tableData = ref([]);
@@ -20,7 +22,7 @@ const fetchData = async () => {
             console.error('Parameter gallery_uuid tidak ditemukan pada URL.');
         }
 
-        const getData = await axios.get(`http://localhost:9900/api/v1/media/get_By_uuid_table/${galleryUuid.value}`);
+        const getData = await axios.get(`${baseURL}/api/${version}/media/get_By_uuid_table/${galleryUuid.value}`);
         tableData.value = getData.data.data || [];
         console.log(getData.data.data)
         console.log(tableData.value);
@@ -47,7 +49,7 @@ const closeModal = () => {
             <div class="modal-form-group">
                 <FileUpload
                     name="file"
-                    :url="`http://localhost:9900/api/v1/media/upload_media_any/${galleryUuid}`"
+                    :url="`${baseURL}/api/${version}/media/upload_media_any/${galleryUuid}`"
                     :onUpload="onUpload"
                     :multiple="true"
                     accept=".doc, .docx, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf, image/*, video/*, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

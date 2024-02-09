@@ -1,3 +1,7 @@
+<!-- eslint-disable vue/no-parsing-error -->
+<!-- eslint-disable vue/no-parsing-error -->
+<!-- eslint-disable prettier/prettier -->
+<!-- eslint-disable prettier/prettier -->
 <!-- eslint-disable no-unused-vars -->
 <script setup>
 import { ref, onMounted, watch } from 'vue';
@@ -13,6 +17,8 @@ import { useRouter } from 'vue-router';
 import FileUpload from 'primevue/fileupload';
 
 const router = useRouter();
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const version = import.meta.env.VITE_API_BASE_VERSION;
 
 const uuid_team = ref('');
 const team_name = ref('');
@@ -50,8 +56,8 @@ const updateOptions = () => {
 
 const fetchDataOption = async () => {
     try {
-        const getBusines = await axios.get('http://localhost:9900/api/v1/business/get_all');
-        const getScope = await axios.get('http://localhost:9900/api/v1/scope/get_all');
+        const getBusines = await axios.get(`${baseURL}/api/${version}/business/get_all`);
+        const getScope = await axios.get(`${baseURL}/api/${version}/scope/get_all`);
         DataBusines.value = getBusines.data.data;
         DataScope.value = getScope.data.data;
         updateOptions();
@@ -67,11 +73,11 @@ const fetchDataOptionCustomer = async () => {
             params.append('business_customer', user_uuid.value);
         }
 
-        const getBusiness = await axios.get('http://localhost:9900/api/v1/business/get_all_customer', {
+        const getBusiness = await axios.get(`${baseURL}/api/${version}/business/get_all_customer`, {
             params: params
         });
 
-        const getScope = await axios.get('http://localhost:9900/api/v1/scope/get_all');
+        const getScope = await axios.get(`${baseURL}/api/${version}/scope/get_all`);
 
         console.log('getScope data:', getScope.data);
 
@@ -142,7 +148,7 @@ onMounted(async () => {
 
 const DataMe = async () => {
     try {
-        const response = await axios.get('http://localhost:9900/api/v1/me');
+        const response = await axios.get(`${baseURL}/api/${version}/me`);
 
         if (response) {
             user_username.value = response.data.name;
@@ -165,7 +171,7 @@ const DataMe = async () => {
         }
     } catch (error) {
         if (error.response && error.response.status === 401) {
-            router.push('/Landing-2'); // Pengguna belum login, arahkan ke landing page
+            router.push('/landing-page'); // Pengguna belum login, arahkan ke landing page
         } else {
             console.error('Error: ', error); // Kesalahan lain
         }
@@ -192,7 +198,7 @@ const fetchData = async () => {
         }
 
         // Buat request ke backend
-        const response = await axios.get(`http://localhost:9900/api/v1/teams/get_all`, {
+        const response = await axios.get(`${baseURL}/api/${version}/teams/get_all`, {
             params: params
         });
 
@@ -244,7 +250,7 @@ const fetchDataCustomer = async () => {
         }
 
         // Buat request ke backend
-        const response = await axios.get(`http://localhost:9900/api/v1/teams/get_all_customer`, {
+        const response = await axios.get(`${baseURL}/api/${version}/teams/get_all_customer`, {
             params: params
         });
 
@@ -274,7 +280,7 @@ const addDataData = async () => {
     if (media == '') {
         validasi_team_media.value = '*Mohon upload file Anda dahulu';
     } else {
-        const response = await axios.post('http://localhost:9900/api/v1/teams', {
+        const response = await axios.post(`${baseURL}/api/${version}/teams`, {
             team_name: name,
             team_job_desc: desc,
             team_business: business,
@@ -292,7 +298,7 @@ const addDataData = async () => {
 const OpenModalEdit = async (value) => {
     uuid_team.value = value;
     try {
-        const response = await axios.get(`http://localhost:9900/api/v1/teams/${uuid_team.value}`);
+        const response = await axios.get(`${baseURL}/api/${version}/teams/${uuid_team.value}`);
         if (response) {
             team_name.value = response.data.data.team_name;
             team_job_desc.value = response.data.data.team_job_desc;
@@ -308,7 +314,7 @@ const OpenModalEdit = async (value) => {
 const openModalHapus = async (value) => {
     uuid_team.value = value;
     try {
-        const response = await axios.get(`http://localhost:9900/api/v1/teams/${uuid_team.value}`);
+        const response = await axios.get(`${baseURL}/api/${version}/teams/${uuid_team.value}`);
         if (response) {
             team_name.value = response.data.data.team_name;
             team_job_desc.value = response.data.data.team_job_desc;
@@ -326,12 +332,12 @@ const UpdateDataData = async () => {
     const desc = team_job_desc.value;
     const business = team_business.value;
     const scope = team_scope.value;
-    const response = await axios.put(`http://localhost:9900/api/v1/teams/${uuid_team.value}`, {
+    const response = await axios.put(`${baseURL}/api/${version}/teams/${uuid_team.value}`, {
         team_name: name,
         team_job_desc: desc,
         team_business: business,
         team_scope: scope
-    });
+    });  
 
     if (response) {
         closeModalUpdate();
@@ -341,7 +347,7 @@ const UpdateDataData = async () => {
 };
 
 const DeleteDataData = async () => {
-    const response = await axios.delete(`http://localhost:9900/api/v1/teams/${uuid_team.value}`);
+    const response = await axios.delete(`${baseURL}/api/${version}/teams/${uuid_team.value}`);
 
     if (response) {
         closeModalDelete();
@@ -399,7 +405,7 @@ const order = ref([
             <div class="modal-form-group">
                 <FileUpload
                     name="file"
-                    url="http://localhost:9900/api/v1/media/upload_media"
+                    :url="`${baseURL}/api/${version}/media/upload_media`"
                     :onUpload="onUpload"
                     :multiple="true"
                     accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,image/*"

@@ -5,11 +5,12 @@ import axios from 'axios';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Dropdown from 'primevue/dropdown';
-import MultiSelect from 'primevue/multiselect';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import '../uikit/css/data-scopes.css';
 import { useRouter } from 'vue-router';
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const version = import.meta.env.VITE_API_BASE_VERSION;
 
 const router = useRouter();
 
@@ -59,7 +60,7 @@ const Ubahnilai_jumlah_row = async () => {
 
 const DataMe = async () => {
     try {
-        const response = await axios.get('http://localhost:9900/api/v1/me');
+        const response = await axios.get(`${baseURL}/api/${version}/me`);
 
         if (response) {
             user_username.value = response.data.name;
@@ -76,7 +77,7 @@ const DataMe = async () => {
         }
     } catch (error) {
         if (error.response && error.response.status === 401) {
-            router.push('/Landing-2'); // Pengguna belum login, arahkan ke landing page
+            router.push('/landing-page'); // Pengguna belum login, arahkan ke landing page
         } else {
             console.error('Error: ', error); // Kesalahan lain
         }
@@ -103,7 +104,7 @@ const fetchData = async () => {
         }
 
         // Buat request ke backend
-        const response = await axios.get(`http://localhost:9900/api/v1/scope/get_all`, {
+        const response = await axios.get(`${baseURL}/api/${version}/scope/get_all`, {
             params: params
         });
 
@@ -157,7 +158,7 @@ const fetchDataCustomer = async () => {
         }
 
         // Buat request ke backend
-        const response = await axios.get(`http://localhost:9900/api/v1/scope/get_all_customer`, {
+        const response = await axios.get(`${baseURL}/api/${version}/scope/get_all_customer`, {
             params: params
         });
 
@@ -179,7 +180,7 @@ const fetchDataCustomer = async () => {
 
 const fetchDataOption = async () => {
     try {
-        const getBusines = await axios.get('http://localhost:9900/api/v1/business/get_all');
+        const getBusines = await axios.get(`${baseURL}/api/${version}/business/get_all`);
         DataBusines.value = getBusines.data.data;
         updateOptions();
     } catch (error) {
@@ -192,7 +193,7 @@ const fetchDataOptionCustomer = async () => {
         if (user_uuid.value !== '') {
             params.append(`business_customer`, user_uuid.value);
         }
-        const getBusines = await axios.get('http://localhost:9900/api/v1/business/get_all_customer', {
+        const getBusines = await axios.get(`${baseURL}/api/${version}/business/get_all_customer`, {
             params: params
         });
         DataBusines.value = getBusines.data.data;
@@ -207,7 +208,7 @@ const addDataData = async () => {
     const desc = scope_desc.value;
     const business = scope_business.value;
 
-    const response = await axios.post('http://localhost:9900/api/v1/scope', {
+    const response = await axios.post(`${baseURL}/api/${version}/scope`, {
         scope_name: name,
         scope_desc: desc,
         scope_business: business
@@ -222,7 +223,7 @@ const addDataData = async () => {
 const OpenModalEdit = async (value) => {
     uuid_scope.value = value;
     try {
-        const response = await axios.get(`http://localhost:9900/api/v1/scope/${uuid_scope.value}`);
+        const response = await axios.get(`${baseURL}/api/${version}/scope/${uuid_scope.value}`);
         if (response) {
             scope_name.value = response.data.data.scope_name;
             scope_desc.value = response.data.data.scope_desc;
@@ -238,7 +239,7 @@ const UpdateDataData = async () => {
     const name = scope_name.value;
     const desc = scope_desc.value;
     const business = scope_business.value;
-    const response = await axios.put(`http://localhost:9900/api/v1/scope/${uuid_scope.value}`, {
+    const response = await axios.put(`${baseURL}/api/${version}/scope/${uuid_scope.value}`, {
         scope_name: name,
         scope_desc: desc,
         scope_business: business
@@ -254,7 +255,7 @@ const UpdateDataData = async () => {
 const openModalHapus = async (value) => {
     uuid_scope.value = value;
     try {
-        const response = await axios.get(`http://localhost:9900/api/v1/scope/${uuid_scope.value}`);
+        const response = await axios.get(`${baseURL}/api/${version}/scope/${uuid_scope.value}`);
         if (response) {
             scope_name.value = response.data.data.scope_name;
             scope_desc.value = response.data.data.scope_desc;
@@ -266,7 +267,7 @@ const openModalHapus = async (value) => {
     }
 };
 const DeleteDataData = async () => {
-    const response = await axios.delete(`http://localhost:9900/api/v1/scope/${uuid_scope.value}`);
+    const response = await axios.delete(`${baseURL}/api/${version}/scope/${uuid_scope.value}`);
 
     if (response) {
         closeModalDelete();

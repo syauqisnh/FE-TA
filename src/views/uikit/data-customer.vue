@@ -8,7 +8,8 @@ import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import '../uikit/css/data-customer.css';
-
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const version = import.meta.env.VITE_API_BASE_VERSION;
 const Hakaksestolak = ref('');
 const Hakakses = ref('');
 
@@ -121,7 +122,7 @@ const fetchData = async () => {
         }
 
         // Buat request ke backend
-        const response = await axios.get(`http://localhost:9900/api/v1/customer/get_all`, {
+        const response = await axios.get(`${baseURL}/api/${version}/customer/get_all`, {
             params: params
         });
 
@@ -159,7 +160,7 @@ const addDataData = async () => {
     const address = customer_address.value;
     const email = customer_email.value;
     const password = customer_password.value;
-    const response = await axios.post('http://localhost:9900/api/v1/customer', {
+    const response = await axios.post(`${baseURL}/api/${version}/customer`, {
         customer_username: username,
         customer_full_name: nama_langkap,
         customer_nohp: nohp,
@@ -178,7 +179,7 @@ const OpenModalEdit = async (value) => {
     uuid_customer.value = value;
     // console.log(value)
     try {
-        const response = await axios.get(`http://localhost:9900/api/v1/customer/${uuid_customer.value}`);
+        const response = await axios.get(`${baseURL}/api/${version}/customer/${uuid_customer.value}`);
         if (response) {
             customer_username.value = response.data.data.customer_username;
             customer_full_name.value = response.data.data.customer_full_name;
@@ -199,7 +200,7 @@ const UpdateDataData = async () => {
     const address = customer_address.value;
     // const email = customer_email.value;
     // const password = customer_password.value;
-    const response = await axios.put(`http://localhost:9900/api/v1/customer/${uuid_customer.value}`, {
+    const response = await axios.put(`${baseURL}/api/${version}/customer/${uuid_customer.value}`, {
         customer_username: username,
         customer_full_name: nama_langkap,
         customer_nohp: nohp,
@@ -217,7 +218,7 @@ const UpdateDataData = async () => {
 const openModalHapus = async (value) => {
     uuid_customer.value = value;
     try {
-        const response = await axios.get(`http://localhost:9900/api/v1/customer/${uuid_customer.value}`);
+        const response = await axios.get(`${baseURL}/api/${version}/customer/${uuid_customer.value}`);
         if (response) {
             customer_username.value = response.data.data.customer_username;
             customer_full_name.value = response.data.data.customer_full_name;
@@ -232,7 +233,7 @@ const openModalHapus = async (value) => {
     }
 };
 const DeleteDataData = async () => {
-    const response = await axios.delete(`http://localhost:9900/api/v1/customer/${uuid_customer.value}`);
+    const response = await axios.delete(`${baseURL}/api/${version}/customer/${uuid_customer.value}`);
 
     if (response) {
         closeModalDelete();

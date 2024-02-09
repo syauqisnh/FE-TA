@@ -226,6 +226,11 @@ const router = createRouter({
             component: () => import('@/views/pages/landing-page.vue')
         },
         {
+            path: '/pembayaran',
+            name: 'pembayaran',
+            component: () => import('@/views/pages/pembayaran.vue')
+        },
+        {
             path: '/pages/notfound',
             name: 'notfound',
             component: () => import('@/views/pages/NotFound.vue')

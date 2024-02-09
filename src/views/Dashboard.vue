@@ -37,6 +37,7 @@ const lineOptions = ref(null);
 const productService = new ProductService();
 
 onMounted(() => {
+    console.log(import.meta.env.VITE_API_TITLE)
     productService.getProductsSmall().then((data) => (products.value = data));
 });
 

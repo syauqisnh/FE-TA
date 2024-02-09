@@ -8,6 +8,8 @@ import MultiSelect from 'primevue/multiselect';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import '../uikit/css/data-media.css';
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const version = import.meta.env.VITE_API_BASE_VERSION;
 
 const tableData = ref([]);
 const inputSearch = ref('');
@@ -40,7 +42,7 @@ const order = ref([
 
 const fetchData = async () => {
     try {
-        const response = await axios.get('http://localhost:9900/api/v1/media/get_all', {
+        const response = await axios.get(`${baseURL}/api/${version}/media/get_all`, {
             params: {
                 order: { media_id: selectedOrder.value },
                 keyword: inputSearch.value
