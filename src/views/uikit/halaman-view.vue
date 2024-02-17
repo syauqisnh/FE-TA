@@ -6,7 +6,7 @@ import '../uikit/css/data-gallery.css';
 import axios from 'axios';
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 const version = import.meta.env.VITE_API_BASE_VERSION;
-~
+
 const galleryUuid = ref(null);
 const tableData = ref([]);
 
