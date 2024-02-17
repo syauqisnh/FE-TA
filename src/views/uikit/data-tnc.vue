@@ -23,6 +23,7 @@ const selectedLimit = ref('default');
 const user_username = ref('');
 const user_level = ref('');
 const user_uuid = ref('');
+const uuid_tnc = ref('');
 
 const tnc_uuid_table = ref(null);
 const tnc_name = ref('');
@@ -40,12 +41,36 @@ const openModal = () => {
 
 const closeModal = () => {
     isModalOpen.value = false;
+
+    tnc_uuid_table.value = null;
+    tnc_name.value = null;
+};
+
+const openModalUpdate = () => {
+    isUpdateModalOpen.value = true;
+};
+
+const closeModalUpdate = () => {
+    isUpdateModalOpen.value = false;
+
+    tnc_uuid_table.value = null;
+    tnc_name.value = null;
+};
+
+const openModalDelete = () => {
+    isDeleteModalOpen.value = true;
+};
+
+const closeModalDelete = () => {
+    isDeleteModalOpen.value = false;
+
+    tnc_uuid_table.value = null;
+    tnc_name.value = null;
 };
 
 onMounted(async () => {
     await DataMe();
 });
-
 const fetchData = async () => {
     try {
         const params = new URLSearchParams();
@@ -144,6 +169,57 @@ const addDataData = async () => {
         window.location.reload();
     }
 };
+
+const OpenModalEdit = async (value) => {
+    uuid_tnc.value = value;
+    try {
+        const response = await axios.get(`${baseURL}/api/${version}/tnc/${uuid_tnc.value}`);
+        if (response) {
+            tnc_uuid_table.value = response.data.data.tnc_uuid_table;
+            tnc_name.value = response.data.data.tnc_name;
+            openModalUpdate();
+        }
+    } catch (error) {
+        console.error('Error saat mengedit data:', error);
+    }
+};
+const UpdateDataData = async () => {
+    const tabel = tnc_uuid_table.value;
+    const name = tnc_name.value;
+    const response = await axios.put(`${baseURL}/api/${version}/tnc/${uuid_tnc.value}`, {
+        tnc_uuid_table: tabel,
+        tnc_name: name
+    });
+
+    if (response) {
+        closeModalUpdate();
+        window.location.reload();
+        uuid_tnc.value = '';
+    }
+};
+
+const openModalHapus = async (value) => {
+    uuid_tnc.value = value;
+    try {
+        const response = await axios.get(`${baseURL}/api/${version}/tnc/${uuid_tnc.value}`);
+        if (response) {
+            tnc_uuid_table.value = response.data.data.tnc_uuid_table;
+            tnc_name.value = response.data.data.tnc_name;
+            openModalDelete();
+        }
+    } catch (error) {
+        console.error('Error saat menghapus data:', error);
+    }
+};
+const DeleteDataData = async () => {
+    const response = await axios.delete(`${baseURL}/api/${version}/tnc/${uuid_tnc.value}`);
+
+    if (response) {
+        closeModalDelete();
+        window.location.reload();
+    }
+};
+
 const limit = ref([
     { value: 'default', label: 'Limit Data' },
     { value: 5, label: '5 Data perhalaman' },
@@ -178,6 +254,38 @@ const order = ref([
             </div>
         </div>
     </div>
+    <div v-if="isUpdateModalOpen" class="modal">
+        <div class="modal-content">
+            <!-- Close button -->
+            <span class="close" @click="closeModalUpdate">&times;</span>
+            <h4>Ubah Data</h4>
+            <div class="modal-form-group">
+                <Dropdown v-model="tnc_uuid_table" :options="priceOptions" optionLabel="label" optionValue="value" placeholder="Pilih Bisnis" class="modal-input"></Dropdown>
+                <InputText v-model="tnc_name" placeholder="Tambahkan Name" class="modal-input"></InputText>
+            </div>
+            <div class="modal-form-group">
+                <button class="modal-button-suceess" @click="UpdateDataData">Ubah data</button>
+            </div>
+        </div>
+    </div>
+    <div v-if="isDeleteModalOpen" class="modal">
+        <div class="modal-content">
+            <!-- Close button -->
+            <span class="close" @click="closeModalDelete">&times;</span>
+            <h4>Hapus Data</h4>
+            <div class="modal-form-group">
+                <p>
+                    Apakah Anda yakin untuk menghapus tnc anda <span class="bold-text"> "{{ tnc_name }}"</span>
+                </p>
+            </div>
+            <div class="modal-form-group">
+                <button class="modal-button-suceess" @click="DeleteDataData">Hapus data</button>
+            </div>
+            <div class="modal-form-group">
+                <button class="modal-button-danger" @click="closeModalDelete">Batal</button>
+            </div>
+        </div>
+    </div>
     <div class="grid p-fluid">
         <div class="col-12">
             <div class="card">
@@ -207,8 +315,8 @@ const order = ref([
                         <Column class="actions">
                             <template #body="rowData">
                                 <div class="action-icons-tnc">
-                                    <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.level_uuid)"></Button>
-                                    <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.level_uuid)"></Button>
+                                    <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.tnc_uuid)"></Button>
+                                    <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.tnc_uuid)"></Button>
                                 </div>
                             </template>
                         </Column>

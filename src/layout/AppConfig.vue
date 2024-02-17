@@ -17,10 +17,6 @@ const scales = ref([12, 13, 14, 15, 16]);
 const visible = ref(false);
 
 const { changeThemeSettings, setScale, layoutConfig } = useLayout();
-
-const onConfigButtonClick = () => {
-    visible.value = !visible.value;
-};
 const onChangeTheme = (theme, mode) => {
     const elementId = 'theme-css';
     const linkElement = document.getElementById(elementId);

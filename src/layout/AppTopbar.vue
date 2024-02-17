@@ -6,7 +6,7 @@ import axios from 'axios';
 const user_username = ref('');
 const user_level = ref('');
 
-const { onMenuToggle, contextPath } = useLayout();
+const { onMenuToggle } = useLayout();
 
 const outsideClickListener = ref(null);
 const topbarMenuActive = ref(false);
@@ -20,7 +20,7 @@ const CekDataLogin = async () => {
         user_level.value = response.data.level;
     } catch (error) {
         if (error.response && error.response.status === 401) {
-            router.push('/landing-page'); // Pengguna belum login, arahkan ke landing page
+            router.push('/');
         } else {
             console.error('Error: ', error); // Kesalahan lain
         }
@@ -34,10 +34,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
     unbindOutsideClickListener();
-});
-
-const logoUrl = computed(() => {
-    return `${contextPath}layout/images/Logo Bekantan.jpg`;
 });
 
 const onTopBarMenuButton = () => {
@@ -82,11 +78,12 @@ const isOutsideClicked = (event) => {
 
 <template>
     <div class="layout-topbar">
-        <router-link to="/" class="layout-topbar-logo">
-            <img :src="logoUrl" alt="logo" />
-            <h1>
-                BEKANTANJANTAN<span><span class="dashboard">All In One</span> Complete IT Solution</span>
-            </h1>
+        <router-link to="/">
+            <div class="logo-bekantan">
+                <a href=""
+                    ><h1>USAHAMIKRO<span>SITE</span></h1></a
+                >
+            </div>
         </router-link>
 
         <button class="p-link layout-menu-button layout-topbar-button" @click="onMenuToggle()">
@@ -98,44 +95,46 @@ const isOutsideClicked = (event) => {
         </button>
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
-            <button @click="onProfileClick()" class="p-link layout-topbar-button px-5">
+            <button @click="onProfileClick()" class="button-profile">
                 <i class="fa fa-user"></i>
-                <i class="username">{{ user_username }}</i>
+                <p class="username">{{ user_username }}</p>
             </button>
         </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
+
+.button-profile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
 .layout-topbar {
     display: flex;
     align-items: center;
     height: 90px;
 }
 
-.layout-topbar-logo img {
-    height: 65px !important;
-}
-
-.layout-topbar-logo h1 {
-    font-size: 20px;
-    font-weight: bold;
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-    color: rgb(107, 107, 107);
-}
-
-.layout-topbar-logo h1 span {
-    font-size: 12px;
-}
-
-.dashboard {
-    color: orange;
-}
 .username {
     margin-left: 15px;
     margin-right: 50px;
+}
+
+.logo-bekantan {
+    text-align: center;
+}
+.logo-bekantan a h1 {
+    margin: 0 auto;
+    color: orange;
+    font-weight: bold;
+}
+.logo-bekantan a h1 span {
+    color: rgb(112, 194, 227);
 }
 
 </style>

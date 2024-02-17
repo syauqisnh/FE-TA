@@ -1,11 +1,15 @@
 <!-- eslint-disable prettier/prettier -->
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import AppConfig from '@/layout/AppConfig.vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 import '/public/layout/css/landing.css';
 import AOS from 'aos'
-import 'aos/dist/aos.css'; 
+import 'aos/dist/aos.css';
+const user_username = ref('');
+const user_level = ref('');
+const isLoginIn = ref(false)
 
 const router = useRouter();
   AOS.init();
@@ -13,6 +17,35 @@ const router = useRouter();
 const goToLogin = () => {
     router.push('/auth/Login-2');
 };
+
+const goToDashboard = () => {
+    router.push('/dashboard');
+};
+
+const CekDataLogin = async () => {
+    try {
+        const response = await axios.get('http://localhost:9900/api/v1/me');
+        console.log(response)
+        if (response) {
+            user_username.value = response.data.name;
+            user_level.value = response.data.level;
+
+            isLoginIn.value = true;
+        }
+    } catch (error) {
+        if (error.response && error.response.status === 401) {
+            router.push('/');
+        } else {
+            console.error('Error: ', error); // Kesalahan lain
+        }
+    
+    }
+};
+
+
+onMounted(() => {
+    CekDataLogin();
+});
 
 const goToRegister = () => {
     router.push('/auth/register');
@@ -134,22 +167,27 @@ const responsiveOptions = ref([
         <div id="beranda" class="content">
             <div class="navbar">
                 <div class="logo-bekantan">
-                    <a href=""
+                    <a href="/"
                         ><h1>USAHAMIKRO<span>SITE</span></h1></a
                     >
                 </div>
                 <div class="menu">
                     <ul>
-                        <li><a @click="() => scrollToSection('beranda')">Beranda</a></li>
-                        <li><a @click="() => scrollToSection('Tentang')">Tentang Kami</a></li>
-                        <li><a @click="() => scrollToSection('produk')">Produk</a></li>
-                        <li><a @click="() => scrollToSection('harga')">Harga</a></li>
+                        <li><a href="#" @click="() => scrollToSection('beranda')">Beranda</a></li>
+                        <li><a href="#" @click="() => scrollToSection('Tentang')">Tentang Kami</a></li>
+                        <li><a href="#" @click="() => scrollToSection('produk')">Produk</a></li>
+                        <li><a href="#" @click="() => scrollToSection('harga')">Harga</a></li>
                     </ul>
-                    <div class="login">
-                        <Button @click="goToLogin" label="Login" style="height: 50px; width: 100px; margin-right: 10px; color: orange; border: 2px solid orange; font-size: 15px" text raised />
+                    <div class="dashboard" v-if="isLoginIn">
+                        <Button @click="goToDashboard" label="Dashboard" style="margin-right: 10px; color: orange; border: 2px solid orange;" text raised />
                     </div>
-                    <div class="register">
-                        <Button @click="goToRegister" label="Register" style="height: 50px; width: 100px; margin-left: 10px; background-color: orange; color: white; font-size: 15px" text raised />
+                    <div v-else class="card-button">
+                        <div class="login">
+                            <Button @click="goToLogin" label="Login" style="margin-right: 10px; color: orange; border: 2px solid orange;" text raised />
+                        </div>
+                        <div class="register">
+                            <Button @click="goToRegister" label="Register" style="margin-left: 10px; background-color: orange; color: white" text raised />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -162,13 +200,17 @@ const responsiveOptions = ref([
                     </p>
                 </div>
                 <div class="input-domain">
-                    <InputText v-model="value3" type="text" size="large" placeholder="Nama Domain Anda" style="width: 70%; height: 70px; margin-right: 15px; font-size: 20px" />
-                    <Button label="Search" style="background-color: orange; height: 70px; width: 13%; font-size: 17px; border: none" severity="secondary" raised />
+                    <InputText v-model="value3" type="text" size="large" placeholder="Nama Domain Anda" style="width: 100%; margin-right: 15px;" />
+                    <Button label="Search" style="background-color: orange; height: 100%; width: 13%; border: none;" severity="secondary" raised />
                 </div>
                 <div class="button-content">
-                    <Button @click="goToRegister" label="Ayo Bergabung Sekarang" style="background-color: rgb(112, 194, 227); border: none" severity="secondary" raised />
+                    <Button @click="goToRegister" label="Ayo Bergabung Sekarang" style="height: 50px; margin-bottom: 20px; background-color: rgb(112, 194, 227); border: none" severity="secondary" raised />
                     <p>Temukan potensi Anda dalam dunia bisnis bersama kami</p>
                 </div>
+                <!-- <div class="button-content">
+                    <Button @click="goToDashboard" label="Ayo Mulai Sekarang" style="background-color: rgb(112, 194, 227); border: none" severity="secondary" raised />
+                    <p>Temukan potensi Anda dalam dunia bisnis bersama kami</p>
+                </div> -->
             </div>
         </div>
         <div id="Tentang" class="content-2">
@@ -230,16 +272,16 @@ const responsiveOptions = ref([
                                 <div class="user-count">
                                     <span class="p-desc">{{ slotProps.data.description }}</span>
                                     <div class="icon-card">
-                                        <i class="fa fa-user" aria-hidden="true"></i>
+                                        <i class="fa fa-user"></i>
                                         <span>Jumlah Pengguna {{ slotProps.data.userCount }}</span>
                                     </div>
                                 </div>
                                 <div class="button-card">
                                     <button @click="goToPaymentPage" class="shop">
-                                        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                                        <i class="fas fa-shopping-cart"></i>
                                     </button>
                                     <button>
-                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                        <i class="fa fa-eye"></i>
                                     </button>
                                 </div>
                             </div>
@@ -288,7 +330,7 @@ const responsiveOptions = ref([
                         <div class="harga">
                             <div class="diskon">
                                 <span class="harga-dicoret">Rp 400.000</span>
-                                <h3>Diskon 50%</h3>
+                                <h1>Diskon 50%</h1>
                             </div>
                             <h1 class="harga-akhir">Rp 200.000<span>/bulan</span></h1>
                             <Button @click="goToPaymentPage" label="Pilih Paket" style="background-color: red; height: 50px; width: 100%; font-size: 17px; margin-top: 50px; border: none" severity="secondary" raised />
@@ -365,4 +407,5 @@ const responsiveOptions = ref([
     </div>
     <AppConfig simple />
 </template>
-<style scoped></style>
+<style scoped>
+</style>

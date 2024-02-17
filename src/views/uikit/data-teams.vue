@@ -178,6 +178,15 @@ const DataMe = async () => {
     }
 };
 
+let jumlah_row = 5;
+const Ubahnilai_jumlah_row = async () => {
+    if (selectedLimit.value === 'default') {
+        jumlah_row = 5;
+    } else {
+        jumlah_row = parseInt(selectedLimit.value, 10);
+    }
+};
+
 const fetchData = async () => {
     try {
         const params = new URLSearchParams();
@@ -478,7 +487,7 @@ const order = ref([
                             <Button v-if="user_level === 'customer'" icon="pi pi-search" class="search-button-scope" @click="fetchDataCustomer"></Button>
                         </div>
                     </div>
-                    <DataTable :value="tableData" :paginator="true" :rows="5" class="tabel">
+                    <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
                         <Column field="team_name" header="Nama" class="name-column"></Column>
                         <Column field="team_job_desc" header="Job Desc" class="name-column"></Column>
                         <Column field="team_business.business_name" header="Bisnis" class="name-column"></Column>

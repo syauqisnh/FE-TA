@@ -456,7 +456,7 @@ const onUpload = async (event) => {
             <h4>Ubah Data</h4>
             <div class="modal-form-group">
                 <InputText v-model="business_name" :value="business_name" class="modal-input"></InputText>
-                <textarea v-model="business_desc" class="modal-textarea"></textarea>
+                <textarea  v-model="business_desc" class="modal-textarea"></textarea>
                 <InputText v-model="business_province" :value="business_province" class="modal-input"></InputText>
                 <InputText v-model="business_regency" :value="business_regency" class="modal-input"></InputText>
                 <InputText v-model="business_subdistrict" :value="business_subdistrict" class="modal-input"></InputText>

@@ -6,11 +6,11 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         {
-            path: '/',
+            path: '/dashboard',
             component: AppLayout,
             children: [
                 {
-                    path: '/',
+                    path: '/dashboard',
                     name: 'dashboard',
                     component: () => import('@/views/Dashboard.vue'),
                     meta: { title: 'Dashboard' }
@@ -209,8 +209,8 @@ const router = createRouter({
                     component: () => import('@/views/utilities/Documentation.vue')
                 },
                 {
-                    path: '/Edit-profile',
-                    name: 'Edit-profile',
+                    path: '/edit-profile',
+                    name: 'edit-profile',
                     component: () => import('@/views/utilities/Edit-profile.vue')
                 }
             ]
@@ -221,7 +221,7 @@ const router = createRouter({
             component: () => import('@/views/pages/Landing.vue')
         },
         {
-            path: '/landing-page',
+            path: '/',
             name: 'landing-page',
             component: () => import('@/views/pages/landing-page.vue')
         },
@@ -264,16 +264,20 @@ const router = createRouter({
         {
             path: '/logout',
             name: 'error',
-            component: async () => {
-                alert('Anda telah logout')
-                try {
-                    const response = await axios.delete(`http://localhost:9900/api/v1/logout`);
-                    if (response) {
-                        console.log(response);
-                        window.location.reload();
+            component: async (next) => {
+                const confirmLogout = confirm('Apakah Anda ingin Logout?');
+                if (confirmLogout) {
+                    try {
+                        const response = await axios.delete(`http://localhost:9900/api/v1/logout`);
+                        if (response) {
+                            console.log(response);
+                            window.location.reload();
+                        }
+                    } catch (error) {
+                        console.log(error);
                     }
-                } catch (error) {
-                    console.log(error);
+                } else {
+                    next(false);
                 }
             }
         }

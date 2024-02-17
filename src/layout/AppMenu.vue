@@ -2,23 +2,31 @@
 import { ref, onMounted } from 'vue';
 import AppMenuItem from './AppMenuItem.vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 
-const customer = ref('');
-const admin = ref('');
+const customer = ref(false); // Menggunakan false sebagai default value
+const admin = ref(false);
+
+const router = useRouter();
 
 const DataMe = async () => {
     try {
         const response = await axios.get('http://localhost:9900/api/v1/me');
 
         if (response) {
-            if (response.data.level == 'customer') {
-                customer.value = response.data.level;
+            if (response.data.level === 'customer') {
+                customer.value = true;
             } else {
-                admin.value = response.data.level;
+                admin.value = true;
             }
         }
     } catch (error) {
-        console.error('Error: ', error); // Kesalahan lain
+        if (error.response && error.response.status === 401) {
+            // Token habis atau tidak valid, reload dan arahkan ke halaman login
+            router.push('/');
+        } else {
+            console.error('Error: ', error); // Kesalahan lain
+        } // Kesalahan lain
     }
 };
 
@@ -29,7 +37,7 @@ onMounted(() => {
 const model = ref([
     {
         label: 'Home',
-        items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
+        items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/dashboard' }]
     },
     {
         label: 'Data Master',
@@ -72,7 +80,7 @@ const model = ref([
 const model_customer = ref([
     {
         label: 'Home',
-        items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
+        items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/dashboard' }]
     },
 
     {

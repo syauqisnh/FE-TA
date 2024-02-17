@@ -1,6 +1,5 @@
 <script setup>
-import { useLayout } from '@/layout/composables/layout';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import AppConfig from '@/layout/AppConfig.vue';
 import axios from 'axios';
@@ -18,11 +17,6 @@ const handleLogin = () => {
     router.push('/auth/Login-2');
 };
 
-const logoUrl = computed(() => {
-    return `${contextPath}layout/images/Test.jpg`;
-});
-
-const { contextPath } = useLayout();
 const customer_username = ref('');
 const customer_full_name = ref('');
 const customer_email = ref('');
@@ -55,13 +49,15 @@ const addDataData = async () => {
         <div class="gambar-login-2">
             <div class="konten-2">
                 <h1>REGISTER</h1>
-                <p>CV.BEKANTANJANTAN</p>
+                <p>USAHAMIKROSITE</p>
                 <img src="/demo/images/landing/screen-2.png" alt="" />
             </div>
         </div>
         <div class="login-2">
-            <div class="gambar-bekantan-2">
-                <img :src="logoUrl" alt="Logo Bekantan" class="logo" />
+            <div class="logo-bekantan">
+                <a href=""
+                    ><h1>USAHAMIKRO<span>SITE</span></h1></a
+                >
             </div>
             <div class="judul-login-2">
                 <h2>Daftar</h2>
@@ -93,4 +89,17 @@ const addDataData = async () => {
     <AppConfig simple />
 </template>
 
-<style scoped></style>
+<style scoped>
+.logo-bekantan {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.logo-bekantan a h1 {
+    margin: 0 auto;
+    color: orange;
+    font-weight: bold;
+}
+.logo-bekantan a h1 span {
+    color: rgb(112, 194, 227);
+}
+</style>

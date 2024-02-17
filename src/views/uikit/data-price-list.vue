@@ -6,7 +6,6 @@ import axios from 'axios';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Dropdown from 'primevue/dropdown';
-import MultiSelect from 'primevue/multiselect';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
@@ -26,13 +25,9 @@ const price_list_price = ref('');
 const price_list_desc = ref('');
 const price_list_status = ref('Y');
 const price_list_order = ref('');
-const price_list_business = ref('');
+const price_list_business = ref(null);
 const price_list_media = ref('');
 const validasi_price_media = ref('');
-
-const isModalOpen = ref(false);
-const isUpdateModalOpen = ref(false);
-const isDeleteModalOpen = ref(false);
 
 const inputSearch = ref('');
 const selectedOrder = ref('default');
@@ -41,6 +36,24 @@ const tableData = ref([]);
 const DataBusines = ref([]);
 const businesOptions = ref([]);
 const multiselectOptionsBusiness = ref([]);
+const limit = ref([
+    { value: 'default', label: 'Limit Data' },
+    { value: 5, label: '5 Data perhalaman' },
+    { value: 10, label: '10 Data perhalaman' },
+    { value: 25, label: '25 Data perhalaman' },
+    { value: 50, label: '50 Data perhalaman' },
+    { value: 100, label: '100 Data perhalaman' }
+]);
+
+const order = ref([
+    { value: 'default', label: 'Urutkan data' },
+    { value: 'asc', label: 'Urutkan dari data awal ditambahkan' },
+    { value: 'desc', label: 'Urutkan dari data terbaru' }
+]);
+
+const isModalOpen = ref(false);
+const isUpdateModalOpen = ref(false);
+const isDeleteModalOpen = ref(false);
 
 const openModal = () => {
     isModalOpen.value = true;
@@ -48,6 +61,25 @@ const openModal = () => {
 
 const closeModal = () => {
     isModalOpen.value = false;
+};
+
+const openModalUpdate = () => {
+    isUpdateModalOpen.value = true;
+};
+
+const closeModalUpdate = () => {
+    isUpdateModalOpen.value = false;
+    price_list_name.value = null;
+    price_list_business.value = null;
+};
+
+const openModalDelete = () => {
+    isDeleteModalOpen.value = true;
+};
+
+const closeModalDelete = () => {
+    isDeleteModalOpen.value = false;
+    price_list_name.value = '';
 };
 
 const updateOptions = () => {
@@ -120,6 +152,11 @@ const fetchData = async () => {
 
         if (response.data.success) {
             tableData.value = response.data.data || [];
+            tableData.value = response.data.data.map((item) => ({
+                ...item,
+                price_list_status_formatted: item.price_list_status === 'Y' ? 'Diaktifkan' : 'Dinonaktifkan',
+                price_list_price_formatted: `Rp ${item.price_list_price.toLocaleString('id-ID')}`
+            }));
         } else {
             console.error('Respon sukses tetapi tidak ada data:', response.data.message);
             tableData.value = [];
@@ -131,8 +168,14 @@ const fetchData = async () => {
         }
     }
 };
-
-const jumlah_row = 5;
+let jumlah_row = 5;
+const Ubahnilai_jumlah_row = async () => {
+    if (selectedLimit.value === 'default') {
+        jumlah_row = 5;
+    } else {
+        jumlah_row = parseInt(selectedLimit.value, 10);
+    }
+};
 
 const addDataData = async () => {
     const name = price_list_name.value;
@@ -163,6 +206,42 @@ const addDataData = async () => {
     }
 };
 
+const OpenModalEdit = async (value) => {
+    uuid_price_list.value = value;
+    const response = await axios.get(`${baseURL}/api/${version}/price_list/${uuid_price_list.value}`);
+    if (response) {
+        price_list_name.value = response.data.data.price_list_name;
+        price_list_price.value = response.data.data.price_list_price;
+        price_list_desc.value = response.data.data.price_list_desc;
+        price_list_status.value = response.data.data.price_list_status;
+        price_list_order.value = response.data.data.price_list_order;
+        price_list_business.value = response.data.data.price_list_business;
+        openModalUpdate();
+    }
+};
+const UpdateDataData = async () => {
+    const nama_price_list = price_list_name.value;
+    const harga_price_list = price_list_price.value;
+    const desc_price_list = price_list_desc.value;
+    const status_price_list = price_list_status.value === 'active' ? 'Y' : 'N';
+    const order_price_list = price_list_order.value;
+    const bisnis_price_list = price_list_business.value;
+    const response = await axios.put(`${baseURL}/api/${version}/price_list/${uuid_price_list.value}`, {
+        price_list_name: nama_price_list,
+        price_list_price: harga_price_list,
+        price_list_desc: desc_price_list,
+        price_list_status: status_price_list,
+        price_list_order: order_price_list,
+        price_list_business: bisnis_price_list
+    });
+
+    if (response) {
+        closeModalUpdate();
+        window.location.reload();
+        uuid_price_list.value = '';
+    }
+};
+
 const onUpload = async (event) => {
     if (event.xhr.status === 200) {
         const responseText = event.xhr.responseText;
@@ -178,20 +257,31 @@ const onUpload = async (event) => {
     }
 };
 
-const limit = ref([
-    { value: 'default', label: 'Limit Data' },
-    { value: 5, label: '5 Data perhalaman' },
-    { value: 10, label: '10 Data perhalaman' },
-    { value: 25, label: '25 Data perhalaman' },
-    { value: 50, label: '50 Data perhalaman' },
-    { value: 100, label: '100 Data perhalaman' }
-]);
+const openModalHapus = async (value) => {
+    uuid_price_list.value = value;
+    try {
+        const response = await axios.get(`${baseURL}/api/${version}/price_list/${uuid_price_list.value}`);
+        if (response) {
+            price_list_name.value = response.data.data.price_list_name;
+            price_list_price.value = response.data.data.price_list_price;
+            price_list_desc.value = response.data.data.price_list_desc;
+            price_list_status.value = response.data.data.price_list_status;
+            price_list_order.value = response.data.data.price_list_order;
+            price_list_business.value = response.data.data.price_list_business;
+            openModalDelete();
+        }
+    } catch (error) {
+        console.error('Error saat menghapus data:', error);
+    }
+};
+const DeleteDataData = async () => {
+    const response = await axios.delete(`${baseURL}/api/${version}/price_list/${uuid_price_list.value}`);
 
-const order = ref([
-    { value: 'default', label: 'Urutkan data' },
-    { value: 'asc', label: 'Urutkan dari data awal ditambahkan' },
-    { value: 'desc', label: 'Urutkan dari data terbaru' }
-]);
+    if (response) {
+        closeModalDelete();
+        window.location.reload();
+    }
+};
 </script>
 
 <template>
@@ -206,12 +296,12 @@ const order = ref([
             <h4>Tambah Data</h4>
             <div class="modal-form-group">
                 <InputText v-model="price_list_name" placeholder="Tambahkan Nama" class="modal-input"></InputText>
-                <InputNumber v-model="price_list_price" inputId="currency-id" mode="currency" currency="IDR" locale="id-ID" :style="{ width: '100%' }" />
+                <InputNumber v-model="price_list_price" placeholder="Tambahkan Harga" class="modal-input" :prefix="'Rp '"></InputNumber>
                 <textarea v-model="price_list_desc" placeholder="Tambahkan Deskripsi" class="modal-textarea"></textarea>
                 <label>Status:</label>
                 <div class="radio-group">
                     <RadioButton v-model="price_list_status" value="active" label="Aktif"></RadioButton>
-                    <label for="active">Ditampilkan</label>
+                    <label for="active">Diaktifkan</label>
                 </div>
                 <div class="radio-group">
                     <RadioButton v-model="price_list_status" value="inactive" label="Tidak Aktif"></RadioButton>
@@ -234,6 +324,50 @@ const order = ref([
             <p v-if="validasi_price_media" class="validation-error text-red">{{ validasi_price_media }}</p>
             <div class="modal-form-group">
                 <button class="modal-button-suceess" @click="addDataData">Submit</button>
+            </div>
+        </div>
+    </div>
+    <div v-if="isUpdateModalOpen" class="modal">
+        <div class="modal-content">
+            <!-- Close button -->
+            <span class="close" @click="closeModalUpdate">&times;</span>
+            <h4>Ubah Data</h4>
+            <div class="modal-form-group">
+                <InputText v-model="price_list_name" :value="price_list_name" class="modal-input"></InputText>
+                <InputNumber v-model="price_list_price" :value="price_list_price" class="modal-input" :prefix="'Rp '"></InputNumber>
+                <textarea v-model="price_list_desc" class="modal-textarea"></textarea>
+                <label>Status:</label>
+                <div class="radio-group">
+                    <RadioButton v-model="price_list_status" value="active" label="Aktif"></RadioButton>
+                    <label for="active">Diaktifkan</label>
+                </div>
+                <div class="radio-group">
+                    <RadioButton v-model="price_list_status" value="inactive" label="Tidak Aktif"></RadioButton>
+                    <label for="inactive">Dinonaktifkan</label>
+                </div>
+                <InputText v-model="price_list_order" :value="price_list_order" class="modal-input"></InputText>
+                <Dropdown v-model="price_list_business" :options="businesOptions" optionLabel="label" optionValue="value" placeholder="Pilih Bisnis" class="modal-input"></Dropdown>
+            </div>
+            <div class="modal-form-group">
+                <button class="modal-button-suceess" @click="UpdateDataData">Ubah data</button>
+            </div>
+        </div>
+    </div>
+    <div v-if="isDeleteModalOpen" class="modal">
+        <div class="modal-content">
+            <!-- Close button -->
+            <span class="close" @click="closeModalDelete">&times;</span>
+            <h4>Hapus Data</h4>
+            <div class="modal-form-group">
+                <p>
+                    Apakah Anda yakin untuk menghapus nama Harga <span class="bold-text"> "{{ price_list_name }}"</span>
+                </p>
+            </div>
+            <div class="modal-form-group">
+                <button class="modal-button-suceess" @click="DeleteDataData">Hapus data</button>
+            </div>
+            <div class="modal-form-group">
+                <button class="modal-button-danger" @click="closeModalDelete">Batal</button>
             </div>
         </div>
     </div>
@@ -262,17 +396,17 @@ const order = ref([
                     </div>
                     <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
                         <Column field="price_list_name" header="Nama" class="name-column"></Column>
-                        <Column field="price_list_price" header="Harga" class="name-column" ></Column>
+                        <Column field="price_list_price_formatted" header="Harga" class="name-column"></Column>
                         <Column field="price_list_desc" header="Desc" class="name-column"></Column>
-                        <Column field="price_list_status" header="Status" class="name-column"></Column>
+                        <Column field="price_list_status_formatted" header="Status" class="name-column"></Column>
                         <Column field="price_list_order" header="Pesanan" class="name-column"></Column>
                         <Column field="price_list_business.business_name" header="Bisnis" class="name-column"></Column>
                         <Column field="price_list_media.media_name" header="Media" class="name-column"></Column>
                         <Column class="actions">
                             <template #body="rowData">
                                 <div class="action-icons-price">
-                                    <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.level_uuid)"></Button>
-                                    <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.level_uuid)"></Button>
+                                    <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.price_list_uuid)"></Button>
+                                    <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.price_list_uuid)"></Button>
                                 </div>
                             </template>
                         </Column>

@@ -174,7 +174,6 @@ const fetchData = async () => {
     }
 };
 
-
 const addDataData = async () => {
     const nama_modul = access_modul.value;
     const nama_permission = access_permission.value;
