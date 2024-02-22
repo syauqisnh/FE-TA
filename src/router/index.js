@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import AppLayout from '@/layout/AppLayout.vue';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -222,7 +223,7 @@ const router = createRouter({
         },
         {
             path: '/',
-            name: 'landing-page',
+            name: '/',
             component: () => import('@/views/pages/landing-page.vue')
         },
         {
@@ -265,8 +266,17 @@ const router = createRouter({
             path: '/logout',
             name: 'error',
             component: async (next) => {
-                const confirmLogout = confirm('Apakah Anda ingin Logout?');
-                if (confirmLogout) {
+                if (
+                    await Swal.fire({
+                        title: 'Apakah Anda yakin ingin logout?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Iya',
+                        cancelButtonText: 'Tidak'
+                    }).then((result) => {
+                        return result.isConfirmed;
+                    })
+                ) {
                     try {
                         const response = await axios.delete(`http://localhost:9900/api/v1/logout`);
                         if (response) {
@@ -274,7 +284,8 @@ const router = createRouter({
                             window.location.reload();
                         }
                     } catch (error) {
-                        console.log(error);
+                        console.error(error);
+                        Swal.fire('Error', 'Gagal logout. Silakan coba lagi.', 'error');
                     }
                 } else {
                     next(false);

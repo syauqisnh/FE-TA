@@ -8,6 +8,7 @@ import Dropdown from 'primevue/dropdown';
 import MultiSelect from 'primevue/multiselect';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
+import Swal from 'sweetalert2';
 import '../uikit/css/data-level.css';
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 const version = import.meta.env.VITE_API_BASE_VERSION;
@@ -133,11 +134,7 @@ const fetchData = async () => {
             tableData.value = [];
         }
     } catch (error) {
-        console.error('Error mengambil data:', error);
-        if (error.response) {
-            console.error('Error response dari backend:', error.response.data);
-            Hakaksestolak.value = error.response.data.msg;
-        }
+        Hakaksestolak.value = error.response.data.msg;
     }
 };
 
@@ -150,11 +147,17 @@ const addDataData = async () => {
 
         if (response) {
             closeModal();
-            window.location.reload(alert('Sukses Menambahkan Data'));
+            Swal.fire('Successfully', 'Sukses Menambahkan Data', 'success').then(() => {
+                window.location.reload();
+            });
         }
     } catch (error) {
         console.error(error);
         validateAddData.value = error.response.data.message;
+        if (error) {
+            Swal.fire('Fail', validateAddData.value, 'error');
+            return;
+        }
     }
 };
 const OpenModalEdit = async (value) => {
@@ -174,12 +177,18 @@ const UpdateDataData = async () => {
 
         if (response) {
             closeModalUpdate();
-            window.location.reload(alert('Sukses Update Data'));
+            Swal.fire('Successfully', 'Sukses Mengupdate Data', 'success').then(() => {
+                window.location.reload();
+            });
             uuid_level.value = '';
         }
     } catch (error) {
         console.error(error);
         validateAddData.value = error.response.data.message;
+        if (error) {
+            Swal.fire('Fail', validateAddData.value, 'error');
+            return;
+        }
     }
 };
 const openModalHapus = async (value) => {
@@ -195,7 +204,9 @@ const DeleteDataData = async () => {
 
     if (response) {
         closeModalDelete();
-        window.location.reload(alert('Sukses Menghapus Data'));
+        Swal.fire('Successfully', 'Sukses Menghapus Data', 'success').then(() => {
+            window.location.reload();
+        });
     }
 };
 
