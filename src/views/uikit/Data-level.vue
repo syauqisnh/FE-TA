@@ -15,7 +15,8 @@ const version = import.meta.env.VITE_API_BASE_VERSION;
 //inisialisasi data level
 const uuid_level = ref();
 const level_name = ref('');
-const edit_level_name = ref('');
+
+const validateAddData = ref('');
 
 const Hakaksestolak = ref('');
 const Hakakses = ref('');
@@ -38,8 +39,6 @@ const openModal = () => {
 
 const closeModal = () => {
     isModalOpen.value = false;
-
-    //set varibel name_level saat modal di close
     level_name.value = '';
 };
 
@@ -143,14 +142,19 @@ const fetchData = async () => {
 };
 
 const addDataData = async () => {
-    const nama_level = level_name.value;
-    const response = await axios.post(`${baseURL}/api/${version}/level`, {
-        level_name: nama_level
-    });
+    try {
+        const nama_level = level_name.value;
+        const response = await axios.post(`${baseURL}/api/${version}/level`, {
+            level_name: nama_level
+        });
 
-    if (response) {
-        closeModal();
-        window.location.reload();
+        if (response) {
+            closeModal();
+            window.location.reload(alert('Sukses Menambahkan Data'));
+        }
+    } catch (error) {
+        console.error(error);
+        validateAddData.value = error.response.data.message;
     }
 };
 const OpenModalEdit = async (value) => {
@@ -162,15 +166,20 @@ const OpenModalEdit = async (value) => {
     }
 };
 const UpdateDataData = async () => {
-    const nama_level = level_name.value;
-    const response = await axios.put(`${baseURL}/api/${version}/level/${uuid_level.value}`, {
-        level_name: nama_level
-    });
+    try {
+        const nama_level = level_name.value;
+        const response = await axios.put(`${baseURL}/api/${version}/level/${uuid_level.value}`, {
+            level_name: nama_level
+        });
 
-    if (response) {
-        closeModalUpdate();
-        window.location.reload();
-        uuid_level.value = '';
+        if (response) {
+            closeModalUpdate();
+            window.location.reload(alert('Sukses Update Data'));
+            uuid_level.value = '';
+        }
+    } catch (error) {
+        console.error(error);
+        validateAddData.value = error.response.data.message;
     }
 };
 const openModalHapus = async (value) => {
@@ -186,7 +195,7 @@ const DeleteDataData = async () => {
 
     if (response) {
         closeModalDelete();
-        window.location.reload();
+        window.location.reload(alert('Sukses Menghapus Data'));
     }
 };
 
@@ -208,6 +217,7 @@ watch(multiselectValue, fetchData);
                 <!-- Close button -->
                 <span class="close" @click="closeModal">&times;</span>
                 <h4>Tambah Data</h4>
+                <p v-if="validateAddData" style="color: red; margin: 0">{{ validateAddData }}</p>
                 <div class="modal-form-group">
                     <InputText v-model="level_name" placeholder="Tambahkan level" class="modal-input"></InputText>
                 </div>
@@ -223,6 +233,7 @@ watch(multiselectValue, fetchData);
                 <!-- Close button -->
                 <span class="close" @click="closeModalUpdate">&times;</span>
                 <h4>Ubah Data</h4>
+                <p v-if="validateAddData" style="color: red; margin: 0">{{ validateAddData }}</p>
                 <div class="modal-form-group">
                     <InputText v-model="level_name" :value="level_name" class="modal-input"></InputText>
                 </div>

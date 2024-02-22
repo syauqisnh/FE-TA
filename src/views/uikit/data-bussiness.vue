@@ -180,7 +180,6 @@ const fetchData = async () => {
         const response = await axios.get(`${baseURL}/api/${version}/business/get_all`, {
             params: params
         });
-
         console.log('Respon API:', response);
 
         if (response.data.success) {
@@ -387,6 +386,10 @@ const onUpload = async (event) => {
         console.error('Upload failed', event);
     }
 };
+
+const customField = (rowData) => {
+    return rowData.business_customer ? rowData.business_customer.customer_full_name || rowData.business_customer.user_full_name : '';
+};
 </script>
 
 <template>
@@ -398,6 +401,7 @@ const onUpload = async (event) => {
             <!-- Close button -->
             <span class="close" @click="closeModal">&times;</span>
             <h4>Tambah Data</h4>
+
             <div class="modal-form-group">
                 <InputText v-model="business_name" placeholder="Tambahkan Name" class="modal-input"></InputText>
                 <textarea v-model="business_desc" placeholder="Tambahkan Desc" class="modal-textarea"></textarea>
@@ -456,7 +460,7 @@ const onUpload = async (event) => {
             <h4>Ubah Data</h4>
             <div class="modal-form-group">
                 <InputText v-model="business_name" :value="business_name" class="modal-input"></InputText>
-                <textarea  v-model="business_desc" class="modal-textarea"></textarea>
+                <textarea v-model="business_desc" class="modal-textarea"></textarea>
                 <InputText v-model="business_province" :value="business_province" class="modal-input"></InputText>
                 <InputText v-model="business_regency" :value="business_regency" class="modal-input"></InputText>
                 <InputText v-model="business_subdistrict" :value="business_subdistrict" class="modal-input"></InputText>
@@ -529,7 +533,7 @@ const onUpload = async (event) => {
                                 </a>
                             </template>
                         </Column>
-                        <Column field="business_customer.customer_full_name" header="Customer" class="name-column"></Column>
+                        <Column :field="customField" header="Pengguna" class="name-column"></Column>
                         <Column header="File" class="name-column">
                             <template #body="slotProps">
                                 <a :href="slotProps.data.business_media.media_url" style="color: blue">

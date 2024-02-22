@@ -179,11 +179,11 @@ const responsiveOptions = ref([
                         <li><a href="#" @click="() => scrollToSection('harga')">Harga</a></li>
                     </ul>
                     <div class="dashboard" v-if="isLoginIn">
-                        <Button @click="goToDashboard" label="Dashboard" style="margin-right: 10px; color: orange; border: 2px solid orange;" text raised />
+                        <Button @click="goToDashboard" label="Dashboard" style="margin-right: 10px; color: orange; border: 2px solid orange" text raised />
                     </div>
                     <div v-else class="card-button">
                         <div class="login">
-                            <Button @click="goToLogin" label="Login" style="margin-right: 10px; color: orange; border: 2px solid orange;" text raised />
+                            <Button @click="goToLogin" label="Login" style="margin-right: 10px; color: orange; border: 2px solid orange" text raised />
                         </div>
                         <div class="register">
                             <Button @click="goToRegister" label="Register" style="margin-left: 10px; background-color: orange; color: white" text raised />
@@ -193,29 +193,28 @@ const responsiveOptions = ref([
             </div>
             <div class="content-text">
                 <div class="text-content">
-                    <h1>Membuat website lebih mudah untuk Bisnis Anda</h1>
+                    <h1>
+                        Membuat website lebih mudah dan hemat untuk <br />
+                        profile bisnis anda yang lebih profesional
+                    </h1>
                     <p>
                         Pilihan yang tepat bagi para pembisnis yang ingin menciptakan jejak digital mereka dengan <br />
                         kombinasi kreativitas tinggi dan teknologi terkini.
                     </p>
                 </div>
                 <div class="input-domain">
-                    <InputText v-model="value3" type="text" size="large" placeholder="Nama Domain Anda" style="width: 100%; margin-right: 15px;" />
-                    <Button label="Search" style="background-color: orange; height: 100%; width: 13%; border: none;" severity="secondary" raised />
+                    <InputText v-model="value3" type="text" size="large" placeholder="Nama Domain Anda" style="width: 100%; margin-right: 15px" />
+                    <Button label="Search" style="background-color: orange; height: 100%; width: 13%; border: none" severity="secondary" raised />
                 </div>
                 <div class="button-content">
-                    <Button @click="goToRegister" label="Ayo Bergabung Sekarang" style="height: 50px; margin-bottom: 20px; background-color: rgb(112, 194, 227); border: none" severity="secondary" raised />
-                    <p>Temukan potensi Anda dalam dunia bisnis bersama kami</p>
+                    <Button @click="goToRegister" label="Ayo Bergabung Sekarang" style="height: 50px; font-size: 15px; margin-bottom: 20px; background-color: rgb(112, 194, 227); border: none" severity="secondary" raised />
+                    <p>Tingkatkan kualitas profile bisnis anda bersama kami.</p>
                 </div>
-                <!-- <div class="button-content">
-                    <Button @click="goToDashboard" label="Ayo Mulai Sekarang" style="background-color: rgb(112, 194, 227); border: none" severity="secondary" raised />
-                    <p>Temukan potensi Anda dalam dunia bisnis bersama kami</p>
-                </div> -->
             </div>
         </div>
         <div id="Tentang" class="content-2">
             <div>
-                <h1>Apa Itu Web Builder <span>Company Profile?</span></h1>
+                <h1>Apa yang ditawarkan <span>usahamikrosite?</span></h1>
             </div>
             <div class="text-content-2">
                 <div data-aos="fade-right" class="gambar-content2">
@@ -225,35 +224,105 @@ const responsiveOptions = ref([
                     <div class="padding-content">
                         <div class="border-items">
                             <div class="icons-border">
-                                <i class="pi pi-pencil"></i>
-                            </div>
-                            <p>
-                                Web Builder Company Profile adalah layanan yang menyediakan platform untuk membangun dan mengelola halaman profil perusahaan secara online. Dengan fokus khusus pada bidang bisnis jasa, web builder ini memberikan solusi
-                                praktis bagi fotografer yang ingin meningkatkan kehadiran mereka di dunia digital.
-                            </p>
-                        </div>
-                        <div class="border-items">
-                            <div class="icons-border">
                                 <i class="pi pi-book"></i>
                             </div>
                             <p>
-                                Web Builder Company Profile yang dirancang khusus untuk jasa menawarkan berbagai keunggulan. Para jasa dapat memanfaatkan desain yang telah disesuaikan khusus untuk menampilkan karya fotografi, memastikan bahwa
-                                portofolio mereka tampil secara maksimal.
+                                Usahamikrosite menyediakan pembuatan website company profil dengan cepat dan mudah. Anda tinggal pilih template yang disediakan oleh Usahamikrosite, dan anda juga boleh minta dibuatkan tampilan website sesuai ke ingin
+                                anda. Pengelolaan dan maintenance website dikelola oleh tim IT kami sendiri tanpa perlu anda hire tim IT yang biaya per orang biasa-nya diatas UMR. <br />
+                                Dibandingkan dengan minta jasa pembuatan website baru ke software house, dimana biaya pembuatan bahkan sekitar > 5jt, bahkan itu belum biaya maintenance per bulan atau perawatan baik dari website ataupun hosting.
+                                Usahamikrosite menyediakan permintaan fitur sendiri yang belum disediakan oleh usahamikrosite, dimana perusahaan aplikasi lain nya yang menyediakan berlangganan tidak menerima request fitur baru diluar dari fitur yang
+                                mereka sediakan
                             </p>
                         </div>
-                        <div class="border-items">
-                            <div class="icons-border">
-                                <i class="pi pi-angle-double-right"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="fitur">
+                <p>Fitur yang <span>usahamikrosite</span> tawarkan:</p>
+            </div>
+            <div class="pembungkus" style="display: flex; align-items: center; justify-content: center;">
+                <div class="col-12 lg:col-6 xl:col-3">
+                    <div class="card mb-0">
+                        <div class="flex justify-content-between mb-3">
+                            <div>
+                                <span class="block text-500 font-medium mb-3">Landing page</span>
+                                <div class="text-900 font-medium text-xl">28441</div>
                             </div>
-                            <p>Platform ini sangat mudah digunakan, dengan antarmuka yang intuitif yang cocok untuk bisnis anda dari semua tingkat keahlian, memungkinkan mereka untuk dengan mudah membuat dan mengelola situs web mereka sendiri.</p>
+                            <div class="flex align-items-center justify-content-center bg-cyan-100 border-round" style="width: 2.5rem; height: 2.5rem">
+                                <i class="pi pi-home text-cyan-500 text-xl"></i>
+                            </div>
                         </div>
+                        <span class="text-green-500 font-medium">520 </span>
+                        <span class="text-500">newly registered</span>
+                    </div>
+                </div>
+                <div class="col-12 lg:col-6 xl:col-3">
+                    <div class="card mb-0">
+                        <div class="flex justify-content-between mb-3">
+                            <div>
+                                <span class="block text-500 font-medium mb-3">Scheduling</span>
+                                <div class="text-900 font-medium text-xl">28441</div>
+                            </div>
+                            <div class="flex align-items-center justify-content-center bg-cyan-100 border-round" style="width: 2.5rem; height: 2.5rem">
+                                <i class="pi pi-calendar text-cyan-500 text-xl"></i>
+                            </div>
+                        </div>
+                        <span class="text-green-500 font-medium">520 </span>
+                        <span class="text-500">newly registered</span>
+                    </div>
+                </div>
+                <div class="col-12 lg:col-6 xl:col-3">
+                    <div class="card mb-0">
+                        <div class="flex justify-content-between mb-3">
+                            <div>
+                                <span class="block text-500 font-medium mb-3">Notification</span>
+                                <div class="text-900 font-medium text-xl">28441</div>
+                            </div>
+                            <div class="flex align-items-center justify-content-center bg-cyan-100 border-round" style="width: 2.5rem; height: 2.5rem">
+                                <i class="pi pi-comment text-cyan-500 text-xl"></i>
+                            </div>
+                        </div>
+                        <span class="text-green-500 font-medium">520 </span>
+                        <span class="text-500">newly registered</span>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <div class="col-12 lg:col-6 xl:col-3">
+                    <div class="card mb-0">
+                        <div class="flex justify-content-between mb-3">
+                            <div>
+                                <span class="block text-500 font-medium mb-3">Booking</span>
+                                <div class="text-900 font-medium text-xl">28441</div>
+                            </div>
+                            <div class="flex align-items-center justify-content-center bg-cyan-100 border-round" style="width: 2.5rem; height: 2.5rem">
+                                <i class="pi pi-whatsapp text-cyan-500 text-xl"></i>
+                            </div>
+                        </div>
+                        <span class="text-green-500 font-medium">520 </span>
+                        <span class="text-500">newly registered</span>
+                    </div>
+                </div>
+                <div class="col-12 lg:col-6 xl:col-3">
+                    <div class="card mb-0">
+                        <div class="flex justify-content-between mb-3">
+                            <div>
+                                <span class="block text-500 font-medium mb-3">Task/Todo</span>
+                                <div class="text-900 font-medium text-xl">28441</div>
+                            </div>
+                            <div class="flex align-items-center justify-content-center bg-cyan-100 border-round" style="width: 2.5rem; height: 2.5rem">
+                                <i class="pi pi-book text-cyan-500 text-xl"></i>
+                            </div>
+                        </div>
+                        <span class="text-green-500 font-medium">520 </span>
+                        <span class="text-500">newly registered</span>
                     </div>
                 </div>
             </div>
             <div class="last-content-2">
                 <p>
-                    Kami berkomitmen untuk mendukung para fotografer dalam perjalanan kreatif mereka, <br />
-                    menyediakan alat yang mereka butuhkan untuk berkembang dan sukses di dunia digital.
+                    Kami berkomitmen untuk mendukung para usaha mikro menengah kebawah dalam meningkatkan usaha mereka terlihat <br />
+                    lebih profesional, sehingga berkembang dan mengikuti perkembangan zaman digital sekarang ini.
                 </p>
             </div>
         </div>
@@ -407,5 +476,4 @@ const responsiveOptions = ref([
     </div>
     <AppConfig simple />
 </template>
-<style scoped>
-</style>
+<style scoped></style>
