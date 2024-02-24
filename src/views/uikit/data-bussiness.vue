@@ -10,10 +10,12 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
 import FileUpload from 'primevue/fileupload';
+import Swal from 'sweetalert2';
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 const version = import.meta.env.VITE_API_BASE_VERSION;
 
 const router = useRouter();
+const validateData = ref('');
 
 const uuid_business = ref('');
 const business_name = ref('');
@@ -258,36 +260,47 @@ const fetchDataCustomer = async () => {
 };
 
 const addDataData = async () => {
-    const name = business_name.value;
-    const desc = business_desc.value;
-    const provinsi = business_province.value;
-    const kabupaten = business_regency.value;
-    const kecamatan = business_subdistrict.value;
-    const alamat = business_address.value;
-    const notelp = business_notelp.value;
-    const email = business_email.value;
-    const link_wa = business_link_wa.value;
-    const media = business_media.value;
+    try {
+        const name = business_name.value;
+        const desc = business_desc.value;
+        const provinsi = business_province.value;
+        const kabupaten = business_regency.value;
+        const kecamatan = business_subdistrict.value;
+        const alamat = business_address.value;
+        const notelp = business_notelp.value;
+        const email = business_email.value;
+        const link_wa = business_link_wa.value;
+        const media = business_media.value;
 
-    if (media == '') {
-        validasi_business_media.value = '*Mohon upload file Anda dahulu';
-    } else {
-        const response = await axios.post(`${baseURL}/api/${version}/business`, {
-            business_name: name,
-            business_desc: desc,
-            business_province: provinsi,
-            business_regency: kabupaten,
-            business_subdistrict: kecamatan,
-            business_address: alamat,
-            business_notelp: notelp,
-            business_email: email,
-            business_link_wa: link_wa,
-            business_media: media
-        });
+        if (media == '') {
+            validasi_business_media.value = '*Mohon upload file Anda dahulu';
+        } else {
+            const response = await axios.post(`${baseURL}/api/${version}/business`, {
+                business_name: name,
+                business_desc: desc,
+                business_province: provinsi,
+                business_regency: kabupaten,
+                business_subdistrict: kecamatan,
+                business_address: alamat,
+                business_notelp: notelp,
+                business_email: email,
+                business_link_wa: link_wa,
+                business_media: media
+            });
 
-        if (response) {
-            closeModal();
-            window.location.reload();
+            if (response) {
+                closeModal();
+                Swal.fire('Successfully', 'Sukses Menambahkan Data', 'success').then(() => {
+                    window.location.reload();
+                });
+            }
+        }
+    } catch (error) {
+        console.error(error);
+        validateData.value = error.response.data.message;
+        if (error) {
+            Swal.fire('Fail', validateData.value, 'error');
+            return;
         }
     }
 };
@@ -315,31 +328,42 @@ const OpenModalEdit = async (value) => {
 };
 
 const UpdateDataData = async () => {
-    const name = business_name.value;
-    const desc = business_desc.value;
-    const provinsi = business_province.value;
-    const kabupaten = business_regency.value;
-    const kecamatan = business_subdistrict.value;
-    const alamat = business_address.value;
-    const notelp = business_notelp.value;
-    const email = business_email.value;
-    const link_wa = business_link_wa.value;
-    const response = await axios.put(`${baseURL}/api/${version}/business/${uuid_business.value}`, {
-        business_name: name,
-        business_desc: desc,
-        business_province: provinsi,
-        business_regency: kabupaten,
-        business_subdistrict: kecamatan,
-        business_address: alamat,
-        business_notelp: notelp,
-        business_email: email,
-        business_link_wa: link_wa
-    });
+    try {
+        const name = business_name.value;
+        const desc = business_desc.value;
+        const provinsi = business_province.value;
+        const kabupaten = business_regency.value;
+        const kecamatan = business_subdistrict.value;
+        const alamat = business_address.value;
+        const notelp = business_notelp.value;
+        const email = business_email.value;
+        const link_wa = business_link_wa.value;
+        const response = await axios.put(`${baseURL}/api/${version}/business/${uuid_business.value}`, {
+            business_name: name,
+            business_desc: desc,
+            business_province: provinsi,
+            business_regency: kabupaten,
+            business_subdistrict: kecamatan,
+            business_address: alamat,
+            business_notelp: notelp,
+            business_email: email,
+            business_link_wa: link_wa
+        });
 
-    if (response) {
-        closeModalUpdate();
-        window.location.reload();
-        uuid_business.value = '';
+        if (response) {
+            closeModalUpdate();
+            Swal.fire('Successfully', 'Sukses Mengupdate Data', 'success').then(() => {
+                window.location.reload();
+            });
+            uuid_business.value = '';
+        }
+    } catch (error) {
+        console.error(error);
+        validateData.value = error.response.data.message;
+        if (error) {
+            Swal.fire('Fail', validateData.value, 'error');
+            return;
+        }
     }
 };
 
@@ -368,7 +392,9 @@ const DeleteDataData = async () => {
 
     if (response) {
         closeModalDelete();
-        window.location.reload();
+        Swal.fire('Successfully', 'Sukses Menghapus Data', 'success').then(() => {
+            window.location.reload();
+        });
     }
 };
 
@@ -528,16 +554,18 @@ const customField = (rowData) => {
                         <Column field="business_email" header="Email" class="name-column"></Column>
                         <Column header="WhatsApp" class="name-column">
                             <template #body="slotProps">
-                                <a :href="slotProps.data.business_link_wa" style="color: blue">
-                                    <img src="demo/images/product/wa2.png" alt="WhatsApp Image" style="width: 60px; height: 60px; margin-right: 5px" />
+                                <a :href="slotProps.data.business_link_wa" style=" display: flex; align-items: center; justify-content: center; flex-direction: column; color: #25D366">
+                                    <i class="pi pi-whatsapp" style="font-size: 2rem;"></i>
+                                    <span>WhatsApp</span>
                                 </a>
                             </template>
                         </Column>
                         <Column :field="customField" header="Pengguna" class="name-column"></Column>
                         <Column header="File" class="name-column">
                             <template #body="slotProps">
-                                <a :href="slotProps.data.business_media.media_url" style="color: blue">
-                                    <img src="demo/images/product/ddc.png" alt="WhatsApp Image" style="width: 80px; height: 50px; margin-right: 5px" />
+                                <a :href="slotProps.data.business_media.media_url" style="display: flex; align-items: center; justify-content: center; flex-direction: column; color: blue">
+                                    <i class="pi pi-file-o" style="font-size: 2rem;"></i>
+                                    <span style="font-size: 12px;">{{ slotProps.data.business_media.media_name }}</span>
                                 </a>
                             </template>
                         </Column>

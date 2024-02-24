@@ -9,10 +9,12 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import '../uikit/css/data-scopes.css';
 import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2';
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 const version = import.meta.env.VITE_API_BASE_VERSION;
 
 const router = useRouter();
+const validateData = ref('');
 
 const tableData = ref([]);
 
@@ -204,19 +206,30 @@ const fetchDataOptionCustomer = async () => {
 };
 
 const addDataData = async () => {
-    const name = scope_name.value;
-    const desc = scope_desc.value;
-    const business = scope_business.value;
+    try {
+        const name = scope_name.value;
+        const desc = scope_desc.value;
+        const business = scope_business.value;
 
-    const response = await axios.post(`${baseURL}/api/${version}/scope`, {
-        scope_name: name,
-        scope_desc: desc,
-        scope_business: business
-    });
+        const response = await axios.post(`${baseURL}/api/${version}/scope`, {
+            scope_name: name,
+            scope_desc: desc,
+            scope_business: business
+        });
 
-    if (response) {
-        closeModal();
-        window.location.reload();
+        if (response) {
+            closeModal();
+            Swal.fire('Successfully', 'Sukses Menambahkan Data', 'success').then(() => {
+                window.location.reload();
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        validateData.value = error.response.data.message;
+        if (error) {
+            Swal.fire('Fail', validateData.value, 'error');
+            return;
+        }
     }
 };
 
@@ -236,19 +249,30 @@ const OpenModalEdit = async (value) => {
 };
 
 const UpdateDataData = async () => {
-    const name = scope_name.value;
-    const desc = scope_desc.value;
-    const business = scope_business.value;
-    const response = await axios.put(`${baseURL}/api/${version}/scope/${uuid_scope.value}`, {
-        scope_name: name,
-        scope_desc: desc,
-        scope_business: business
-    });
+    try {
+        const name = scope_name.value;
+        const desc = scope_desc.value;
+        const business = scope_business.value;
+        const response = await axios.put(`${baseURL}/api/${version}/scope/${uuid_scope.value}`, {
+            scope_name: name,
+            scope_desc: desc,
+            scope_business: business
+        });
 
-    if (response) {
-        closeModalUpdate();
-        window.location.reload();
-        uuid_scope.value = '';
+        if (response) {
+            closeModalUpdate();
+            Swal.fire('Successfully', 'Sukses Mengupdate Data', 'success').then(() => {
+                window.location.reload();
+            });
+            uuid_scope.value = '';
+        }
+    } catch (error) {
+        console.error(error);
+        validateData.value = error.response.data.message;
+        if (error) {
+            Swal.fire('Fail', validateData.value, 'error');
+            return;
+        }
     }
 };
 
@@ -271,7 +295,9 @@ const DeleteDataData = async () => {
 
     if (response) {
         closeModalDelete();
-        window.location.reload();
+        Swal.fire('Successfully', 'Sukses Menghapus Data', 'success').then(() => {
+            window.location.reload();
+        });
     }
 };
 

@@ -11,6 +11,7 @@ const validationLogin = ref('');
 const user_email = ref('');
 const user_password = ref('');
 const checked = ref(false);
+const isLoading = ref(false);
 
 import '../css/login.css';
 
@@ -22,17 +23,24 @@ const handleRegister = () => {
 };
 
 const handleLogin = async () => {
+    isLoading.value = true;
     try {
         await axios.post(`${baseURL}/api/${version}/login`, {
             email: user_email.value,
             password: user_password.value
         });
-        router.push('/');
+        setTimeout(() => {
+            router.push('/');
+            isLoading.value = false;
+        }, 3000);
     } catch (error) {
         console.error(error);
         validationLogin.value = error.response.data.msg;
+        isLoading.value = false;
     }
 };
+
+console.log(isLoading.value);
 </script>
 
 <template>
@@ -40,6 +48,7 @@ const handleLogin = async () => {
         <div class="gambar-login-1">
             <div class="konten-1">
                 <h1>USAHAMIKROSITE</h1>
+
                 <p>All In One Complete IT Solution</p>
                 <img src="/demo/images/landing/screen-2.png" alt="" />
             </div>
@@ -70,8 +79,9 @@ const handleLogin = async () => {
                 </div>
             </div>
             <div class="masuk-1">
-                <button @click="handleLogin">Masuk</button>
+                <button @click="handleLogin" style="display: flex; justify-content: center; align-items: center"><span v-if="!isLoading">Masuk</span><span v-else class="loader"></span></button>
             </div>
+            <div></div>
             <div class="register-1">
                 <p>Belum punya akun? <a href="#" @click.prevent="handleRegister">Daftar</a></p>
             </div>
@@ -92,5 +102,36 @@ const handleLogin = async () => {
 }
 .logo-bekantan a h1 span {
     color: rgb(112, 194, 227);
+}
+
+.loader {
+    border: 4px solid orange;
+    border-left-color: white;
+    border-radius: 50%;
+}
+
+.loader {
+    border: 4px solid orange;
+    border-left-color: white;
+    width: 30px;
+    height: 30px;
+}
+
+.loader {
+    border: 4px solid orange;
+    border-left-color: white;
+    width: 30px;
+    height: 30px;
+    animation: spin89345 1s linear infinite;
+}
+
+@keyframes spin89345 {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

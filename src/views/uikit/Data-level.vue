@@ -17,7 +17,7 @@ const version = import.meta.env.VITE_API_BASE_VERSION;
 const uuid_level = ref();
 const level_name = ref('');
 
-const validateAddData = ref('');
+const validateData = ref('');
 
 const Hakaksestolak = ref('');
 const Hakakses = ref('');
@@ -124,9 +124,7 @@ const fetchData = async () => {
             params: params
         });
 
-        console.log('Respon API:', response);
-
-        if (response.data.success) {
+        if (response.data.data) {
             tableData.value = response.data.data || [];
             Hakakses.value = response.data.message;
         } else {
@@ -153,9 +151,9 @@ const addDataData = async () => {
         }
     } catch (error) {
         console.error(error);
-        validateAddData.value = error.response.data.message;
+        validateData.value = error.response.data.message;
         if (error) {
-            Swal.fire('Fail', validateAddData.value, 'error');
+            Swal.fire('Fail', validateData.value, 'error');
             return;
         }
     }
@@ -184,9 +182,9 @@ const UpdateDataData = async () => {
         }
     } catch (error) {
         console.error(error);
-        validateAddData.value = error.response.data.message;
+        validateData.value = error.response.data.message;
         if (error) {
-            Swal.fire('Fail', validateAddData.value, 'error');
+            Swal.fire('Fail', validateData.value, 'error');
             return;
         }
     }
@@ -228,7 +226,7 @@ watch(multiselectValue, fetchData);
                 <!-- Close button -->
                 <span class="close" @click="closeModal">&times;</span>
                 <h4>Tambah Data</h4>
-                <p v-if="validateAddData" style="color: red; margin: 0">{{ validateAddData }}</p>
+                <p v-if="validateData" style="color: red; margin: 0">{{ validateData }}</p>
                 <div class="modal-form-group">
                     <InputText v-model="level_name" placeholder="Tambahkan level" class="modal-input"></InputText>
                 </div>
@@ -244,7 +242,7 @@ watch(multiselectValue, fetchData);
                 <!-- Close button -->
                 <span class="close" @click="closeModalUpdate">&times;</span>
                 <h4>Ubah Data</h4>
-                <p v-if="validateAddData" style="color: red; margin: 0">{{ validateAddData }}</p>
+                <p v-if="validateData" style="color: red; margin: 0">{{ validateData }}</p>
                 <div class="modal-form-group">
                     <InputText v-model="level_name" :value="level_name" class="modal-input"></InputText>
                 </div>
@@ -314,15 +312,19 @@ watch(multiselectValue, fetchData);
                             </div>
                         </div>
                         <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
-                            <Column field="level_name" header="Nama" class="name-column"></Column>
-                            <Column class="actions">
-                                <template #body="rowData">
-                                    <div class="action-icons">
-                                        <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.level_uuid)"></Button>
-                                        <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.level_uuid)"></Button>
-                                    </div>
-                                </template>
-                            </Column>
+                            <div v-if="tableData">
+                                <Column field="level_name" header="Nama" class="name-column"></Column>
+                                <Column class="actions">
+                                    <template #body="rowData">
+                                        <div class="action-icons">
+                                            <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.level_uuid)"></Button>
+                                            <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.level_uuid)"></Button>
+                                        </div>
+                                    </template>
+                                </Column>
+                            </div>
+
+                            <div v-if="tableData.length < 1" style="display: flex; justify-content: center; padding: 5px 0">Data tidak ditemukan</div>
                         </DataTable>
                     </div>
                 </div>

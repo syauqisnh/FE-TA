@@ -6,6 +6,7 @@ import axios from 'axios';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Dropdown from 'primevue/dropdown';
+import Swal from 'sweetalert2';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
@@ -14,6 +15,7 @@ const baseURL = import.meta.env.VITE_API_BASE_URL;
 const version = import.meta.env.VITE_API_BASE_VERSION;
 
 const router = useRouter();
+const validateData = ref('');
 
 const user_username = ref('');
 const user_level = ref('');
@@ -178,30 +180,41 @@ const Ubahnilai_jumlah_row = async () => {
 };
 
 const addDataData = async () => {
-    const name = price_list_name.value;
-    const price = price_list_price.value;
-    const desc = price_list_desc.value;
-    const status = price_list_status.value === 'active' ? 'Y' : 'N';
-    const order = price_list_order.value;
-    const business = price_list_business.value;
-    const media = price_list_media.value;
+    try {
+        const name = price_list_name.value;
+        const price = price_list_price.value;
+        const desc = price_list_desc.value;
+        const status = price_list_status.value === 'active' ? 'Y' : 'N';
+        const order = price_list_order.value;
+        const business = price_list_business.value;
+        const media = price_list_media.value;
 
-    if (media == '') {
-        validasi_price_media.value = '*Mohon upload file Anda dahulu';
-    } else {
-        const response = await axios.post(`${baseURL}/api/${version}/price_list`, {
-            price_list_name: name,
-            price_list_price: price,
-            price_list_desc: desc,
-            price_list_status: status,
-            price_list_order: order,
-            price_list_business: business,
-            price_list_media: media
-        });
+        if (media == '') {
+            validasi_price_media.value = '*Mohon upload file Anda dahulu';
+        } else {
+            const response = await axios.post(`${baseURL}/api/${version}/price_list`, {
+                price_list_name: name,
+                price_list_price: price,
+                price_list_desc: desc,
+                price_list_status: status,
+                price_list_order: order,
+                price_list_business: business,
+                price_list_media: media
+            });
 
-        if (response) {
-            closeModal();
-            window.location.reload();
+            if (response) {
+                closeModal();
+                Swal.fire('Successfully', 'Sukses Menambahkan Data', 'success').then(() => {
+                    window.location.reload();
+                });
+            }
+        }
+    } catch (error) {
+        console.error(error);
+        validateData.value = error.response.data.message;
+        if (error) {
+            Swal.fire('Fail', validateData.value, 'error');
+            return;
         }
     }
 };
@@ -220,25 +233,34 @@ const OpenModalEdit = async (value) => {
     }
 };
 const UpdateDataData = async () => {
-    const nama_price_list = price_list_name.value;
-    const harga_price_list = price_list_price.value;
-    const desc_price_list = price_list_desc.value;
-    const status_price_list = price_list_status.value === 'active' ? 'Y' : 'N';
-    const order_price_list = price_list_order.value;
-    const bisnis_price_list = price_list_business.value;
-    const response = await axios.put(`${baseURL}/api/${version}/price_list/${uuid_price_list.value}`, {
-        price_list_name: nama_price_list,
-        price_list_price: harga_price_list,
-        price_list_desc: desc_price_list,
-        price_list_status: status_price_list,
-        price_list_order: order_price_list,
-        price_list_business: bisnis_price_list
-    });
+    try {
+        const nama_price_list = price_list_name.value;
+        const harga_price_list = price_list_price.value;
+        const desc_price_list = price_list_desc.value;
+        const status_price_list = price_list_status.value === 'active' ? 'Y' : 'N';
+        const order_price_list = price_list_order.value;
+        const bisnis_price_list = price_list_business.value;
+        const response = await axios.put(`${baseURL}/api/${version}/price_list/${uuid_price_list.value}`, {
+            price_list_name: nama_price_list,
+            price_list_price: harga_price_list,
+            price_list_desc: desc_price_list,
+            price_list_status: status_price_list,
+            price_list_order: order_price_list,
+            price_list_business: bisnis_price_list
+        });
 
-    if (response) {
-        closeModalUpdate();
-        window.location.reload();
-        uuid_price_list.value = '';
+        if (response) {
+            closeModalUpdate();
+            window.location.reload();
+            uuid_price_list.value = '';
+        }
+    } catch (error) {
+        console.error(error);
+        validateData.value = error.response.data.message;
+        if (error) {
+            Swal.fire('Fail', validateData.value, 'error');
+            return;
+        }
     }
 };
 
@@ -279,7 +301,9 @@ const DeleteDataData = async () => {
 
     if (response) {
         closeModalDelete();
-        window.location.reload();
+        Swal.fire('Successfully', 'Sukses Menghapus Data', 'success').then(() => {
+            window.location.reload();
+        });
     }
 };
 </script>

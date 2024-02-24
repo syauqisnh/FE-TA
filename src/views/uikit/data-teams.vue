@@ -1,15 +1,10 @@
-<!-- eslint-disable vue/no-parsing-error -->
-<!-- eslint-disable vue/no-parsing-error -->
-<!-- eslint-disable prettier/prettier -->
-<!-- eslint-disable prettier/prettier -->
-<!-- eslint-disable no-unused-vars -->
 <script setup>
 import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Dropdown from 'primevue/dropdown';
-import MultiSelect from 'primevue/multiselect';
+import Swal from 'sweetalert2';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import '../uikit/css/data-teams.css';
@@ -17,6 +12,8 @@ import { useRouter } from 'vue-router';
 import FileUpload from 'primevue/fileupload';
 
 const router = useRouter();
+const validateData = ref('');
+
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 const version = import.meta.env.VITE_API_BASE_VERSION;
 
@@ -280,26 +277,37 @@ const fetchDataCustomer = async () => {
 };
 
 const addDataData = async () => {
-    const name = team_name.value;
-    const desc = team_job_desc.value;
-    const business = team_business.value;
-    const scope = team_scope.value;
-    const media = team_media.value;
+    try {
+        const name = team_name.value;
+        const desc = team_job_desc.value;
+        const business = team_business.value;
+        const scope = team_scope.value;
+        const media = team_media.value;
 
-    if (media == '') {
-        validasi_team_media.value = '*Mohon upload file Anda dahulu';
-    } else {
-        const response = await axios.post(`${baseURL}/api/${version}/teams`, {
-            team_name: name,
-            team_job_desc: desc,
-            team_business: business,
-            team_scope: scope,
-            team_media: media
-        });
+        if (media == '') {
+            validasi_team_media.value = '*Mohon upload file Anda dahulu';
+        } else {
+            const response = await axios.post(`${baseURL}/api/${version}/teams`, {
+                team_name: name,
+                team_job_desc: desc,
+                team_business: business,
+                team_scope: scope,
+                team_media: media
+            });
 
-        if (response) {
-            closeModal();
-            window.location.reload();
+            if (response) {
+                closeModal();
+                Swal.fire('Successfully', 'Sukses Menambahkan Data', 'success').then(() => {
+                    window.location.reload();
+                });
+            }
+        }
+    } catch (error) {
+        console.error(error);
+        validateData.value = error.response.data.message;
+        if (error) {
+            Swal.fire('Fail', validateData.value, 'error');
+            return;
         }
     }
 };
@@ -337,21 +345,30 @@ const openModalHapus = async (value) => {
 };
 
 const UpdateDataData = async () => {
-    const name = team_name.value;
-    const desc = team_job_desc.value;
-    const business = team_business.value;
-    const scope = team_scope.value;
-    const response = await axios.put(`${baseURL}/api/${version}/teams/${uuid_team.value}`, {
-        team_name: name,
-        team_job_desc: desc,
-        team_business: business,
-        team_scope: scope
-    });  
+    try {
+        const name = team_name.value;
+        const desc = team_job_desc.value;
+        const business = team_business.value;
+        const scope = team_scope.value;
+        const response = await axios.put(`${baseURL}/api/${version}/teams/${uuid_team.value}`, {
+            team_name: name,
+            team_job_desc: desc,
+            team_business: business,
+            team_scope: scope
+        });
 
-    if (response) {
-        closeModalUpdate();
-        window.location.reload();
-        uuid_team.value = '';
+        if (response) {
+            closeModalUpdate();
+            window.location.reload();
+            uuid_team.value = '';
+        }
+    } catch (error) {
+        console.error(error);
+        validateData.value = error.response.data.message;
+        if (error) {
+            Swal.fire('Fail', validateData.value, 'error');
+            return;
+        }
     }
 };
 
@@ -360,7 +377,9 @@ const DeleteDataData = async () => {
 
     if (response) {
         closeModalDelete();
-        window.location.reload();
+        Swal.fire('Successfully', 'Sukses Menghapus Data', 'success').then(() => {
+            window.location.reload();
+        });
     }
 };
 
@@ -492,10 +511,10 @@ const order = ref([
                         <Column field="team_job_desc" header="Job Desc" class="name-column"></Column>
                         <Column field="team_business.business_name" header="Bisnis" class="name-column"></Column>
                         <Column field="team_scope.scope_name" header="Scope" class="name-column"></Column>
-                        <Column header="File" class="name-column">
+                        <Column header="Foto" class="name-column">
                             <template #body="slotProps">
                                 <a :href="slotProps.data.team_media.media_url">
-                                    <img :src="slotProps.data.team_media.media_url" alt="Media" :width="100" style="cursor: pointer; border-radius: 10px;" />
+                                    <img :src="slotProps.data.team_media.media_url" alt="Media" :width="100" style="cursor: pointer; border-radius: 10px" />
                                 </a>
                             </template>
                         </Column>
