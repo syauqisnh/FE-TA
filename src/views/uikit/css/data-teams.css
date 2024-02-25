@@ -129,14 +129,6 @@
     color: white;
 }
 
-.action-icons {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    width: 100%;
-    padding-right: 20%; 
-}
-
 .p-edit-icon {
     margin-right: 5px;
     background-color: #007BFF;

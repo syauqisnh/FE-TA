@@ -20,12 +20,11 @@ const version = import.meta.env.VITE_API_BASE_VERSION;
 const uuid_team = ref('');
 const team_name = ref('');
 const team_job_desc = ref('');
-const team_media = ref('');
-const validasi_team_media = ref('');
 
 const isModalOpen = ref(false);
 const isUpdateModalOpen = ref(false);
 const isDeleteModalOpen = ref(false);
+const isModalOpenProfile = ref(false);
 
 const user_username = ref('');
 const user_level = ref('');
@@ -43,6 +42,7 @@ const selectedOrder = ref('default');
 const selectedLimit = ref('default');
 const team_business = ref(null);
 const team_scope = ref(null);
+const detail_foto = ref(null);
 
 const updateOptions = () => {
     businesOptions.value = [{ label: 'Pilih Bisnis', value: null }, ...DataBusines.value.map((index) => ({ label: index.business_name, value: index.business_uuid }))];
@@ -109,8 +109,6 @@ const closeModal = () => {
     team_job_desc.value = null;
     team_business.value = null;
     team_scope.value = null;
-    team_media.value = null;
-    validasi_team_media.value = null;
 };
 
 const openModalUpdate = () => {
@@ -137,6 +135,14 @@ const closeModalDelete = () => {
     team_job_desc.value = null;
     team_business.value = null;
     team_scope.value = null;
+};
+
+const openModalFoto = async () => {
+    isModalOpenProfile.value = true;
+};
+
+const closeModalProfile = () => {
+    isModalOpenProfile.value = false;
 };
 
 onMounted(async () => {
@@ -282,25 +288,19 @@ const addDataData = async () => {
         const desc = team_job_desc.value;
         const business = team_business.value;
         const scope = team_scope.value;
-        const media = team_media.value;
 
-        if (media == '') {
-            validasi_team_media.value = '*Mohon upload file Anda dahulu';
-        } else {
-            const response = await axios.post(`${baseURL}/api/${version}/teams`, {
-                team_name: name,
-                team_job_desc: desc,
-                team_business: business,
-                team_scope: scope,
-                team_media: media
+        const response = await axios.post(`${baseURL}/api/${version}/teams`, {
+            team_name: name,
+            team_job_desc: desc,
+            team_business: business,
+            team_scope: scope
+        });
+
+        if (response) {
+            closeModal();
+            Swal.fire('Successfully', 'Sukses Menambahkan Data', 'success').then(() => {
+                window.location.reload();
             });
-
-            if (response) {
-                closeModal();
-                Swal.fire('Successfully', 'Sukses Menambahkan Data', 'success').then(() => {
-                    window.location.reload();
-                });
-            }
         }
     } catch (error) {
         console.error(error);
@@ -322,9 +322,25 @@ const OpenModalEdit = async (value) => {
             team_business.value = response.data.data.team_business.business_uuid;
             team_scope.value = response.data.data.team_scope.scope_uuid;
             openModalUpdate();
+            console.log('DATAAAA', response.data.data);
         }
     } catch (error) {
         console.error('Error saat mengedit data:', error);
+    }
+};
+
+const openModalProfile = async (value) => {
+    uuid_team.value = value;
+    console.log('uuid_team.value:', uuid_team.value);
+    try {
+        const response = await axios.get(`${baseURL}/api/${version}/media/${uuid_team.value}`);
+        const mediaDetail = response.data.data;
+        openModalFoto(mediaDetail);
+        detail_foto.value = response.data.data;
+        console.log('UUID TEAMS DI MEDIA', response.data.data);
+        console.log('asdsad', detail_foto.value[0]?.media_url);
+    } catch (error) {
+        console.error('Error media:', error);
     }
 };
 
@@ -383,21 +399,6 @@ const DeleteDataData = async () => {
     }
 };
 
-const onUpload = async (event) => {
-    if (event.xhr.status === 200) {
-        const responseText = event.xhr.responseText;
-
-        // Parse response text menjadi objek JavaScript
-        const responseObj = JSON.parse(responseText);
-
-        // Sekarang Anda dapat mengakses media_uuid dari responseObj
-        const mediaUuid = responseObj.data.media_uuid;
-        team_media.value = mediaUuid;
-    } else {
-        console.error('Upload failed', event);
-    }
-};
-
 const limit = ref([
     { value: 'default', label: 'Limit Data' },
     { value: 5, label: '5 Data perhalaman' },
@@ -430,18 +431,6 @@ const order = ref([
                 <Dropdown v-model="team_business" :options="businesOptions" optionLabel="label" optionValue="value" placeholder="Pilih Bisnis" class="modal-input"></Dropdown>
                 <Dropdown v-model="team_scope" :options="scopeOptions" optionLabel="label" optionValue="value" placeholder="Pilih Scope" class="modal-input"></Dropdown>
             </div>
-            <div class="modal-form-group">
-                <FileUpload
-                    name="file"
-                    :url="`${baseURL}/api/${version}/media/upload_media`"
-                    :onUpload="onUpload"
-                    :multiple="true"
-                    accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,image/*"
-                    :maxFileSize="300 * 1024 * 1024"
-                >
-                </FileUpload>
-            </div>
-            <p v-if="validasi_business_media" class="validation-error text-red">{{ validasi_business_media }}</p>
             <div class="modal-form-group">
                 <button class="modal-button-suceess" @click="addDataData">Submit</button>
             </div>
@@ -481,6 +470,23 @@ const order = ref([
             </div>
         </div>
     </div>
+    <div v-if="isModalOpenProfile" class="modal">
+        <div class="modal-content">
+            <span class="close" @click="closeModalProfile">&times;</span>
+            <h4>Add Gambar</h4>
+            <div class="modal-form-group">
+                <FileUpload
+                    name="file"
+                    :url="`${baseURL}/api/${version}/media/upload_media_profile/${uuid_team}`"
+                    :onUpload="onUpload"
+                    :multiple="true"
+                    accept="image/*,application/vnd.openxmlformats-officedocument.spreadsheetml."
+                    :maxFileSize="300 * 1024 * 1024"
+                >
+                </FileUpload>
+            </div>
+        </div>
+    </div>
     <div class="grid p-fluid">
         <div class="col-12">
             <div class="card">
@@ -512,15 +518,19 @@ const order = ref([
                         <Column field="team_business.business_name" header="Bisnis" class="name-column"></Column>
                         <Column field="team_scope.scope_name" header="Scope" class="name-column"></Column>
                         <Column header="Foto" class="name-column">
-                            <template #body="slotProps">
-                                <a :href="slotProps.data.team_media.media_url">
-                                    <img :src="slotProps.data.team_media.media_url" alt="Media" :width="100" style="cursor: pointer; border-radius: 10px" />
-                                </a>
+                            <template #body="rowData">
+                                <div class="action-icons-teams-foto">
+                                    <a v-if="rowData.data.team_media && rowData.data.team_media.media_url" :href="rowData.data.team_media.media_url" target="_blank">
+                                        <img :src="rowData.data.team_media.media_url" class="wrapper-img" />
+                                    </a>
+                                    <img v-else src="/public/layout/images/foto-belum.png" alt="Belum Upload Foto" class="wrapper-img-old" />
+                                </div>
                             </template>
                         </Column>
                         <Column class="actions">
                             <template #body="rowData">
                                 <div class="action-icons-teams">
+                                    <Button icon="pi pi-camera" class="p-button-rounded p-button-info p-edit-icon" style="background-color: grey; border: none" @click="() => openModalProfile(rowData.data.team_uuid)"></Button>
                                     <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.team_uuid)"></Button>
                                     <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.team_uuid)"></Button>
                                 </div>
@@ -532,3 +542,35 @@ const order = ref([
         </div>
     </div>
 </template>
+
+<style scoped>
+.action-icons-teams {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.wrapper-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    overflow: hidden;
+}
+
+.wrapper-img-old {
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    overflow: hidden;
+    border: 2px solid green;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.d-none {
+    display: none;
+}
+</style>

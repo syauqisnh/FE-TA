@@ -7,7 +7,7 @@ import axios from 'axios';
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 const version = import.meta.env.VITE_API_BASE_VERSION;
 
-const galleryUuid = ref(null);
+const galleryUuid = ref('');
 const tableData = ref([]);
 
 onMounted(async () => {
@@ -23,7 +23,7 @@ const fetchData = async () => {
             console.error('Parameter gallery_uuid tidak ditemukan pada URL.');
         }
 
-        const getData = await axios.get(`${baseURL}/api/${version}/media/get_By_uuid_table/${galleryUuid.value}`);
+        const getData = await axios.get(`${baseURL}/api/${version}/media/${galleryUuid.value}`);
         tableData.value = getData.data.data || [];
         console.log(getData.data.data);
         console.log(tableData.value);
