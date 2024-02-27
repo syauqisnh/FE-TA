@@ -388,6 +388,18 @@ const UpdateDataData = async () => {
     }
 };
 
+const onUpload = async () => {
+    try {
+        Swal.fire('Successfully', 'Sukses Menambahkan Foto', 'success').then(() => {
+            window.location.reload();
+        });
+    } catch (error) {
+        console.error('Error saat mengunggah file:', error);
+        // Handle error jika diperlukan
+        await Swal.fire('Upload Gagal', 'Terjadi kesalahan saat mengunggah file', 'error');
+    }
+};
+
 const DeleteDataData = async () => {
     const response = await axios.delete(`${baseURL}/api/${version}/teams/${uuid_team.value}`);
 
@@ -475,15 +487,7 @@ const order = ref([
             <span class="close" @click="closeModalProfile">&times;</span>
             <h4>Add Gambar</h4>
             <div class="modal-form-group">
-                <FileUpload
-                    name="file"
-                    :url="`${baseURL}/api/${version}/media/upload_media_profile/${uuid_team}`"
-                    :onUpload="onUpload"
-                    :multiple="true"
-                    accept="image/*,application/vnd.openxmlformats-officedocument.spreadsheetml."
-                    :maxFileSize="300 * 1024 * 1024"
-                >
-                </FileUpload>
+                <FileUpload name="file" :url="`${baseURL}/api/${version}/media/upload_media_profile/${uuid_team}`" :onUpload="onUpload" :multiple="true" accept="image/*" :maxFileSize="300 * 1024 * 1024"> </FileUpload>
             </div>
         </div>
     </div>

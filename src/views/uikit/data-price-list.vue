@@ -53,6 +53,11 @@ const order = ref([
     { value: 'desc', label: 'Urutkan dari data terbaru' }
 ]);
 
+const categories = ref([
+    { name: 'Diaktifkan', key: 'Y' },
+    { name: 'Dinonaktifkan', key: 'N' }
+]);
+
 const isModalOpen = ref(false);
 const isUpdateModalOpen = ref(false);
 const isDeleteModalOpen = ref(false);
@@ -184,7 +189,8 @@ const addDataData = async () => {
         const name = price_list_name.value;
         const price = price_list_price.value;
         const desc = price_list_desc.value;
-        const status = price_list_status.value === 'active' ? 'Y' : 'N';
+        const statusKey = price_list_status.value; // Mengambil nilai kunci dari status yang dipilih
+        const status = categories.value.find((category) => category.key === statusKey)?.key || 'N'; // Mencari objek kategori yang sesuai dengan kunci status
         const order = price_list_order.value;
         const business = price_list_business.value;
         const media = price_list_media.value;
@@ -237,14 +243,15 @@ const UpdateDataData = async () => {
         const nama_price_list = price_list_name.value;
         const harga_price_list = price_list_price.value;
         const desc_price_list = price_list_desc.value;
-        const status_price_list = price_list_status.value === 'active' ? 'Y' : 'N';
+        const statusKey = price_list_status.value; // Mengambil nilai kunci dari status yang dipilih
+        const status = categories.value.find((category) => category.key === statusKey)?.key || 'N'; // Mencari objek kategori yang sesuai dengan kunci status
         const order_price_list = price_list_order.value;
         const bisnis_price_list = price_list_business.value;
         const response = await axios.put(`${baseURL}/api/${version}/price_list/${uuid_price_list.value}`, {
             price_list_name: nama_price_list,
             price_list_price: harga_price_list,
             price_list_desc: desc_price_list,
-            price_list_status: status_price_list,
+            price_list_status: status,
             price_list_order: order_price_list,
             price_list_business: bisnis_price_list
         });
@@ -323,13 +330,19 @@ const DeleteDataData = async () => {
                 <InputNumber v-model="price_list_price" placeholder="Tambahkan Harga" class="modal-input" :prefix="'Rp '"></InputNumber>
                 <textarea v-model="price_list_desc" placeholder="Tambahkan Deskripsi" class="modal-textarea"></textarea>
                 <label>Status:</label>
-                <div class="radio-group">
+                <!-- <div class="radio-group">
                     <RadioButton v-model="price_list_status" value="active" label="Aktif"></RadioButton>
                     <label for="active">Diaktifkan</label>
                 </div>
                 <div class="radio-group">
                     <RadioButton v-model="price_list_status" value="inactive" label="Tidak Aktif"></RadioButton>
                     <label for="inactive">Dinonaktifkan</label>
+                </div> -->
+                <div class="flex flex-column gap-3">
+                    <div v-for="category in categories" :key="category.key" class="flex align-items-center">
+                        <RadioButton v-model="price_list_status" :inputId="category.key" name="dynamic" :value="category.key" />
+                        <label :for="category.key" class="ml-2">{{ category.name }}</label>
+                    </div>
                 </div>
                 <InputText v-model="price_list_order" placeholder="Tambahkan Urutan" class="modal-input"></InputText>
                 <Dropdown v-model="price_list_business" :options="businesOptions" optionLabel="label" optionValue="value" placeholder="Pilih Bisnis" class="modal-input"></Dropdown>
@@ -361,13 +374,11 @@ const DeleteDataData = async () => {
                 <InputNumber v-model="price_list_price" :value="price_list_price" class="modal-input" :prefix="'Rp '"></InputNumber>
                 <textarea v-model="price_list_desc" class="modal-textarea"></textarea>
                 <label>Status:</label>
-                <div class="radio-group">
-                    <RadioButton v-model="price_list_status" value="active" label="Aktif"></RadioButton>
-                    <label for="active">Diaktifkan</label>
-                </div>
-                <div class="radio-group">
-                    <RadioButton v-model="price_list_status" value="inactive" label="Tidak Aktif"></RadioButton>
-                    <label for="inactive">Dinonaktifkan</label>
+                <div class="flex flex-column gap-3">
+                    <div v-for="category in categories" :key="category.key" class="flex align-items-center">
+                        <RadioButton v-model="price_list_status" :inputId="category.key" name="dynamic" :value="category.key" />
+                        <label :for="category.key" class="ml-2">{{ category.name }}</label>
+                    </div>
                 </div>
                 <InputText v-model="price_list_order" :value="price_list_order" class="modal-input"></InputText>
                 <Dropdown v-model="price_list_business" :options="businesOptions" optionLabel="label" optionValue="value" placeholder="Pilih Bisnis" class="modal-input"></Dropdown>
@@ -425,7 +436,14 @@ const DeleteDataData = async () => {
                         <Column field="price_list_status_formatted" header="Status" class="name-column"></Column>
                         <Column field="price_list_order" header="Pesanan" class="name-column"></Column>
                         <Column field="price_list_business.business_name" header="Bisnis" class="name-column"></Column>
-                        <Column field="price_list_media.media_name" header="Media" class="name-column"></Column>
+                        <Column header="File" class="name-column">
+                            <template #body="slotProps">
+                                <a :href="slotProps.data.price_list_media.media_url" style="display: flex; align-items: center; justify-content: center; flex-direction: column; color: blue">
+                                    <i class="pi pi-file-o" style="font-size: 2rem"></i>
+                                    <span style="font-size: 12px">{{ slotProps.data.price_list_media.media_name }}</span>
+                                </a>
+                            </template>
+                        </Column>
                         <Column class="actions">
                             <template #body="rowData">
                                 <div class="action-icons-price">

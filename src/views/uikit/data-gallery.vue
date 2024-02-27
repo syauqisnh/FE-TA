@@ -7,11 +7,13 @@ import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import '../uikit/css/data-gallery.css';
+import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 const version = import.meta.env.VITE_API_BASE_VERSION;
 
 const router = useRouter();
+const validateData = ref('');
 
 const inputSearch = ref('');
 const tableData = ref([]);
@@ -22,6 +24,7 @@ const user_uuid = ref('');
 const businesOptions = ref([]);
 const multiselectOptionsBusiness = ref([]);
 
+const uuid_gallery = ref('');
 const gallery_name = ref('');
 const gallery_desc = ref('');
 const gallery_business = ref(null);
@@ -31,6 +34,8 @@ const selectedOrder = ref('default');
 const selectedLimit = ref('default');
 
 const isModalOpen = ref(false);
+const isUpdateModalOpen = ref(false);
+const isDeleteModalOpen = ref(false);
 
 const updateOptions = () => {
     businesOptions.value = [{ label: 'Pilih Busines', value: null }, ...DataBusines.value.map((index) => ({ label: index.business_name, value: index.business_uuid }))];
@@ -158,6 +163,65 @@ const addDataData = async () => {
     }
 };
 
+const OpenModalEdit = async (value) => {
+    uuid_gallery.value = value;
+    const response = await axios.get(`${baseURL}/api/${version}/galleries/${uuid_gallery.value}`);
+    if (response) {
+        gallery_name.value = response.data.data.gallery_name;
+        gallery_desc.value = response.data.data.gallery_desc;
+        gallery_business.value = response.data.data.gallery_business;
+        openModalUpdate();
+    }
+};
+const UpdateDataData = async () => {
+    try {
+        const name = gallery_name.value;
+        const desc = gallery_name.value;
+        const business = gallery_business.value;
+        const response = await axios.put(`${baseURL}/api/${version}/galleries/${uuid_gallery.value}`, {
+            gallery_name: name,
+            gallery_desc: desc,
+            gallery_business: business
+        });
+
+        if (response) {
+            closeModalUpdate();
+            Swal.fire('Successfully', 'Sukses Mengupdate Data', 'success').then(() => {
+                window.location.reload();
+            });
+            uuid_gallery.value = '';
+        }
+    } catch (error) {
+        console.error(error);
+        validateData.value = error.response.data.message;
+        if (error) {
+            Swal.fire('Fail', validateData.value, 'error');
+            return;
+        }
+    }
+};
+
+const openModalHapus = async (value) => {
+    uuid_gallery.value = value;
+    const response = await axios.get(`${baseURL}/api/${version}/galleries/${uuid_gallery.value}`);
+    if (response) {
+        gallery_name.value = response.data.data.gallery_name;
+        gallery_desc.value = response.data.data.gallery_desc;
+        gallery_business.value = response.data.data.gallery_business;
+        openModalDelete();
+    }
+};
+const DeleteDataData = async () => {
+    const response = await axios.delete(`${baseURL}/api/${version}/galleries/${uuid_gallery.value}`);
+
+    if (response) {
+        closeModalDelete();
+        Swal.fire('Successfully', 'Sukses Menghapus Data', 'success').then(() => {
+            window.location.reload();
+        });
+    }
+};
+
 const openModal = () => {
     isModalOpen.value = true;
 };
@@ -165,6 +229,27 @@ const openModal = () => {
 const closeModal = () => {
     isModalOpen.value = false;
 
+    gallery_name.value = null;
+    gallery_desc.value = null;
+    gallery_business.value = null;
+};
+
+const openModalUpdate = () => {
+    isUpdateModalOpen.value = true;
+};
+
+const closeModalUpdate = () => {
+    isUpdateModalOpen.value = false;
+    gallery_name.value = null;
+    gallery_desc.value = null;
+    gallery_business.value = null;
+};
+const openModalDelete = () => {
+    isDeleteModalOpen.value = true;
+};
+
+const closeModalDelete = () => {
+    isDeleteModalOpen.value = false;
     gallery_name.value = null;
     gallery_desc.value = null;
     gallery_business.value = null;
@@ -189,6 +274,40 @@ const closeModal = () => {
             <p v-if="validasi_price_media" class="validation-error text-red">{{ validasi_price_media }}</p>
             <div class="modal-form-group">
                 <button class="modal-button-suceess" @click="addDataData">Submit</button>
+            </div>
+        </div>
+    </div>
+    <div v-if="isUpdateModalOpen" class="modal">
+        <div class="modal-content">
+            <!-- Close button -->
+            <span class="close" @click="closeModalUpdate">&times;</span>
+            <h4>Ubah Data</h4>
+            <p v-if="validateData" style="color: red; margin: 0">{{ validateData }}</p>
+            <div class="modal-form-group">
+                <InputText v-model="gallery_name" :value="gallery_name" class="modal-input"></InputText>
+                <InputText v-model="gallery_desc" :value="gallery_desc" class="modal-input"></InputText>
+                <Dropdown v-model="gallery_business" :value="gallery_business" :options="businesOptions" optionLabel="label" optionValue="value" placeholder="Pilih Bisnis" class="modal-input"></Dropdown>
+            </div>
+            <div class="modal-form-group">
+                <button class="modal-button-suceess" @click="UpdateDataData">Ubah data</button>
+            </div>
+        </div>
+    </div>
+    <div v-if="isDeleteModalOpen" class="modal">
+        <div class="modal-content">
+            <!-- Close button -->
+            <span class="close" @click="closeModalDelete">&times;</span>
+            <h4>Hapus Data</h4>
+            <div class="modal-form-group">
+                <p>
+                    Apakah Anda yakin untuk menghapus nama album <span class="bold-text"> "{{ gallery_name }}"</span>
+                </p>
+            </div>
+            <div class="modal-form-group">
+                <button class="modal-button-suceess" @click="DeleteDataData">Hapus data</button>
+            </div>
+            <div class="modal-form-group">
+                <button class="modal-button-danger" @click="closeModalDelete">Batal</button>
             </div>
         </div>
     </div>
@@ -227,8 +346,8 @@ const closeModal = () => {
                                     <!-- <router-link to="/uikit/halaman-view">
                                         <button class="button-view">View</button>
                                     </router-link> -->
-                                    <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.level_uuid)"></Button>
-                                    <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.level_uuid)"></Button>
+                                    <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.gallery_uuid)"></Button>
+                                    <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.gallery_uuid)"></Button>
                                 </div>
                             </template>
                         </Column>

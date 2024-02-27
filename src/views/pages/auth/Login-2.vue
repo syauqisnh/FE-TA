@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, RouterLink } from 'vue-router';
 import AppConfig from '@/layout/AppConfig.vue';
 import axios from 'axios';
 const baseURL = import.meta.env.VITE_API_BASE_URL;
@@ -13,7 +13,7 @@ const user_password = ref('');
 const checked = ref(false);
 const isLoading = ref(false);
 
-import '../css/login.css';
+// import '../css/login.css';
 
 // Siapkan router
 const router = useRouter();
@@ -45,45 +45,53 @@ console.log(isLoading.value);
 
 <template>
     <main class="container-1">
-        <div class="gambar-login-1">
-            <div class="konten-1">
-                <h1>USAHAMIKROSITE</h1>
-
-                <p>All In One Complete IT Solution</p>
-                <img src="/demo/images/landing/screen-2.png" alt="" />
-            </div>
-        </div>
         <div class="login-1">
-            <div class="logo-bekantan">
-                <a href=""
-                    ><h1>USAHAMIKRO<span>SITE</span></h1></a
-                >
-            </div>
-            <div class="judul-login-1">
-                <h2>Login</h2>
-                <p v-if="validationLogin" class="validation-error text-danger">{{ validationLogin }}</p>
-            </div>
-            <div class="email-1">
-                <InputText v-model="user_email" id="email" type="text" placeholder="Email address" class="w-full mb-5" style="padding: 1rem" />
-            </div>
-            <div class="password-1">
-                <InputText v-model="user_password" id="password" :type="checked ? 'text' : 'password'" placeholder="Password" class="w-full mb-5" style="padding: 1rem" />
-            </div>
-            <div class="pembungkus-1">
-                <div class="cekpw-1">
-                    <input type="checkbox" name="cekpw" id="cekpw" v-model="checked" />
-                    <label for="cekpw">Lihat password</label>
+            <div class="left"></div>
+            <div class="right">
+                <div class="mb-5">
+                    <router-link to="/">
+                        <i class="pi pi-chevron-left" style="font-size: 17px; color: blue;"><span>Kembali</span></i>
+                    </router-link>
                 </div>
-                <div class="lupapw-1">
-                    <a href="#">Lupa Password?</a>
+                <div class="logo-bekantan">
+                    <a href=""
+                        ><h1>USAHAMIKRO<span>SITE</span></h1></a
+                    >
                 </div>
-            </div>
-            <div class="masuk-1">
-                <button @click="handleLogin" style="display: flex; justify-content: center; align-items: center"><span v-if="!isLoading">Masuk</span><span v-else class="loader"></span></button>
-            </div>
-            <div></div>
-            <div class="register-1">
-                <p>Belum punya akun? <a href="#" @click.prevent="handleRegister">Daftar</a></p>
+                <div class="pembukus-login">
+                    <div class="judul-login-1">
+                        <h2>Login</h2>
+                        <p v-if="validationLogin" class="validation-error text-danger">{{ validationLogin }}</p>
+                    </div>
+                    <div class="email-1">
+                        <InputText v-model="user_email" id="email" type="text" placeholder="Email address" class="w-full mb-3" style="padding: 1rem" />
+                    </div>
+                    <div class="password-1">
+                        <InputText v-model="user_password" id="password" :type="checked ? 'text' : 'password'" placeholder="Password" class="w-full mb-3" style="padding: 1rem" />
+                    </div>
+                    <div class="pembungkus-1">
+                        <div class="mb-3 checkbox-wrapper">
+                            <input type="checkbox" name="cekpw" id="cekpw" v-model="checked" />
+                            <label for="cekpw">Lihat password</label>
+                        </div>
+                        <div class="lupapw-1">
+                            <a href="#">Lupa Password?</a>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <!-- <button @click="handleLogin" style="display: flex; justify-content: center; align-items: center"><span v-if="!isLoading">Masuk</span><span v-else class="loader"></span></button> -->
+                        <Button @click="handleLogin" style="margin-right: 10px; width: 100%; height: 50px; color: orange; border: 2px solid orange; display: flex; justify-content: center; font-weight: bold" text raised>
+                            <template #default>
+                                <span v-if="!isLoading">Masuk</span>
+                                <span v-else class="loader"></span>
+                            </template>
+                        </Button>
+                    </div>
+                    <div></div>
+                    <div class="register-1">
+                        <p>Belum punya akun? <a href="#" @click.prevent="handleRegister">Daftar</a></p>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -91,38 +99,76 @@ console.log(isLoading.value);
 </template>
 
 <style scoped>
-.logo-bekantan {
-    text-align: center;
-    margin-bottom: 30px;
+.container-1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    height: 100vh;
 }
+.login-1 {
+    background-color: white;
+    height: 80%;
+    width: 70%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-radius: 20px;
+}
+.left {
+    background-image: url('/public/layout/images/background-new.jpeg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+.logo-bekantan {
+    display: flex;
+    align-items: center;
+}
+
 .logo-bekantan a h1 {
-    margin: 0 auto;
     color: orange;
     font-weight: bold;
+    font-size: 25px;
 }
+
 .logo-bekantan a h1 span {
     color: rgb(112, 194, 227);
 }
+.right {
+    padding: 25px;
+}
+
+.pembukus-login {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
 
 .loader {
-    border: 4px solid orange;
-    border-left-color: white;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: orange;
     border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    position: absolute; /* Mengatur posisi absolut */
+    left: calc(50% - 12px); /* Pusatkan horizontal */
+    top: calc(50% - 12px); /* Pusatkan vertikal */
 }
 
-.loader {
-    border: 4px solid orange;
-    border-left-color: white;
-    width: 30px;
-    height: 30px;
+input[type='checkbox'] {
+    width: 20px;
+    height: 20px;
 }
 
-.loader {
-    border: 4px solid orange;
-    border-left-color: white;
-    width: 30px;
-    height: 30px;
-    animation: spin89345 1s linear infinite;
+.checkbox-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.register-1 {
+    font-size: 15px;
 }
 
 @keyframes spin89345 {
@@ -133,5 +179,10 @@ console.log(isLoading.value);
     100% {
         transform: rotate(360deg);
     }
+}
+
+.pembungkus-1 {
+    display: flex;
+    justify-content: space-between;
 }
 </style>
