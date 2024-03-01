@@ -9,7 +9,7 @@ import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
-import FileUpload from 'primevue/fileupload';
+// import FileUpload from 'primevue/fileupload';
 import Swal from 'sweetalert2';
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 const version = import.meta.env.VITE_API_BASE_VERSION;
@@ -27,8 +27,7 @@ const business_address = ref('');
 const business_notelp = ref('');
 const business_email = ref('');
 const business_link_wa = ref('');
-const business_media = ref('');
-const validasi_business_media = ref('');
+const detail_file = ref(null);
 
 const tableData = ref([]);
 const inputSearch = ref('');
@@ -61,8 +60,6 @@ const closeModal = () => {
     business_notelp.value = '';
     business_email.value = '';
     business_link_wa.value = '';
-    business_media.value = '';
-    validasi_business_media.value = '';
 };
 
 const openModalFile = () => {
@@ -125,7 +122,6 @@ const limit = ref([
 
 onMounted(async () => {
     await DataMe();
-    console.log(user_level.value);
 });
 
 const Ubahnilai_jumlah_row = async () => {
@@ -182,7 +178,6 @@ const fetchData = async () => {
         const response = await axios.get(`${baseURL}/api/${version}/business/get_all`, {
             params: params
         });
-        console.log('Respon API:', response);
 
         if (response.data.success) {
             tableData.value = response.data.data || [];
@@ -234,8 +229,6 @@ const fetchDataCustomer = async () => {
             params: params
         });
 
-        console.log('Respon API:', response);
-
         if (response.data.success) {
             tableData.value = response.data.data || [];
 
@@ -270,30 +263,24 @@ const addDataData = async () => {
         const notelp = business_notelp.value;
         const email = business_email.value;
         const link_wa = business_link_wa.value;
-        const media = business_media.value;
 
-        if (media == '') {
-            validasi_business_media.value = '*Mohon upload file Anda dahulu';
-        } else {
-            const response = await axios.post(`${baseURL}/api/${version}/business`, {
-                business_name: name,
-                business_desc: desc,
-                business_province: provinsi,
-                business_regency: kabupaten,
-                business_subdistrict: kecamatan,
-                business_address: alamat,
-                business_notelp: notelp,
-                business_email: email,
-                business_link_wa: link_wa,
-                business_media: media
+        const response = await axios.post(`${baseURL}/api/${version}/business`, {
+            business_name: name,
+            business_desc: desc,
+            business_province: provinsi,
+            business_regency: kabupaten,
+            business_subdistrict: kecamatan,
+            business_address: alamat,
+            business_notelp: notelp,
+            business_email: email,
+            business_link_wa: link_wa
+        });
+
+        if (response) {
+            closeModal();
+            Swal.fire('Successfully', 'Sukses Menambahkan Data', 'success').then(() => {
+                window.location.reload();
             });
-
-            if (response) {
-                closeModal();
-                Swal.fire('Successfully', 'Sukses Menambahkan Data', 'success').then(() => {
-                    window.location.reload();
-                });
-            }
         }
     } catch (error) {
         console.error(error);
@@ -307,7 +294,6 @@ const addDataData = async () => {
 
 const OpenModalEdit = async (value) => {
     uuid_business.value = value;
-    // console.log(value)
     try {
         const response = await axios.get(`${baseURL}/api/${version}/business/${uuid_business.value}`);
         if (response) {
@@ -398,18 +384,26 @@ const DeleteDataData = async () => {
     }
 };
 
+const openModalUpload = async (value) => {
+    uuid_business.value = value;
+    try {
+        const response = await axios.get(`${baseURL}/api/${version}/media/${uuid_business.value}`);
+        const mediaDetail = response.data.data;
+        openModalFile(mediaDetail);
+        detail_file.value = response.data.data;
+    } catch (error) {
+        console.error('Error media:', error);
+    }
+};
+
 const onUpload = async (event) => {
-    if (event.xhr.status === 200) {
-        const responseText = event.xhr.responseText;
-
-        // Parse response text menjadi objek JavaScript
-        const responseObj = JSON.parse(responseText);
-
-        // Sekarang Anda dapat mengakses media_uuid dari responseObj
-        const mediaUuid = responseObj.data.media_uuid;
-        business_media.value = mediaUuid;
-    } else {
-        console.error('Upload failed', event);
+    try {
+        Swal.fire('Successfully', 'Sukses Menambahkan Foto', 'success').then(() => {
+            window.location.reload();
+        });
+    } catch (error) {
+        console.error('Error saat mengunggah file:', error);
+        await Swal.fire('Upload Gagal', 'Terjadi kesalahan saat mengunggah file', 'error');
     }
 };
 
@@ -440,18 +434,6 @@ const customField = (rowData) => {
                 <InputText v-model="business_link_wa" placeholder="Tambahkan Link Wa" class="modal-input"></InputText>
             </div>
             <div class="modal-form-group">
-                <FileUpload
-                    name="file"
-                    :url="`${baseURL}/api/${version}/media/upload_media`"
-                    :onUpload="onUpload"
-                    :multiple="true"
-                    accept=".doc, .docx, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf, image/*, video/*, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    :maxFileSize="300 * 1024 * 1024"
-                >
-                </FileUpload>
-            </div>
-            <p v-if="validasi_business_media" class="validation-error text-red">{{ validasi_business_media }}</p>
-            <div class="modal-form-group">
                 <button class="modal-button-suceess" @click="addDataData">Submit</button>
             </div>
         </div>
@@ -465,16 +447,13 @@ const customField = (rowData) => {
             <div class="modal-form-group">
                 <FileUpload
                     name="file"
-                    :url="`${baseURL}/api/${version}/media/upload_media`"
+                    :url="`${baseURL}/api/${version}/media/upload_media_business/${uuid_business}`"
                     :onUpload="onUpload"
                     :multiple="true"
                     accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,image/*"
                     :maxFileSize="300 * 1024 * 1024"
                 >
                 </FileUpload>
-            </div>
-            <div class="modal-form-group">
-                <button class="modal-button-suceess">Submit</button>
             </div>
         </div>
     </div>
@@ -554,8 +533,8 @@ const customField = (rowData) => {
                         <Column field="business_email" header="Email" class="name-column"></Column>
                         <Column header="WhatsApp" class="name-column">
                             <template #body="slotProps">
-                                <a :href="slotProps.data.business_link_wa" style=" display: flex; align-items: center; justify-content: center; flex-direction: column; color: #25D366">
-                                    <i class="pi pi-whatsapp" style="font-size: 2rem;"></i>
+                                <a :href="slotProps.data.business_link_wa" style="display: flex; align-items: center; justify-content: center; flex-direction: column; color: #25d366">
+                                    <i class="pi pi-whatsapp" style="font-size: 2rem"></i>
                                     <span>WhatsApp</span>
                                 </a>
                             </template>
@@ -563,15 +542,19 @@ const customField = (rowData) => {
                         <Column :field="customField" header="Pengguna" class="name-column"></Column>
                         <Column header="File" class="name-column">
                             <template #body="slotProps">
-                                <a :href="slotProps.data.business_media.media_url" style="display: flex; align-items: center; justify-content: center; flex-direction: column; color: blue">
-                                    <i class="pi pi-file-o" style="font-size: 2rem;"></i>
-                                    <span style="font-size: 12px;">{{ slotProps.data.business_media.media_name }}</span>
-                                </a>
+                                <div class="action-icons-teams-foto">
+                                    <a v-if="slotProps.data.business_media && slotProps.data.business_media.media_url" :href="slotProps.data.business_media.media_url" target="_blank">
+                                        <i class="pi pi-file-o" style="font-size: 2rem"></i>
+                                        <span style="font-size: 12px">{{ slotProps.data.business_media.media_name }}</span>
+                                    </a>
+                                    <span v-else style="color: red;">Belum Upload File</span>
+                                </div>
                             </template>
                         </Column>
                         <Column class="actions">
                             <template #body="rowData">
                                 <div class="action-icons-business">
+                                    <Button icon="pi pi-upload" class="p-button-rounded p-button-info p-edit-icon" style="background-color: grey; border: none;" @click="() => openModalUpload(rowData.data.business_uuid)"></Button>
                                     <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.business_uuid)"></Button>
                                     <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.business_uuid)"></Button>
                                 </div>
@@ -583,3 +566,11 @@ const customField = (rowData) => {
         </div>
     </div>
 </template>
+
+<style scoped>
+.action-icons-business {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+</style>

@@ -13,8 +13,6 @@ const user_password = ref('');
 const checked = ref(false);
 const isLoading = ref(false);
 
-// import '../css/login.css';
-
 // Siapkan router
 const router = useRouter();
 

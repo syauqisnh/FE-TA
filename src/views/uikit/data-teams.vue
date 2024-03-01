@@ -529,6 +529,10 @@ const order = ref([
                                     </a>
                                     <img v-else src="/public/layout/images/foto-belum.png" alt="Belum Upload Foto" class="wrapper-img-old" />
                                 </div>
+                                <!-- <a :href="rowData.data.team_media.media_url" style="display: flex; align-items: center; justify-content: center; flex-direction: column; color: blue">
+                                    <i class="pi pi-file-o" style="font-size: 2rem"></i>
+                                    <span style="font-size: 12px">{{ rowData.data.team_media.media_name }}</span>
+                                </a> -->
                             </template>
                         </Column>
                         <Column class="actions">

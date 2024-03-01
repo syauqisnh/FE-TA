@@ -99,8 +99,6 @@ const fetchData = async () => {
             params: params
         });
 
-        console.log('Respon API:', response);
-
         if (response.data.success) {
             tableData.value = response.data.data || [];
             Hakakses.value = response.data.message;

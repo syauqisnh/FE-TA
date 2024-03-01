@@ -28,7 +28,7 @@ const price_list_desc = ref('');
 const price_list_status = ref('Y');
 const price_list_order = ref('');
 const price_list_business = ref(null);
-const price_list_media = ref('');
+const detail_file = ref(null);
 const validasi_price_media = ref('');
 
 const inputSearch = ref('');
@@ -61,6 +61,7 @@ const categories = ref([
 const isModalOpen = ref(false);
 const isUpdateModalOpen = ref(false);
 const isDeleteModalOpen = ref(false);
+const isModalOpenFile = ref(false);
 
 const openModal = () => {
     isModalOpen.value = true;
@@ -68,6 +69,14 @@ const openModal = () => {
 
 const closeModal = () => {
     isModalOpen.value = false;
+};
+
+const openModalFile = () => {
+    isModalOpenFile.value = true;
+};
+
+const closeModalFile = () => {
+    isModalOpenFile.value = false;
 };
 
 const openModalUpdate = () => {
@@ -155,8 +164,6 @@ const fetchData = async () => {
             params: params
         });
 
-        console.log('Respon API:', response);
-
         if (response.data.success) {
             tableData.value = response.data.data || [];
             tableData.value = response.data.data.map((item) => ({
@@ -189,31 +196,25 @@ const addDataData = async () => {
         const name = price_list_name.value;
         const price = price_list_price.value;
         const desc = price_list_desc.value;
-        const statusKey = price_list_status.value; // Mengambil nilai kunci dari status yang dipilih
-        const status = categories.value.find((category) => category.key === statusKey)?.key || 'N'; // Mencari objek kategori yang sesuai dengan kunci status
+        const statusKey = price_list_status.value;
+        const status = categories.value.find((category) => category.key === statusKey)?.key || 'N';
         const order = price_list_order.value;
         const business = price_list_business.value;
-        const media = price_list_media.value;
 
-        if (media == '') {
-            validasi_price_media.value = '*Mohon upload file Anda dahulu';
-        } else {
-            const response = await axios.post(`${baseURL}/api/${version}/price_list`, {
-                price_list_name: name,
-                price_list_price: price,
-                price_list_desc: desc,
-                price_list_status: status,
-                price_list_order: order,
-                price_list_business: business,
-                price_list_media: media
+        const response = await axios.post(`${baseURL}/api/${version}/price_list`, {
+            price_list_name: name,
+            price_list_price: price,
+            price_list_desc: desc,
+            price_list_status: status,
+            price_list_order: order,
+            price_list_business: business
+        });
+
+        if (response) {
+            closeModal();
+            Swal.fire('Successfully', 'Sukses Menambahkan Data', 'success').then(() => {
+                window.location.reload();
             });
-
-            if (response) {
-                closeModal();
-                Swal.fire('Successfully', 'Sukses Menambahkan Data', 'success').then(() => {
-                    window.location.reload();
-                });
-            }
         }
     } catch (error) {
         console.error(error);
@@ -222,6 +223,18 @@ const addDataData = async () => {
             Swal.fire('Fail', validateData.value, 'error');
             return;
         }
+    }
+};
+
+const openModalUpload = async (value) => {
+    uuid_price_list.value = value;
+    try {
+        const response = await axios.get(`${baseURL}/api/${version}/media/${uuid_price_list.value}`);
+        const mediaDetail = response.data.data;
+        openModalFile(mediaDetail);
+        detail_file.value = response.data.data;
+    } catch (error) {
+        console.error('Error media:', error);
     }
 };
 
@@ -243,7 +256,7 @@ const UpdateDataData = async () => {
         const nama_price_list = price_list_name.value;
         const harga_price_list = price_list_price.value;
         const desc_price_list = price_list_desc.value;
-        const statusKey = price_list_status.value; // Mengambil nilai kunci dari status yang dipilih
+        const statusKey = price_list_status.value;
         const status = categories.value.find((category) => category.key === statusKey)?.key || 'N'; // Mencari objek kategori yang sesuai dengan kunci status
         const order_price_list = price_list_order.value;
         const bisnis_price_list = price_list_business.value;
@@ -272,17 +285,13 @@ const UpdateDataData = async () => {
 };
 
 const onUpload = async (event) => {
-    if (event.xhr.status === 200) {
-        const responseText = event.xhr.responseText;
-
-        // Parse response text menjadi objek JavaScript
-        const responseObj = JSON.parse(responseText);
-
-        // Sekarang Anda dapat mengakses media_uuid dari responseObj
-        const mediaUuid = responseObj.data.media_uuid;
-        price_list_media.value = mediaUuid;
-    } else {
-        console.error('Upload failed', event);
+    try {
+        Swal.fire('Successfully', 'Sukses Menambahkan Foto', 'success').then(() => {
+            window.location.reload();
+        });
+    } catch (error) {
+        console.error('Error saat mengunggah file:', error);
+        await Swal.fire('Upload Gagal', 'Terjadi kesalahan saat mengunggah file', 'error');
     }
 };
 
@@ -330,14 +339,6 @@ const DeleteDataData = async () => {
                 <InputNumber v-model="price_list_price" placeholder="Tambahkan Harga" class="modal-input" :prefix="'Rp '"></InputNumber>
                 <textarea v-model="price_list_desc" placeholder="Tambahkan Deskripsi" class="modal-textarea"></textarea>
                 <label>Status:</label>
-                <!-- <div class="radio-group">
-                    <RadioButton v-model="price_list_status" value="active" label="Aktif"></RadioButton>
-                    <label for="active">Diaktifkan</label>
-                </div>
-                <div class="radio-group">
-                    <RadioButton v-model="price_list_status" value="inactive" label="Tidak Aktif"></RadioButton>
-                    <label for="inactive">Dinonaktifkan</label>
-                </div> -->
                 <div class="flex flex-column gap-3">
                     <div v-for="category in categories" :key="category.key" class="flex align-items-center">
                         <RadioButton v-model="price_list_status" :inputId="category.key" name="dynamic" :value="category.key" />
@@ -347,20 +348,27 @@ const DeleteDataData = async () => {
                 <InputText v-model="price_list_order" placeholder="Tambahkan Urutan" class="modal-input"></InputText>
                 <Dropdown v-model="price_list_business" :options="businesOptions" optionLabel="label" optionValue="value" placeholder="Pilih Bisnis" class="modal-input"></Dropdown>
             </div>
+            <p v-if="validasi_price_media" class="validation-error text-red">{{ validasi_price_media }}</p>
+            <div class="modal-form-group">
+                <button class="modal-button-suceess" @click="addDataData">Submit</button>
+            </div>
+        </div>
+    </div>
+    <div v-if="isModalOpenFile" class="modal">
+        <div class="modal-content">
+            <!-- Close button -->
+            <span class="close" @click="closeModalFile">&times;</span>
+            <h4>Tambah File</h4>
             <div class="modal-form-group">
                 <FileUpload
                     name="file"
-                    url="http://localhost:9900/api/v1/media/upload_media"
+                    :url="`${baseURL}/api/${version}/media/upload_media_price/${uuid_price_list}`"
                     :onUpload="onUpload"
                     :multiple="true"
                     accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,image/*"
                     :maxFileSize="300 * 1024 * 1024"
                 >
                 </FileUpload>
-            </div>
-            <p v-if="validasi_price_media" class="validation-error text-red">{{ validasi_price_media }}</p>
-            <div class="modal-form-group">
-                <button class="modal-button-suceess" @click="addDataData">Submit</button>
             </div>
         </div>
     </div>
@@ -437,16 +445,26 @@ const DeleteDataData = async () => {
                         <Column field="price_list_order" header="Pesanan" class="name-column"></Column>
                         <Column field="price_list_business.business_name" header="Bisnis" class="name-column"></Column>
                         <Column header="File" class="name-column">
-                            <template #body="slotProps">
+                            <!-- <template #body="slotProps">
                                 <a :href="slotProps.data.price_list_media.media_url" style="display: flex; align-items: center; justify-content: center; flex-direction: column; color: blue">
                                     <i class="pi pi-file-o" style="font-size: 2rem"></i>
                                     <span style="font-size: 12px">{{ slotProps.data.price_list_media.media_name }}</span>
                                 </a>
+                            </template> -->
+                            <template #body="slotProps">
+                                <div class="action-icons-teams-foto">
+                                    <a v-if="slotProps.data.price_list_media && slotProps.data.price_list_media.media_url" :href="slotProps.data.price_list_media.media_url" target="_blank">
+                                        <i class="pi pi-file-o" style="font-size: 2rem"></i>
+                                        <span style="font-size: 12px">{{ slotProps.data.price_list_media.media_name }}</span>
+                                    </a>
+                                    <span v-else style="color: red">Belum Upload File</span>
+                                </div>
                             </template>
                         </Column>
                         <Column class="actions">
                             <template #body="rowData">
                                 <div class="action-icons-price">
+                                    <Button icon="pi pi-upload" class="p-button-rounded p-button-info p-edit-icon" style="background-color: grey; border: none" @click="() => openModalUpload(rowData.data.price_list_uuid)"></Button>
                                     <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.price_list_uuid)"></Button>
                                     <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.price_list_uuid)"></Button>
                                 </div>
@@ -458,3 +476,11 @@ const DeleteDataData = async () => {
         </div>
     </div>
 </template>
+
+<style scoped>
+.action-icons-price {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+</style>
