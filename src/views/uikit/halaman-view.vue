@@ -87,7 +87,6 @@ const onUpload = async () => {
     }
 };
 
-
 const isModalOpen = ref(false);
 const openModal = () => {
     isModalOpen.value = true;
@@ -103,6 +102,10 @@ const openModalDelete = () => {
 const closeModalDelete = () => {
     isDeleteModalOpen.value = false;
 };
+
+const isImage = (url) => {
+    return /\.(jpeg|jpg|gif|png)$/i.test(url);
+};
 </script>
 
 <template>
@@ -113,25 +116,21 @@ const closeModalDelete = () => {
         <div class="container">
             <div class="gallery">
                 <div v-for="(item, index) in tableData" :key="index" class="gallery-item">
-                    <img :src="item.media_url" alt="Media" @click="() => openModalHapus(item.media_uuid)" class="gallery-image" />
+                    <div v-if="isImage(item.media_url)">
+                        <img :src="item.media_url" alt="Media" @click="() => openModalHapus(item.media_uuid)" class="gallery-image" />
+                    </div>
+                    <div v-else>
+                        <video controls :src="item.media_url" @click="() => openModalHapus(item.media_uuid)" class="gallery-video"></video>
+                    </div>
                 </div>
             </div>
         </div>
-
         <div v-if="isModalOpen" class="modal">
             <div class="modal-content">
                 <span class="close" @click="closeModal">&times;</span>
                 <h4>Add Gambar</h4>
                 <div class="modal-form-group">
-                    <FileUpload
-                        name="file"
-                        :url="`${baseURL}/api/${version}/media/upload_media_any/${galleryUuid}`"
-                        :onUpload="onUpload"
-                        :multiple="true"
-                        accept=".doc, .docx, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf, image/*, video/*, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                        :maxFileSize="300 * 1024 * 1024"
-                    >
-                    </FileUpload>
+                    <FileUpload name="file" :url="`${baseURL}/api/${version}/media/upload_media_any/${galleryUuid}`" :onUpload="onUpload" :multiple="true" accept="image/*, video/*" :maxFileSize="300 * 1024 * 1024"> </FileUpload>
                 </div>
             </div>
         </div>
@@ -141,7 +140,7 @@ const closeModalDelete = () => {
                 <span class="close" @click="closeModalDelete">&times;</span>
                 <h4>Hapus Data</h4>
                 <div class="modal-form-group">
-                    <img :src="media_url" alt="Media" style="height: 300px;">
+                    <img :src="media_url" alt="Media" style="height: 300px" />
                 </div>
                 <div class="modal-form-group">
                     <button class="modal-button-suceess" @click="DeleteDataData">Hapus data</button>

@@ -71,9 +71,18 @@ const DataMe = async () => {
             user_level.value = response.data.level;
             user_uuid.value = response.data.uuid;
 
-            if (user_level.value == 'customer' || user_level.value == 'administrator') {
-                await fetchData();
-                await fetchDataOption();
+            if (response) {
+                user_username.value = response.data.name;
+                user_level.value = response.data.level;
+                user_uuid.value = response.data.uuid;
+
+                if (user_level.value == 'customer') {
+                    await fetchDataCustomer();
+                    await fetchDataOptionCustomer();
+                } else {
+                    await fetchData();
+                    await fetchDataOption();
+                }
             }
         }
     } catch (error) {
@@ -89,6 +98,24 @@ const fetchDataOption = async () => {
     try {
         const getBusines = await axios.get(`${baseURL}/api/${version}/business/get_all`);
         DataBusines.value = getBusines.data.data;
+        updateOptions();
+    } catch (error) {
+        console.error('Error mengambil data:', error);
+    }
+};
+
+const fetchDataOptionCustomer = async () => {
+    try {
+        const params = new URLSearchParams();
+        if (user_uuid.value !== '') {
+            params.append('business_customer', user_uuid.value);
+        }
+
+        const getBusiness = await axios.get(`${baseURL}/api/${version}/business/get_all_customer`, {
+            params: params
+        });
+
+        DataBusines.value = getBusiness.data.data;
         updateOptions();
     } catch (error) {
         console.error('Error mengambil data:', error);
@@ -116,6 +143,57 @@ const fetchData = async () => {
 
         // Buat request ke backend
         const response = await axios.get(`${baseURL}/api/${version}/galleries/get_all`, {
+            params: params
+        });
+
+        console.log('Respon API:', response);
+
+        if (response) {
+            tableData.value = response.data.data || [];
+
+            console.log(tableData.value);
+
+            tableData.value.forEach((item) => {
+                if (!item.business_nohp) {
+                    item.business_nohp = 'BELUM DI ISI';
+                }
+                if (!item.business_address) {
+                    item.business_address = 'BELUM DI ISI';
+                }
+            });
+        } else {
+            console.error('Respon sukses tetapi tidak ada data:', response.data.message);
+            tableData.value = [];
+        }
+    } catch (error) {
+        console.error('Error mengambil data:', error);
+        if (error.response) {
+            console.error('Error response dari backend:', error.response.data);
+        }
+    }
+};
+
+const fetchDataCustomer = async () => {
+    try {
+        const params = new URLSearchParams();
+
+        // Parameter 'order' dikirim sebagai string dan bukan objek
+        if (selectedOrder.value !== 'default') {
+            params.append(`order[${'gallery_id'}]`, selectedOrder.value);
+        }
+
+        // Tambahkan parameter 'limit' jika bukan default
+        if (selectedLimit.value !== 'default') {
+            params.append('limit', selectedLimit.value);
+        }
+
+        // Tambahkan parameter 'keyword' jika ada input
+        if (inputSearch.value.trim()) {
+            params.append('keyword', inputSearch.value.trim());
+        }
+
+        // Buat request ke backend
+        const response = await axios.get(`${baseURL}/api/${version}/galleries/get_all_customer`, {
             params: params
         });
 

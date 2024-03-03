@@ -126,9 +126,18 @@ const DataMe = async () => {
             user_level.value = response.data.level;
             user_uuid.value = response.data.uuid;
 
-            if (user_level.value == 'customer' || user_level.value == 'administrator') {
-                await fetchData();
-                await fetchDataOption();
+            if (response) {
+                user_username.value = response.data.name;
+                user_level.value = response.data.level;
+                user_uuid.value = response.data.uuid;
+
+                if (user_level.value == 'customer') {
+                    await fetchDataCustomer();
+                    await fetchDataOptionCustomer();
+                } else {
+                    await fetchData();
+                    await fetchDataOption();
+                }
             }
         }
     } catch (error) {
@@ -182,6 +191,68 @@ const fetchData = async () => {
         }
     }
 };
+
+const fetchDataCustomer = async () => {
+    try {
+        const params = new URLSearchParams();
+
+        // Parameter 'order' dikirim sebagai string dan bukan objek
+        if (selectedOrder.value !== 'default') {
+            params.append(`order[${'price_list_id'}]`, selectedOrder.value);
+        }
+
+        // Tambahkan parameter 'limit' jika bukan default
+        if (selectedLimit.value !== 'default') {
+            params.append('limit', selectedLimit.value);
+        }
+
+        // Tambahkan parameter 'keyword' jika ada input
+        if (inputSearch.value.trim()) {
+            params.append('keyword', inputSearch.value.trim());
+        }
+
+        // Buat request ke backend
+        const response = await axios.get(`${baseURL}/api/${version}/price_list/get_all_customer`, {
+            params: params
+        });
+
+        if (response.data.success) {
+            tableData.value = response.data.data || [];
+            tableData.value = response.data.data.map((item) => ({
+                ...item,
+                price_list_status_formatted: item.price_list_status === 'Y' ? 'Diaktifkan' : 'Dinonaktifkan',
+                price_list_price_formatted: `Rp ${item.price_list_price.toLocaleString('id-ID')}`
+            }));
+        } else {
+            console.error('Respon sukses tetapi tidak ada data:', response.data.message);
+            tableData.value = [];
+        }
+    } catch (error) {
+        console.error('Error mengambil data:', error);
+        if (error.response) {
+            console.error('Error response dari backend:', error.response.data);
+        }
+    }
+};
+
+const fetchDataOptionCustomer = async () => {
+    try {
+        const params = new URLSearchParams();
+        if (user_uuid.value !== '') {
+            params.append('business_customer', user_uuid.value);
+        }
+
+        const getBusiness = await axios.get(`${baseURL}/api/${version}/business/get_all_customer`, {
+            params: params
+        });
+
+        DataBusines.value = getBusiness.data.data;
+        updateOptions();
+    } catch (error) {
+        console.error('Error mengambil data:', error);
+    }
+};
+
 let jumlah_row = 5;
 const Ubahnilai_jumlah_row = async () => {
     if (selectedLimit.value === 'default') {

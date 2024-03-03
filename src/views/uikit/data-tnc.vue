@@ -28,8 +28,10 @@ const uuid_tnc = ref('');
 const tnc_uuid_table = ref(null);
 const tnc_name = ref('');
 const DataPrice = ref([]);
+const DataBusines = ref([]);
 const priceOptions = ref([]);
 const multiselectOptionsPrice = ref([]);
+const multiselectOptionsBusiness = ref([]);
 
 const isModalOpen = ref(false);
 const isUpdateModalOpen = ref(false);
@@ -112,10 +114,71 @@ const fetchData = async () => {
         }
     }
 };
+
+const fetchDataCustomer = async () => {
+    try {
+        const params = new URLSearchParams();
+
+        // Parameter 'order' dikirim sebagai string dan bukan objek
+        if (selectedOrder.value !== 'default') {
+            params.append(`order[${'tnc_id'}]`, selectedOrder.value);
+        }
+
+        // Tambahkan parameter 'limit' jika bukan default
+        if (selectedLimit.value !== 'default') {
+            params.append('limit', selectedLimit.value);
+        }
+
+        // Tambahkan parameter 'keyword' jika ada input
+        if (inputSearch.value.trim()) {
+            params.append('keyword', inputSearch.value.trim());
+        }
+
+        // Buat request ke backend
+        const response = await axios.get(`${baseURL}/api/${version}/tnc/get_all_customer`, {
+            params: params
+        });
+
+        console.log('Respon API:', response);
+
+        if (response) {
+            tableData.value = response.data.data || [];
+
+            console.log(tableData.value);
+        } else {
+            console.error('Respon sukses tetapi tidak ada data:', response.data.message);
+            tableData.value = [];
+        }
+    } catch (error) {
+        console.error('Error mengambil data:', error);
+        if (error.response) {
+            console.error('Error response dari backend:', error.response.data);
+        }
+    }
+};
+
+const fetchDataOptionCustomer = async () => {
+    try {
+        const params = new URLSearchParams();
+        if (user_uuid.value !== '') {
+            params.append('business_customer', user_uuid.value);
+        }
+
+        const getPrice = await axios.get(`${baseURL}/api/${version}/price_list/get_all_customer`);
+
+        const filteredData = getPrice.data.data.filter((price) => price.price_list_status !== 'N');
+
+        DataPrice.value = filteredData;
+        updateOptions();
+    } catch (error) {
+        console.error('Error mengambil data:', error);
+    }
+};
 const updateOptions = () => {
     priceOptions.value = [{ label: 'Pilih Harga', value: null }, ...DataPrice.value.map((index) => ({ label: index.price_list_name, value: index.price_list_uuid }))];
 
     multiselectOptionsPrice.value = [...DataPrice.value.map((index) => ({ label: index.module_name, value: index.module_uuid }))];
+    multiselectOptionsBusiness.value = [...DataBusines.value.map((index) => ({ label: index.module_name, value: index.module_uuid }))];
 };
 
 const fetchDataOption = async () => {
@@ -141,14 +204,23 @@ const DataMe = async () => {
             user_level.value = response.data.level;
             user_uuid.value = response.data.uuid;
 
-            if (user_level.value == 'customer' || user_level.value == 'administrator') {
-                await fetchData();
-                await fetchDataOption();
+            if (response) {
+                user_username.value = response.data.name;
+                user_level.value = response.data.level;
+                user_uuid.value = response.data.uuid;
+
+                if (user_level.value == 'customer') {
+                    await fetchDataCustomer();
+                    await fetchDataOptionCustomer();
+                } else {
+                    await fetchData();
+                    await fetchDataOption();
+                }
             }
         }
     } catch (error) {
         if (error.response && error.response.status === 401) {
-            router.push('/Landing-page'); // Pengguna belum login, arahkan ke landing page
+            router.push('/landing-page'); // Pengguna belum login, arahkan ke landing page
         } else {
             console.error('Error: ', error); // Kesalahan lain
         }
