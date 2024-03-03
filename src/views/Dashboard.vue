@@ -2,10 +2,12 @@
 import { onMounted, reactive, ref, watch } from 'vue';
 import ProductService from '@/service/ProductService';
 import { useLayout } from '@/layout/composables/layout';
-
-
+import axios from 'axios';
 
 const { isDarkTheme, contextPath } = useLayout();
+
+const businessCount = ref(0);
+const customerCount = ref(0);
 
 const products = ref(null);
 const lineData = reactive({
@@ -36,7 +38,28 @@ const items = ref([
 const lineOptions = ref(null);
 const productService = new ProductService();
 
+const fetchBusinessCount = async () => {
+    try {
+        const response = await axios.get('http://localhost:9900/api/v1/business/get_uniqe?field=business_uuid');
+        const data = response.data.data; // Data unik bisnis dari respons API
+        businessCount.value = data.business_uuid.length; // Memperbarui nilai businessCount dengan jumlah unik bisnis dari respons API
+    } catch (error) {
+        console.error('Error fetching business count:', error);
+    }
+};
+
+const fetchCustomerCount = async () => {
+    try {
+        const response = await axios.get('http://localhost:9900/api/v1/customer/get_uniqe?field=customer_uuid');
+        const data = response.data.data; // Data unik bisnis dari respons API
+        customerCount.value = data.customer_uuid.length; // Memperbarui nilai businessCount dengan jumlah unik bisnis dari respons API
+    } catch (error) {
+        console.error('Error fetching business count:', error);
+    }
+};
 onMounted(() => {
+    fetchCustomerCount();
+    fetchBusinessCount();
     console.log(import.meta.env.VITE_API_TITLE)
     productService.getProductsSmall().then((data) => (products.value = data));
 });
@@ -123,15 +146,30 @@ watch(
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div>
-                        <span class="block text-500 font-medium mb-3">Orders</span>
-                        <div class="text-900 font-medium text-xl">152</div>
+                        <span class="block text-500 font-medium mb-3">Jumlah Bisnis</span>
+                        <div class="text-900 font-medium text-xl">{{ businessCount }}</div>
                     </div>
                     <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width: 2.5rem; height: 2.5rem">
-                        <i class="pi pi-shopping-cart text-blue-500 text-xl"></i>
+                        <i class="pi pi-building text-blue-500 text-xl"></i>
                     </div>
                 </div>
                 <span class="text-green-500 font-medium">24 new </span>
                 <span class="text-500">since last visit</span>
+            </div>
+        </div>
+        <div class="col-12 lg:col-6 xl:col-3">
+            <div class="card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Pengguna</span>
+                        <div class="text-900 font-medium text-xl">{{ customerCount }}</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-cyan-100 border-round" style="width: 2.5rem; height: 2.5rem">
+                        <i class="pi pi-inbox text-cyan-500 text-xl"></i>
+                    </div>
+                </div>
+                <span class="text-green-500 font-medium">520 </span>
+                <span class="text-500">newly registered</span>
             </div>
         </div>
         <div class="col-12 lg:col-6 xl:col-3">
@@ -147,21 +185,6 @@ watch(
                 </div>
                 <span class="text-green-500 font-medium">%52+ </span>
                 <span class="text-500">since last week</span>
-            </div>
-        </div>
-        <div class="col-12 lg:col-6 xl:col-3">
-            <div class="card mb-0">
-                <div class="flex justify-content-between mb-3">
-                    <div>
-                        <span class="block text-500 font-medium mb-3">Customers</span>
-                        <div class="text-900 font-medium text-xl">28441</div>
-                    </div>
-                    <div class="flex align-items-center justify-content-center bg-cyan-100 border-round" style="width: 2.5rem; height: 2.5rem">
-                        <i class="pi pi-inbox text-cyan-500 text-xl"></i>
-                    </div>
-                </div>
-                <span class="text-green-500 font-medium">520 </span>
-                <span class="text-500">newly registered</span>
             </div>
         </div>
         <div class="col-12 lg:col-6 xl:col-3">
@@ -342,18 +365,6 @@ watch(
                         </span>
                     </li>
                 </ul>
-            </div>
-            <div
-                class="px-4 py-5 shadow-2 flex flex-column md:flex-row md:align-items-center justify-content-between mb-3"
-                style="border-radius: 1rem; background: linear-gradient(0deg, rgba(0, 123, 255, 0.5), rgba(0, 123, 255, 0.5)), linear-gradient(92.54deg, #1c80cf 47.88%, #ffffff 100.01%)"
-            >
-                <div>
-                    <div class="text-blue-100 font-medium text-xl mt-2 mb-3">TAKE THE NEXT STEP</div>
-                    <div class="text-white font-medium text-5xl">Try PrimeBlocks</div>
-                </div>
-                <div class="mt-4 mr-auto md:mt-0 md:mr-0">
-                    <a href="https://www.primefaces.org/primeblocks-vue" class="p-button font-bold px-5 py-3 p-button-warning p-button-rounded p-button-raised"> Get Started </a>
-                </div>
             </div>
         </div>
     </div>
