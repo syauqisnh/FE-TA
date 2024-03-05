@@ -1,26 +1,101 @@
 <script setup>
-import '../pages/css/edit-profile.css';
-import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import '../pages/css/edit-profile.css';
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
-const userDetail = ref(null);
+const customer_username = ref('');
+const customer_full_name = ref('');
+const customer_nohp = ref('');
+const customer_address = ref('');
 
-const getUserDetail = async () => {
+const user_username = ref('');
+const user_full_name = ref('');
+const user_nohp = ref('');
+const user_address = ref('');
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const version = import.meta.env.VITE_API_BASE_VERSION;
+
+const uuid = ref('');
+const route = useRoute();
+uuid.value = route.params.uuid;
+
+const isCustomer = ref(false);
+
+onMounted(async () => {
     try {
-        const response = await axios.get('http://localhost:9900/api/v1/me');
-        const userData = response.data;
-        // Simpan data pengguna untuk ditampilkan di formulir
-        console.log(userData)
-        userDetail.value = userData;
+        const response = await axios.get(`${baseURL}/api/${version}/me`);
+        const userRole = response.data.level;
+
+        if (userRole === 'administrator') {
+            await ProfileUser();
+        } else {
+            await ProfileCustomer();
+            isCustomer.value = true;
+        }
     } catch (error) {
-        console.error('Error fetching user detail:', error);
+        console.error('Error checking user role:', error);
+    }
+});
+
+const ProfileUser = async () => {
+    try {
+        const response = await axios.get(`${baseURL}/api/${version}/user/${uuid.value}`);
+        const profileData = response.data.data;
+        // Set variabel profil admin di sini
+        user_username.value = profileData.user_username;
+        user_full_name.value = profileData.user_full_name;
+        user_nohp.value = profileData.user_nohp;
+        user_address.value = profileData.user_address;
+    } catch (error) {
+        console.error('Error loading profile:', error);
     }
 };
 
-onMounted(() => {
-    // Panggil metode untuk mendapatkan detail pengguna saat komponen dimuat
-    getUserDetail();
-});
+const ProfileCustomer = async () => {
+    try {
+        const response = await axios.get(`${baseURL}/api/${version}/customer/${uuid.value}`);
+        const profileData = response.data.data;
+        // Set variabel profil pelanggan di sini
+        customer_username.value = profileData.customer_username;
+        customer_full_name.value = profileData.customer_full_name;
+        customer_nohp.value = profileData.customer_nohp;
+        customer_address.value = profileData.customer_address;
+    } catch (error) {
+        console.error('Error loading profile:', error);
+    }
+};
+
+const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+        const response = await axios.get(`${baseURL}/api/${version}/me`);
+        const userRole = response.data.level;
+
+        const username = user_username.value;
+        const nama_langkap = user_full_name.value;
+        const nohp = user_nohp.value;
+        const address = user_address.value;
+        if (userRole === 'administrator') {
+            const response = await axios.put(`${baseURL}/api/${version}/user/${uuid.value}`, {
+                user_username: username,
+                user_full_name: nama_langkap,
+                user_nohp: nohp,
+                user_address: address
+            });
+            if (response) {
+                console.log('Data admin berhasil diperbarui');
+                uuid.value = '';
+            }
+            console.log('Sasa', response)
+        } else {
+            console.log('Ini adalah Customer');
+        }
+    } catch (error) {
+        console.log('Terjadi kesalahan saat menyimpan data:', error);
+    }
+};
+
 </script>
 
 <template>
@@ -29,44 +104,29 @@ onMounted(() => {
             <div class="card docs">
                 <div class="judul-profile">
                     <h1>Profile</h1>
-                    <hr>
+                    <hr />
                 </div>
-                <div class="konten">
-                    <div class="profile-picture">
-                        <label for="file-upload" class="custom-file-upload">
-                            <img v-if="uploadedImage" :src="uploadedImage" alt="Uploaded Image" class="uploaded-image" />
-                            <i class="pi pi-plus"></i> Upload Foto
-                        </label>
-                        <input id="file-upload" type="file" accept="image/*" @change="onFileUpload" />
-                    </div>
+                <form @submit="handleSubmit" class="konten">
                     <div class="username">
                         <label for="username">Username</label>
-                        <InputText id="username" type="text" class="w-full mb-5" v-model="username" />
+                        <InputText :value="isCustomer ? customer_username : user_username" id="username" type="text" class="w-full mb-5" :modelValue="isCustomer ? customer_username : user_username" />
                     </div>
                     <div class="fullName">
                         <label for="fullname">Nama Lengkap</label>
-                        <InputText id="fullname" type="text" class="w-full mb-5" v-model="fullname" />
+                        <InputText :value="isCustomer ? customer_full_name : user_full_name" id="fullname" type="text" class="w-full mb-5" :modelValue="isCustomer ? customer_full_name : user_full_name" />
                     </div>
                     <div class="nohp">
                         <label for="nohp">Nomor Ponsel</label>
-                        <InputText id="nohp" type="tel" class="w-full mb-5" v-model="nohp" />
+                        <InputText :value="isCustomer ? customer_nohp : user_nohp" id="nohp" type="tel" class="w-full mb-5" :modelValue="isCustomer ? customer_nohp : user_nohp" />
                     </div>
                     <div class="address">
                         <label for="address">Alamat</label>
-                        <InputText id="address" type="text" class="w-full mb-5" v-model="address" />
-                    </div>
-                    <div class="email">
-                        <label for="email">Email</label>
-                        <InputText id="email" type="text" class="w-full mb-5" v-model="email" />
-                    </div>
-                    <div class="password">
-                        <label for="password">Password</label>
-                        <InputText id="password" type="password" class="w-full mb-5" v-model="password" />
+                        <InputText :value="isCustomer ? customer_address : user_address" id="address" type="text" class="w-full mb-5" :modelValue="isCustomer ? customer_address : user_address" />
                     </div>
                     <div class="save">
-                        <button>Simpan</button>
+                        <button type="submit">Simpan</button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>

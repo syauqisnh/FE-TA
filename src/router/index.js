@@ -210,7 +210,7 @@ const router = createRouter({
                     component: () => import('@/views/utilities/Documentation.vue')
                 },
                 {
-                    path: '/edit-profile',
+                    path: '/dashboard/edit-profile/:uuid',
                     name: 'edit-profile',
                     component: () => import('@/views/utilities/Edit-profile.vue')
                 }

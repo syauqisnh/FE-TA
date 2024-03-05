@@ -5,12 +5,12 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 const user_username = ref('');
 const user_level = ref('');
-
-const { onMenuToggle } = useLayout();
-
 const outsideClickListener = ref(null);
 const topbarMenuActive = ref(false);
+const uuid = ref('');
 const router = useRouter();
+
+const { onMenuToggle } = useLayout();
 
 const CekDataLogin = async () => {
     try {
@@ -18,6 +18,7 @@ const CekDataLogin = async () => {
 
         user_username.value = response.data.name;
         user_level.value = response.data.level;
+        uuid.value = response.data.uuid;
     } catch (error) {
         if (error.response && error.response.status === 401) {
             router.push('/');
@@ -42,8 +43,9 @@ const onTopBarMenuButton = () => {
 
 const onProfileClick = () => {
     topbarMenuActive.value = false;
-    router.push('/Edit-profile');
+    router.push(`/dashboard/edit-profile/${uuid.value}`);
 };
+
 const topbarMenuClasses = computed(() => {
     return {
         'layout-topbar-menu-mobile-active': topbarMenuActive.value
@@ -80,9 +82,9 @@ const isOutsideClicked = (event) => {
     <div class="layout-topbar">
         <router-link to="/">
             <div class="logo-bekantan">
-                <a href=""
-                    ><h1>USAHAMIKRO<span>SITE</span></h1></a
-                >
+                <a href="">
+                    <h1>USAHAMIKRO<span>SITE</span></h1>
+                </a>
             </div>
         </router-link>
 
@@ -93,7 +95,6 @@ const isOutsideClicked = (event) => {
         <button class="p-link layout-topbar-menu-button layout-topbar-button" @click="onTopBarMenuButton()">
             <i class="pi pi-ellipsis-v"></i>
         </button>
-
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
             <button @click="onProfileClick()" class="button-profile">
                 <i class="fa fa-user"></i>
@@ -104,7 +105,6 @@ const isOutsideClicked = (event) => {
 </template>
 
 <style lang="scss" scoped>
-
 .button-profile {
     display: flex;
     align-items: center;
@@ -113,28 +113,32 @@ const isOutsideClicked = (event) => {
     border: none;
     background-color: transparent;
     cursor: pointer;
+    margin: 0 auto;
 }
+
+.button-profile p {
+    margin: 0 auto;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
 .layout-topbar {
     display: flex;
     align-items: center;
     height: 90px;
 }
 
-.username {
-    margin-left: 15px;
-    margin-right: 50px;
-}
-
 .logo-bekantan {
     text-align: center;
 }
+
 .logo-bekantan a h1 {
     margin: 0 auto;
     color: orange;
     font-weight: bold;
 }
+
 .logo-bekantan a h1 span {
     color: rgb(112, 194, 227);
 }
-
 </style>

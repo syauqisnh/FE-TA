@@ -201,16 +201,12 @@ const UpdateDataData = async () => {
     const nama_langkap = user_full_name.value;
     const nohp = user_nohp.value;
     const address = user_address.value;
-    // const email = user_email.value;
-    // const password = user_password.value;
     try {
         const response = await axios.put(`${baseURL}/api/${version}/user/${uuid_user.value}`, {
             user_username: username,
             user_full_name: nama_langkap,
             user_nohp: nohp,
             user_address: address
-            // user_email: email,
-            // user_password: password
         });
 
         if (response) {
