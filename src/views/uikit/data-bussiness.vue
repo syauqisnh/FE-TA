@@ -149,9 +149,9 @@ const DataMe = async () => {
         }
     } catch (error) {
         if (error.response && error.response.status === 401) {
-            router.push('/landing-page'); // Pengguna belum login, arahkan ke landing page
+            router.push('/landing-page');
         } else {
-            console.error('Error: ', error); // Kesalahan lain
+            console.error('Error: ', error);
         }
     }
 };
