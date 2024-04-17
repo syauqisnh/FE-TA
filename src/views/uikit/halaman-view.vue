@@ -64,6 +64,7 @@ const openModalHapus = async (value) => {
     }
 };
 
+
 const DeleteDataData = async () => {
     const response = await axios.delete(`${baseURL}/api/${version}/media/${uuid_media.value}`);
 

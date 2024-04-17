@@ -77,6 +77,11 @@ const router = createRouter({
                     component: () => import('@/views/uikit/data-gallery.vue')
                 },
                 {
+                    path: '/uikit/data-schedulingBooking',
+                    name: 'data-schedulingBooking',
+                    component: () => import('@/views/uikit/data-schedulingBooking.vue')
+                },
+                {
                     path: '/uikit/data-scopes',
                     name: 'data-scopes',
                     component: () => import('@/views/uikit/data-scopes.vue')

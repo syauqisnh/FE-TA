@@ -4,10 +4,10 @@ import ProductService from '@/service/ProductService';
 import { useLayout } from '@/layout/composables/layout';
 import axios from 'axios';
 
-const { isDarkTheme, contextPath } = useLayout();
+const { isDarkTheme } = useLayout();
 
 const businessCount = ref(0);
-const customerCount = ref(0);
+const timCount = ref(0);
 
 const products = ref(null);
 const lineData = reactive({
@@ -50,9 +50,9 @@ const fetchBusinessCount = async () => {
 
 const fetchCustomerCount = async () => {
     try {
-        const response = await axios.get('http://localhost:9900/api/v1/customer/get_uniqe?field=customer_uuid');
+        const response = await axios.get('http://localhost:9900/api/v1/teams/get_uniqe?field=team_uuid');
         const data = response.data.data; // Data unik bisnis dari respons API
-        customerCount.value = data.customer_uuid.length; // Memperbarui nilai businessCount dengan jumlah unik bisnis dari respons API
+        timCount.value = data.team_uuid.length; // Memperbarui nilai businessCount dengan jumlah unik bisnis dari respons API
     } catch (error) {
         console.error('Error fetching business count:', error);
     }
@@ -161,8 +161,8 @@ watch(
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div>
-                        <span class="block text-500 font-medium mb-3">Pengguna</span>
-                        <div class="text-900 font-medium text-xl">{{ customerCount }}</div>
+                        <span class="block text-500 font-medium mb-3">Jumlah Tim</span>
+                        <div class="text-900 font-medium text-xl">{{ timCount }}</div>
                     </div>
                     <div class="flex align-items-center justify-content-center bg-cyan-100 border-round" style="width: 2.5rem; height: 2.5rem">
                         <i class="pi pi-inbox text-cyan-500 text-xl"></i>
@@ -176,8 +176,8 @@ watch(
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div>
-                        <span class="block text-500 font-medium mb-3">Revenue</span>
-                        <div class="text-900 font-medium text-xl">$2.100</div>
+                        <span class="block text-500 font-medium mb-3">New Order</span>
+                        <div class="text-900 font-medium text-xl">0</div>
                     </div>
                     <div class="flex align-items-center justify-content-center bg-orange-100 border-round" style="width: 2.5rem; height: 2.5rem">
                         <i class="pi pi-map-marker text-orange-500 text-xl"></i>
@@ -191,8 +191,8 @@ watch(
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div>
-                        <span class="block text-500 font-medium mb-3">Comments</span>
-                        <div class="text-900 font-medium text-xl">152 Unread</div>
+                        <span class="block text-500 font-medium mb-3">All Order</span>
+                        <div class="text-900 font-medium text-xl">0</div>
                     </div>
                     <div class="flex align-items-center justify-content-center bg-purple-100 border-round" style="width: 2.5rem; height: 2.5rem">
                         <i class="pi pi-comment text-purple-500 text-xl"></i>
@@ -205,14 +205,8 @@ watch(
 
         <div class="col-12 xl:col-6">
             <div class="card">
-                <h5>Recent Sales</h5>
+                <h5>Data Booking Terbaru</h5>
                 <DataTable :value="products" :rows="5" :paginator="true" responsiveLayout="scroll">
-                    <Column style="width: 15%">
-                        <template #header> Image </template>
-                        <template #body="slotProps">
-                            <img :src="contextPath + 'demo/images/product/' + slotProps.data.image" :alt="slotProps.data.image" width="50" class="shadow-2" />
-                        </template>
-                    </Column>
                     <Column field="name" header="Name" :sortable="true" style="width: 35%"></Column>
                     <Column field="price" header="Price" :sortable="true" style="width: 35%">
                         <template #body="slotProps">
@@ -313,7 +307,7 @@ watch(
         </div>
         <div class="col-12 xl:col-6">
             <div class="card">
-                <h5>Sales Overview</h5>
+                <h5>Order Selama Satu Bulan</h5>
                 <Chart type="line" :data="lineData" :options="lineOptions" />
             </div>
             <div class="card">

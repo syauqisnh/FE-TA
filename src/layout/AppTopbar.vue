@@ -3,20 +3,26 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
+
 const user_username = ref('');
+const user_fullName = ref('');
 const user_level = ref('');
+const detail_foto = ref([]);
 const outsideClickListener = ref(null);
 const topbarMenuActive = ref(false);
 const uuid = ref('');
 const router = useRouter();
+
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const version = import.meta.env.VITE_API_BASE_VERSION;
 
 const { onMenuToggle } = useLayout();
 
 const CekDataLogin = async () => {
     try {
         const response = await axios.get('http://localhost:9900/api/v1/me');
-
         user_username.value = response.data.name;
+        user_fullName.value = response.data.fullName;
         user_level.value = response.data.level;
         uuid.value = response.data.uuid;
     } catch (error) {
@@ -28,9 +34,29 @@ const CekDataLogin = async () => {
     }
 };
 
-onMounted(() => {
-    CekDataLogin();
-    bindOutsideClickListener();
+const CekDataMedia = async (value) => {
+    uuid.value = value;
+    try {
+        const response = await axios.get(`${baseURL}/api/${version}/media/${uuid.value}`);
+        detail_foto.value = response.data.data;
+    } catch (error) {
+        console.error('Error media:', error);
+    }
+};
+
+const userAvatar = computed(() => {
+    return detail_foto.value[0]?.media_url || '/public/layout/images/Profile.jpeg';
+});
+
+
+onMounted(async () => {
+    try {
+        await CekDataLogin();
+        await CekDataMedia(uuid.value);
+        bindOutsideClickListener();
+    } catch (error) {
+        console.error('Error during component initialization:', error);
+    }
 });
 
 onBeforeUnmount(() => {
@@ -97,8 +123,12 @@ const isOutsideClicked = (event) => {
         </button>
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
             <button @click="onProfileClick()" class="button-profile">
-                <i class="fa fa-user"></i>
-                <p class="username">{{ user_username }}</p>
+                <img class="profile-topbar" :src="userAvatar" alt="foto-profile">
+                <div class="person">
+                    <p class="username">{{ user_username }}</p>
+                    <p class="fullname">{{ user_fullName }}</p>
+                </div>
+                <i class="pi pi-chevron-right"></i>
             </button>
         </div>
     </div>
@@ -132,6 +162,19 @@ const isOutsideClicked = (event) => {
     text-align: center;
 }
 
+.username {
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: left;
+    font-size: 15px;
+}
+.fullname {
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: left;
+    font-size: 12px;
+    color: gray;
+    font-weight: bold;
+}
+
 .logo-bekantan a h1 {
     margin: 0 auto;
     color: orange;
@@ -141,4 +184,11 @@ const isOutsideClicked = (event) => {
 .logo-bekantan a h1 span {
     color: rgb(112, 194, 227);
 }
+
+.profile-topbar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
 </style>

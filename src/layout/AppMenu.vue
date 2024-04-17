@@ -61,6 +61,7 @@ const model = ref([
             { label: 'Daftar Harga', icon: 'pi pi-fw pi-tag', to: '/uikit/data-price-list' },
             { label: 'TNC', icon: 'pi pi-fw pi-chart-bar', to: '/uikit/data-tnc' },
             { label: 'Gambar', icon: 'fas fa-camera', to: '/uikit/data-gallery' },
+            { label: 'Scheduling Booking', icon: 'pi pi-calendar', to: '/uikit/data-schedulingBooking' },
         ]
     },
     {
