@@ -57,6 +57,16 @@ const router = createRouter({
                     component: () => import('@/views/uikit/data-user.vue')
                 },
                 {
+                    path: '/uikit/data-training',
+                    name: 'data_training',
+                    component: () => import('@/views/uikit/data-training.vue')
+                },
+                {
+                    path: '/uikit/data-message',
+                    name: 'data-message',
+                    component: () => import('@/views/uikit/data-message.vue')
+                },
+                {
                     path: '/uikit/data-bussiness',
                     name: 'data-bussiness',
                     component: () => import('@/views/uikit/data-bussiness.vue')
@@ -77,9 +87,19 @@ const router = createRouter({
                     component: () => import('@/views/uikit/data-gallery.vue')
                 },
                 {
+                    path: '/uikit/practice',
+                    name: 'practice',
+                    component: () => import('@/views/uikit/practice.vue')
+                },
+                {
                     path: '/uikit/data-schedulingBooking',
                     name: 'data-schedulingBooking',
                     component: () => import('@/views/uikit/data-schedulingBooking.vue')
+                },
+                {
+                    path: '/uikit/layanan',
+                    name: 'layanan',
+                    component: () => import('@/views/uikit/layanan.vue')
                 },
                 {
                     path: '/uikit/data-scopes',
@@ -235,6 +255,11 @@ const router = createRouter({
             path: '/pembayaran',
             name: 'pembayaran',
             component: () => import('@/views/pages/pembayaran.vue')
+        },
+        {
+            path: '/bot',
+            name: 'bot',
+            component: () => import('@/views/uikit/bot.vue')
         },
         {
             path: '/pages/notfound',

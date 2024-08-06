@@ -6,7 +6,7 @@ import Column from 'primevue/column';
 import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
-import '../uikit/css/data-user.css';
+import '/public/layout/css/data-user.css';
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 const version = import.meta.env.VITE_API_BASE_VERSION;
 const Hakaksestolak = ref('');

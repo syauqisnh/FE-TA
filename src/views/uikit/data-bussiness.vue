@@ -1,6 +1,6 @@
 <!-- eslint-disable no-unused-vars -->
 <script setup>
-import '../uikit/css/data-bussiness.css';
+import '/public/layout/css/data-bussiness.css';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import DataTable from 'primevue/datatable';

@@ -55,6 +55,10 @@ const goToPaymentPage = () => {
     router.push('/pembayaran');
 };
 
+const goToBot = () => {
+    router.push('/bot');
+};
+
 const isMenuOpen = ref(false);
 
 // const toggleMenu = () => {
@@ -71,13 +75,13 @@ window.addEventListener('resize', () => {
 
 const templateList = ref([
     {
-        imageUrl: '/public/layout/images/images-cv.svg',
-        description: 'Description of Template 1',
+        imageUrl: '/public/layout/images/rstemp.png',
+        description: 'Tamplate Rumah Sakit',
         userCount: '500'
     },
     {
-        imageUrl: '/public/layout/images/images-cv.svg',
-        description: 'Description of Template 2',
+        imageUrl: '/public/layout/images/batikweb.png',
+        description: 'Tamplate Website Batik',
         userCount: '500'
     },
     {
@@ -240,7 +244,7 @@ const responsiveOptions = ref([
             <div class="fitur">
                 <p>Fitur yang <span>usahamikrosite</span> tawarkan:</p>
             </div>
-            <div class="pembungkus" style="display: flex; align-items: center; justify-content: center;">
+            <div class="pembungkus" style="display: flex; align-items: center; justify-content: center">
                 <div class="col-12 lg:col-6 xl:col-3">
                     <div class="card mb-0">
                         <div class="flex justify-content-between mb-3">
@@ -287,7 +291,7 @@ const responsiveOptions = ref([
                     </div>
                 </div>
             </div>
-            <div style="display: flex; align-items: center; justify-content: center;">
+            <div style="display: flex; align-items: center; justify-content: center">
                 <div class="col-12 lg:col-6 xl:col-3">
                     <div class="card mb-0">
                         <div class="flex justify-content-between mb-3">
@@ -336,7 +340,7 @@ const responsiveOptions = ref([
                 <template #item="slotProps">
                     <div class="column">
                         <div class="template-item">
-                            <img :src="slotProps.data.imageUrl" alt="Template" />
+                            <img :src="slotProps.data.imageUrl" alt="Template" class="template-image" />
                             <div class="desc">
                                 <div class="user-count">
                                     <span class="p-desc">{{ slotProps.data.description }}</span>
@@ -473,7 +477,34 @@ const responsiveOptions = ref([
         <div class="footer">
             <p>Copyright &copy; 2024 CV. Bekantan Jantan. All Rights Reserved.</p>
         </div>
+        <div class="bot">
+            <button @click="goToBot">
+                <img src="/public/layout/images/bot2.png" alt="" />
+            </button>
+        </div>
     </div>
     <AppConfig simple />
 </template>
-<style scoped></style>
+<style scoped>
+.bot {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+}
+
+.bot button {
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+.bot button img {
+    height: 100px;
+}
+.template-image {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+    background-color: #f0f0f0; /* Optional: add a background color to fill the space */
+}
+</style>

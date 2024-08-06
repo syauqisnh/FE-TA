@@ -7,7 +7,7 @@ import Dropdown from 'primevue/dropdown';
 import MultiSelect from 'primevue/multiselect';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
-import '../uikit/css/data-media.css';
+import '/public/layout/css/data-media.css';
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 const version = import.meta.env.VITE_API_BASE_VERSION;
 

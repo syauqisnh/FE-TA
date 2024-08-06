@@ -8,7 +8,7 @@ import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
-import '../uikit/css/data-tnc.css';
+import '/public/layout/css/data-tnc.css';
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 const version = import.meta.env.VITE_API_BASE_VERSION;
 

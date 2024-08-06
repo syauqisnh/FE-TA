@@ -6,7 +6,7 @@ import Column from 'primevue/column';
 import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
-import '../uikit/css/data-gallery.css';
+import '/public/layout/css/data-gallery.css';
 import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
 const baseURL = import.meta.env.VITE_API_BASE_URL;

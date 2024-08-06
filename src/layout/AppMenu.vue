@@ -48,10 +48,11 @@ const model = ref([
             { label: 'Data Access', icon: 'pi pi-fw pi-server', to: '/uikit/data-access' },
             { label: 'Data Media', icon: 'pi pi-fw pi-server', to: '/uikit/data-media' },
             { label: 'Data Customer', icon: 'pi pi-fw pi-server', to: '/uikit/data-customer' },
-            { label: 'Data User', icon: 'pi pi-fw pi-server', to: '/uikit/data-user' }
+            { label: 'Data User', icon: 'pi pi-fw pi-server', to: '/uikit/data-user' },
+            { label: 'Data Message', icon: 'pi pi-fw pi-server', to: '/uikit/data-message' },
+            { label: 'Data Training', icon: 'pi pi-fw pi-server', to: '/uikit/data-training' },
         ]
     },
-
     {
         label: 'Data Menu Customer',
         items: [
@@ -61,7 +62,9 @@ const model = ref([
             { label: 'Daftar Harga', icon: 'pi pi-fw pi-tag', to: '/uikit/data-price-list' },
             { label: 'TNC', icon: 'pi pi-fw pi-chart-bar', to: '/uikit/data-tnc' },
             { label: 'Gambar', icon: 'fas fa-camera', to: '/uikit/data-gallery' },
-            { label: 'Scheduling Booking', icon: 'pi pi-calendar', to: '/uikit/data-schedulingBooking' },
+            { label: 'Layanan', icon: 'pi pi-briefcase', to: '/uikit/layanan' },
+            { label: 'Jadwal', icon: 'pi pi-calendar', to: '/uikit/practice' },
+            { label: 'Pemesanan', icon: 'pi pi-inbox', to: '/uikit/data-schedulingBooking' },
         ]
     },
     {
@@ -93,6 +96,9 @@ const model_customer = ref([
             { label: 'Daftar Harga', icon: 'pi pi-fw pi-tag', to: '/uikit/data-price-list' },
             { label: 'TNC', icon: 'pi pi-fw pi-chart-bar', to: '/uikit/data-tnc' },
             { label: 'Gallery', icon: 'fas fa-camera', to: '/uikit/data-gallery' },
+            { label: 'Layanan', icon: 'pi pi-briefcase', to: '/uikit/layanan' },
+            { label: 'Jadwal', icon: 'pi pi-calendar', to: '/uikit/practice' },
+            { label: 'Pemesanan', icon: 'pi pi-inbox', to: '/uikit/data-schedulingBooking' },
         ]
     },
     {

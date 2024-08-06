@@ -9,7 +9,7 @@ import MultiSelect from 'primevue/multiselect';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import Swal from 'sweetalert2';
-import '../uikit/css/data-level.css';
+import '/public/layout/css/data-level.css';
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 const version = import.meta.env.VITE_API_BASE_VERSION;
 

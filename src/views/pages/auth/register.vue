@@ -6,7 +6,7 @@ import axios from 'axios';
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 const version = import.meta.env.VITE_API_BASE_VERSION;
 
-import '../css/register.css';
+import '/public/layout/css/register.css';
 
 // Siapkan router
 const router = useRouter();

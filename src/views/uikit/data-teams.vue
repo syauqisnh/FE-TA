@@ -7,7 +7,7 @@ import Dropdown from 'primevue/dropdown';
 import Swal from 'sweetalert2';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
-import '../uikit/css/data-teams.css';
+import '/public/layout/css/data-teams.css';
 import { useRouter } from 'vue-router';
 import FileUpload from 'primevue/fileupload';
 

@@ -1,6 +1,5 @@
-<!-- eslint-disable no-unused-vars -->
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -10,6 +9,7 @@ import Button from 'primevue/button';
 import '/public/layout/css/style.css';
 import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
+
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 const version = import.meta.env.VITE_API_BASE_VERSION;
 
@@ -26,26 +26,21 @@ const user_username = ref('');
 const user_level = ref('');
 const user_uuid = ref('');
 
-const uuid_scope = ref('');
+const uuid_service = ref('');
 const DataBusines = ref([]);
 const businesOptions = ref([]);
-const multiselectOptionsBusiness = ref([]);
-const scope_name = ref('');
-const scope_desc = ref('');
-const scope_business = ref(null);
+const service_name = ref('');
+const service_quota = ref('');
+const service_business = ref(null);
 
 const isModalOpen = ref(false);
 const isUpdateModalOpen = ref(false);
 const isDeleteModalOpen = ref(false);
 
-const scope_uuid = ref(null);
-
 let jumlah_row = 5;
 
 const updateOptions = () => {
-    businesOptions.value = [{ label: 'Pilih Busines', value: null }, ...DataBusines.value.map((index) => ({ label: index.business_name, value: index.business_uuid }))];
-
-    multiselectOptionsBusiness.value = [...DataBusines.value.map((index) => ({ label: index.module_name, value: index.module_uuid }))];
+    businesOptions.value = [{ label: 'Pilih Bisnis', value: null }, ...DataBusines.value.map((index) => ({ label: index.business_name, value: index.business_uuid }))];
 };
 
 onMounted(async () => {
@@ -90,23 +85,19 @@ const fetchData = async () => {
     try {
         const params = new URLSearchParams();
 
-        // Parameter 'order' dikirim sebagai string dan bukan objek
         if (selectedOrder.value !== 'default') {
-            params.append(`order[${'scope_id'}]`, selectedOrder.value);
+            params.append(`order[${'service_id'}]`, selectedOrder.value);
         }
 
-        // Tambahkan parameter 'limit' jika bukan default
         if (selectedLimit.value !== 'default') {
             params.append('limit', selectedLimit.value);
         }
 
-        // Tambahkan parameter 'keyword' jika ada input
         if (inputSearch.value.trim()) {
             params.append('keyword', inputSearch.value.trim());
         }
 
-        // Buat request ke backend
-        const response = await axios.get(`${baseURL}/api/${version}/scope/get_all`, {
+        const response = await axios.get(`${baseURL}/api/${version}/layanan/get_all`, {
             params: params
         });
 
@@ -114,17 +105,7 @@ const fetchData = async () => {
 
         if (response) {
             tableData.value = response.data.data || [];
-
             console.log(tableData.value);
-
-            tableData.value.forEach((item) => {
-                if (!item.business_nohp) {
-                    item.business_nohp = 'BELUM DI ISI';
-                }
-                if (!item.business_address) {
-                    item.business_address = 'BELUM DI ISI';
-                }
-            });
         } else {
             console.error('Respon sukses tetapi tidak ada data:', response.data.message);
             tableData.value = [];
@@ -141,12 +122,12 @@ const fetchDataCustomer = async () => {
     try {
         const params = new URLSearchParams();
         if (user_uuid.value !== '') {
-            params.append(`scope_business`, user_uuid.value);
+            params.append(`service_business`, user_uuid.value);
         }
 
         // Parameter 'order' dikirim sebagai string dan bukan objek
         if (selectedOrder.value !== 'default') {
-            params.append(`order[${'scope_id'}]`, selectedOrder.value);
+            params.append(`order[${'service_id'}]`, selectedOrder.value);
         }
 
         // Tambahkan parameter 'limit' jika bukan default
@@ -160,7 +141,7 @@ const fetchDataCustomer = async () => {
         }
 
         // Buat request ke backend
-        const response = await axios.get(`${baseURL}/api/${version}/scope/get_all_customer`, {
+        const response = await axios.get(`${baseURL}/api/${version}/layanan/get_all_customer`, {
             params: params
         });
 
@@ -189,6 +170,7 @@ const fetchDataOption = async () => {
         console.error('Error mengambil data:', error);
     }
 };
+
 const fetchDataOptionCustomer = async () => {
     try {
         const params = new URLSearchParams();
@@ -207,14 +189,14 @@ const fetchDataOptionCustomer = async () => {
 
 const addDataData = async () => {
     try {
-        const name = scope_name.value;
-        const desc = scope_desc.value;
-        const business = scope_business.value;
+        const name = service_name.value;
+        const kuota = service_quota.value;
+        const business = service_business.value;
 
-        const response = await axios.post(`${baseURL}/api/${version}/scope`, {
-            scope_name: name,
-            scope_desc: desc,
-            scope_business: business
+        const response = await axios.post(`${baseURL}/api/${version}/layanan`, {
+            service_name: name,
+            service_quota: kuota,
+            service_business: business
         });
 
         if (response) {
@@ -234,13 +216,14 @@ const addDataData = async () => {
 };
 
 const OpenModalEdit = async (value) => {
-    uuid_scope.value = value;
+    uuid_service.value = value;
+    console.log('uuid', uuid_service.value);
     try {
-        const response = await axios.get(`${baseURL}/api/${version}/scope/${uuid_scope.value}`);
+        const response = await axios.get(`${baseURL}/api/${version}/layanan/${uuid_service.value}`);
         if (response) {
-            scope_name.value = response.data.data.scope_name;
-            scope_desc.value = response.data.data.scope_desc;
-            scope_business.value = response.data.data.scope_business.business_uuid;
+            service_name.value = response.data.data.service_name;
+            service_quota.value = response.data.data.service_quota;
+            service_business.value = response.data.data.service_business.business_uuid;
             openModalUpdate();
         }
     } catch (error) {
@@ -250,21 +233,23 @@ const OpenModalEdit = async (value) => {
 
 const UpdateDataData = async () => {
     try {
-        const name = scope_name.value;
-        const desc = scope_desc.value;
-        const business = scope_business.value;
-        const response = await axios.put(`${baseURL}/api/${version}/scope/${uuid_scope.value}`, {
-            scope_name: name,
-            scope_desc: desc,
-            scope_business: business
+        const name = service_name.value;
+        const kuota = service_quota.value;
+        const business = service_business.value;
+        const response = await axios.put(`${baseURL}/api/${version}/layanan/${uuid_service.value}`, {
+            service_name: name,
+            service_quota: kuota,
+            service_business: business
         });
+
+        console.log('DATA:', response);
 
         if (response) {
             closeModalUpdate();
             Swal.fire('Successfully', 'Sukses Mengupdate Data', 'success').then(() => {
                 window.location.reload();
             });
-            uuid_scope.value = '';
+            uuid_service.value = '';
         }
     } catch (error) {
         console.error(error);
@@ -277,21 +262,21 @@ const UpdateDataData = async () => {
 };
 
 const openModalHapus = async (value) => {
-    uuid_scope.value = value;
+    uuid_service.value = value;
     try {
-        const response = await axios.get(`${baseURL}/api/${version}/scope/${uuid_scope.value}`);
+        const response = await axios.get(`${baseURL}/api/${version}/layanan/${uuid_service.value}`);
         if (response) {
-            scope_name.value = response.data.data.scope_name;
-            scope_desc.value = response.data.data.scope_desc;
-            scope_business.value = response.data.data.scope_business;
+            service_name.value = response.data.data.service_name;
+            service_business.value = response.data.data.service_business.business_uuid;
             openModalDelete();
         }
     } catch (error) {
         console.error('Error saat menghapus data:', error);
     }
 };
+
 const DeleteDataData = async () => {
-    const response = await axios.delete(`${baseURL}/api/${version}/scope/${uuid_scope.value}`);
+    const response = await axios.delete(`${baseURL}/api/${version}/layanan/${uuid_service.value}`);
 
     if (response) {
         closeModalDelete();
@@ -307,10 +292,6 @@ const openModal = () => {
 
 const closeModal = () => {
     isModalOpen.value = false;
-
-    scope_name.value = null;
-    scope_desc.value = null;
-    scope_business.value = null;
 };
 
 const openModalUpdate = () => {
@@ -319,10 +300,6 @@ const openModalUpdate = () => {
 
 const closeModalUpdate = () => {
     isUpdateModalOpen.value = false;
-
-    scope_name.value = null;
-    scope_desc.value = null;
-    scope_business.value = null;
 };
 
 const openModalDelete = () => {
@@ -331,10 +308,6 @@ const openModalDelete = () => {
 
 const closeModalDelete = () => {
     isDeleteModalOpen.value = false;
-
-    scope_name.value = null;
-    scope_desc.value = null;
-    scope_business.value = null;
 };
 
 const limit = ref([
@@ -356,7 +329,7 @@ const order = ref([
 <template>
     <div>
         <div class="judul-halaman-scope">
-            <h1>Ruang Lingkup</h1>
+            <h1>Data Layanan</h1>
         </div>
 
         <div v-if="isModalOpen" class="modal">
@@ -365,9 +338,9 @@ const order = ref([
                 <span class="close" @click="closeModal">&times;</span>
                 <h4>Tambah Data</h4>
                 <div class="modal-form-group">
-                    <InputText v-model="scope_name" placeholder="Tambahkan Name" class="modal-input"></InputText>
-                    <InputText v-model="scope_desc" placeholder="Tambahkan Desc" class="modal-input"></InputText>
-                    <Dropdown v-model="scope_business" :options="businesOptions" optionLabel="label" optionValue="value" placeholder="Pilih Bisnis" class="modal-input"></Dropdown>
+                    <InputText v-model="service_name" placeholder="Layanan" class="modal-input"></InputText>
+                    <InputText v-model="service_quota" placeholder="Kuota" class="modal-input"></InputText>
+                    <Dropdown v-model="service_business" :options="businesOptions" optionLabel="label" optionValue="value" placeholder="Pilih Bisnis" class="modal-input"></Dropdown>
                 </div>
                 <div class="modal-form-group">
                     <button class="modal-button-suceess" @click="addDataData">Submit</button>
@@ -382,9 +355,9 @@ const order = ref([
                 <span class="close" @click="closeModalUpdate">&times;</span>
                 <h4>Ubah Data</h4>
                 <div class="modal-form-group">
-                    <InputText v-model="scope_name" placeholder="Tambahkan Name" class="modal-input"></InputText>
-                    <InputText v-model="scope_desc" placeholder="Tambahkan Desc" class="modal-input"></InputText>
-                    <Dropdown v-model="scope_business" :options="businesOptions" optionLabel="label" optionValue="value" placeholder="Pilih Bisnis" class="modal-input"></Dropdown>
+                    <InputText v-model="service_name" placeholder="Layanan" class="modal-input"></InputText>
+                    <InputText v-model="service_quota" placeholder="Kuota" class="modal-input"></InputText>
+                    <Dropdown v-model="service_business" :options="businesOptions" optionLabel="label" optionValue="value" placeholder="Pilih Bisnis" class="modal-input"></Dropdown>
                 </div>
                 <div class="modal-form-group">
                     <button class="modal-button-suceess" @click="UpdateDataData">Ubah data</button>
@@ -400,7 +373,7 @@ const order = ref([
                 <h4>Hapus Data</h4>
                 <div class="modal-form-group">
                     <p>
-                        Apakah Anda yakin untuk menghapus scope bisnis <span class="bold-text"> "{{ scope_business.business_name }}"</span>
+                        Apakah Anda yakin untuk menghapus scope bisnis <span class="bold-text"> "{{ service_name }}"</span>
                     </p>
                 </div>
                 <div class="modal-form-group">
@@ -430,7 +403,7 @@ const order = ref([
                             </span>
                         </div>
                         <div class="data-table-scope">
-                            <h5>Data Table scope</h5>
+                            <h5>Data Table Jadwal</h5>
                             <div class="search-container-scope">
                                 <InputText v-if="user_level === 'administrator' || user_level === 'super administrator'" v-model="inputSearch" placeholder="Search..." class="keyword" @keydown.enter="fetchData"></InputText>
                                 <InputText v-if="user_level === 'customer'" v-model="inputSearch" placeholder="Search..." class="keyword" @keydown.enter="fetchDataCustomer"></InputText>
@@ -439,14 +412,14 @@ const order = ref([
                             </div>
                         </div>
                         <DataTable :value="tableData" :paginator="true" :rows="jumlah_row" class="tabel">
-                            <Column field="scope_name" header="Name" class="name-column"></Column>
-                            <Column field="scope_desc" header="Desc" class="name-column"></Column>
-                            <Column field="scope_business.business_name" header="Bisnis" class="name-column"></Column>
+                            <Column field="service_name" header="Nama Layanan" class="name-column"></Column>
+                            <Column field="service_business.business_name" header="Bisnis" class="name-column"></Column>
+                            <Column field="service_quota" header="kuota" class="name-column"></Column>
                             <Column class="actions">
                                 <template #body="rowData">
                                     <div class="action-icons-scope">
-                                        <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.scope_uuid)"></Button>
-                                        <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.scope_uuid)"></Button>
+                                        <Button icon="pi pi-pencil" class="p-button-rounded p-button-info p-edit-icon" @click="() => OpenModalEdit(rowData.data.service_uuid)"></Button>
+                                        <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-delete-icon" @click="() => openModalHapus(rowData.data.service_uuid)"></Button>
                                     </div>
                                 </template>
                             </Column>

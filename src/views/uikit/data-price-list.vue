@@ -1,6 +1,6 @@
 <!-- eslint-disable no-unused-vars -->
 <script setup>
-import '../uikit/css/data-price-list.css';
+import '/public/layout/css/data-price-list.css';
 import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import DataTable from 'primevue/datatable';
