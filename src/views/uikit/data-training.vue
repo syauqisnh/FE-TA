@@ -92,7 +92,7 @@ const fetchData = async () => {
         }
 
         const response = await axios.get(`http://localhost:5800/api/v1/training/get_all`, { params });
-        console.log('Respon API:', response);
+        console.table(response.data.data);
 
         if (response && response.data && response.data.data) {
             tableData.value = response.data.data;

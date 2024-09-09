@@ -45,7 +45,7 @@ const reuseMessage = (msg) => {
     <div class="container-bot">
         <div class="sidebar-bot">
             <div class="logo-bot">
-                <img src="/public/layout/images/bot.png" alt="logo bot" />
+                <img src="/public/layout/images/1.png" alt="logo bot" />
                 <h1>Chatbot</h1>
             </div>
             <hr />
